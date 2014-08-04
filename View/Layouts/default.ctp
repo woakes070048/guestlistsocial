@@ -17,7 +17,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = __d('cake_dev', 'Social');
+$cakeDescription = __d('cake_dev', 'social.guestlist.net');
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,12 +36,45 @@ $cakeDescription = __d('cake_dev', 'Social');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
+</li>
 </head>
+
+<div id="loading" style="display: none;">
+<? echo $this->Html->image('ajax-loader.gif'); ?>
+</div>
+
 <body>
 	<div id="container">
 		<div id="header">
+		<div id="headercontainer">
+			<? echo $this->Html->image('GLogo60px.png', array('url' => '/')); ?>
 			<h1><?php echo $this->Html->link($cakeDescription, 'http://social.guestlist.net'); ?></h1>
-			<div class = 'fr'> <?php echo $this->Session->read('Auth.User.email'); ?> </div>
+			<? echo $this->Html->image('beta.png', array('class' => 'beta'));?>
+			<nav>
+				<ul>
+					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='admin') )?'active' :'inactive' ?>">
+						<? echo $this->Html->link('write tweets', '/');?>
+					</li>
+
+					<? if ($this->Session->read('Auth.User.Group.id') == 1 || $this->Session->read('Auth.User.Group.id') == 5) { ?>
+
+						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='manageteam') )?'active' :'inactive' ?>">
+							<? echo $this->Html->link('manage team', array('controller' => 'teams', 'action' => 'manageteam'));?>
+						</li>
+	
+						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='index') )?'active' :'inactive' ?>">
+							<? echo $this->Html->link('manage tweets', array('controller' => 'twitter', 'action' => 'index'));?>
+						</li>
+
+					<? } ?>
+
+					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='#') )?'active' :'inactive' ?>">
+						<? echo $this->Html->link('you', '#');?>
+					</li>
+				</ul>
+			</nav>
+			<div class = 'fr'> <?php echo $this->Session->read('Auth.User.email') . ' | ' . $this->Html->link('log out', array('controller' => 'users', 'action' => 'logout')) ; ?> </div>
+		</div>
 		</div>
 		<div id="content">
 

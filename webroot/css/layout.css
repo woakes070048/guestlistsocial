@@ -20,18 +20,24 @@
 	padding:0;
 }
 
+/** Fonts **/
+@font-face {
+    font-family: nevis;
+    src: url(../files/nevis.ttf);
+}
+
 /** General Style Info **/
 body {
-	background: #773d8d;
+	background: #fff;
 	color: #fff;
 	font-family:'lucida grande',verdana,helvetica,arial,sans-serif;
 	font-size:90%;
 	margin: 0;
 }
 a {
-	color: #773d8d;
-	text-decoration: underline;
-	font-weight: bold;
+	color: #999999;
+	text-decoration: none;
+	font-weight: none;
 }
 a:hover {
 	color: #bd7fd5;
@@ -46,14 +52,19 @@ h1, h2, h3, h4 {
 }
 h1 {
 	background:#fff;
-	color: #003d4c;
+	color: #773d8d;
 	font-size: 100%;
+	font-family: nevis;
+	margin: 28px 0 0 15px;
+	font-size: 20pt;
 }
 h2 {
 	background:#fff;
-	color: #e32;
-	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
-	font-size: 190%;
+	color: #a5a5a5;
+	font-size: 150%;
+	font-weight: bold;
+	margin-bottom: 10px;
+	margin-top: 50px
 }
 h3 {
 	color: #2c6877;
@@ -65,7 +76,7 @@ h4 {
 	font-weight: normal;
 }
 ul, li {
-	margin: 0 12px;
+	margin: 0 15px;
 }
 p {
 	margin: 0 0 1em 0;
@@ -77,14 +88,18 @@ p {
 }
 
 #header{
-	padding: 10px 20px;
-	border-bottom: 3px solid #2a2a2b;
+	background: #773d8d;
+	height: 60px;
+	width: 100%;
+	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, .75);
+	z-index:-100000;
 }
 #header h1 {
 	line-height:20px;
-	background: #773d8d url('../img/GLogo.png') no-repeat left;
+	background: #773d8d;
 	color: #fff;
-	padding: 0px 40px;
+	display: inline;
+	float: left;
 }
 #header h1 a {
 	color: #fff;
@@ -95,7 +110,16 @@ p {
 #header h1 a:hover {
 	color: #fff;
 	background: #773d8d;
-	text-decoration: underline;
+}
+#header img {
+	float: left
+}
+#headercontainer {
+	width: 1300px;
+	margin: auto;
+}
+.beta {
+	margin: 19px 0 0 -37px;
 }
 #content{
 	background: #fff;
@@ -103,6 +127,9 @@ p {
 	color: #333;
 	padding: 10px 20px 40px 20px;
 	overflow: auto;
+	min-height: 750px;
+	max-width: 1300px;
+	margin: 30px auto;
 }
 #footer {
 	clear: both;
@@ -141,9 +168,9 @@ table {
 }
 th {
 	border:0;
-	border-bottom:2px solid #555;
 	text-align: left;
 	padding:4px;
+	font-weight: normal;
 }
 th a {
 	display: block;
@@ -159,9 +186,7 @@ th a.desc:after {
 }  */
 table tr td {
 	padding: 6px;
-	text-align: left;
 	vertical-align: top;
-	border-bottom:1px solid #ddd;
 }
 table tr:nth-child(even) {
 	background: #f9f9f9;
@@ -258,9 +283,8 @@ dd {
 /** Forms **/
 form {
 	clear: both;
-	margin-right: 20px;
 	padding: 0;
-	width: 95%;
+	display: inline;
 }
 fieldset {
 	border: none;
@@ -287,7 +311,6 @@ fieldset fieldset div {
 form div {
 	clear: both;
 	margin-bottom: 1em;
-	padding: .5em;
 	vertical-align: text-top;
 }
 form .input {
@@ -305,6 +328,8 @@ form div.submit {
 	border: 0;
 	clear: both;
 	margin-top: 10px;
+	float: left;
+	width: 100%;
 }
 label {
 	display: block;
@@ -347,7 +372,6 @@ input[type=radio] {
 	line-height: 26px;
 }
 .radio label {
-	margin: 0 0 6px 20px;
 	line-height: 26px;
 }
 input[type=submit] {
@@ -486,10 +510,11 @@ input[type=submit],
 .actions a,
 .delete,
 .urlSubmit,
-.urlSubmit1 {
+.urlSubmit1,
+.smallSaveButton {
 	font-weight:normal;
 	padding: 4px 8px;
-	background: #dcdcdc;
+	background: #fff;
 	color:#333;
 	border:1px solid #bbb;
 	-webkit-border-radius: 4px;
@@ -499,12 +524,16 @@ input[type=submit],
 	min-width: 0;
 	-webkit-user-select: none;
 	user-select: none;
+	float: right;
+	margin: 5px;
 }
 .actions ul li a:hover,
 .actions a:hover,
 .delete:hover,
-.urlSubmit:hover {
-	background: #ededed;
+.urlSubmit:hover,
+.urlSubmit1:hover,
+.smallSaveButton:hover {
+	background: #ddd;
 	border-color: #acacac;
 	text-decoration: none;
 }
@@ -512,7 +541,8 @@ input[type=submit]:active,
 .actions ul li a:active,
 .actions a:active,
 .delete:active
-.urlSubmit:active {
+.urlSubmit:active,
+.smallSaveButton:active {
 	background: #eee;
 	border-color: #aaa;
 	text-decoration: none;
@@ -714,7 +744,11 @@ span.counter.exceeded {
 }
 
 .counter {
-	display: block;
+	display:block;
+}
+
+.counter1 {
+	float: right;
 }
 
 .urlSubmit {
@@ -727,8 +761,12 @@ span.counter.exceeded {
 	overflow: auto;
 }
 
+#AddTweet:disabled {
+	opacity: .4
+}
+
 .tweetbody {
-	width: 30%;
+	width: 40%;
 	height: auto;
 	padding: 0;
 	overflow: auto;
@@ -736,7 +774,7 @@ span.counter.exceeded {
 
 textarea.editing {
 	font-size: 95%;
-    height: 100%;
+    height: 100px;
     width: 100%;
     padding: 6px 6px 0 6px;
     -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
@@ -754,19 +792,41 @@ textarea.editing {
 
 .fr {
 	float: right;
-	margin: -25px 5% 0 0;
+	margin: 17px 0 0 0;
+	font-size: 106%;
+	background: url(../img/user_white.png) no-repeat;
+	padding-left: 25px;
 }
 
-#team {
+.fr a {
+	color: #fff;
+}
+
+.fr a:hover {
+	color: #bd7fd5;
+}
+
+#teamwrapper {
 	float: left;
+	right:0px;
+	position: fixed;
 }
 
 #team table {
-	display: block;
+	display: inline;
+}
+
+#team table tbody {
+	background: #efefef;
+}
+
+#team table td {
+	width: 175px;
+	text-align: left;
 }
 
 #submitTweet {
-	width: 75%;
+	width: 100%;
 	float: left;
 }
 
@@ -779,7 +839,6 @@ textarea.editing {
 }
 
 .nopadding {
-	padding: 0;
 	height:75px;
 }
 
@@ -790,11 +849,345 @@ textarea.editing {
 	background: url(../img/desc.gif) no-repeat right;
 }
 
+#table1 {
+	width:1300px;
+}
+
 .asc,.desc,#table a {
-	color: #333;
+	color: #fff;
 }
 
 #team {
-	right:0px;
+	width: 200px;
+	background: #efefef;
+	border-bottom-left-radius: 5px;
+	float: right;
+}
+
+label[for="TwitterAccountSelectAccount:"] {
+	display: inline;
+	margin-right: 10px
+}
+
+label[for="monthSelector"] {
+	display: inline;
+	margin-right: 10px
+}
+
+hr {
+	height: 1px;
+	background-color: #000;
+	margin: 30px 0;
+	border: none;
+	display: block
+}
+
+#hide {
+	width: 100%;
+	margin-top: -50px;
+	padding: 0;
+}
+
+#hide button {
+	font-weight:bold;
+	padding: 4px 8px;
+	background: #773d8d;
+	color:#fff;
+    border: 1px solid #773d8d;
+	border-radius: 4px;
+	text-decoration: none;
+	min-width: 100%;
+	height: 50px;
+	font-size: 200%
+}
+
+#hide button:hover {
+	background: #bd7fd5;
+}
+
+.input.select {
+	display: inline;
+}
+
+#monthForm {
+	display: inline;
+}
+
+#editinfobar {
+	margin-top: 20px;
+	display: inline;
+}
+
+#editinfobar img {
+	margin: 0 10px;
+}
+
+nav {
+	display: inline;
+	padding: 17px 60px;
+	float: left;
+}
+
+nav ul {
+	display: inline;
+	width: 500px;
+}
+
+nav ul li {
+	display: inline;
+	font-family: nevis;
+	font-size: 12pt;
+	background-color: #773d8d;
+	border-radius: 5px;
+	padding: 5px 5px 5px 10px;
+}
+
+nav ul li a {
+	color: #fff;
+	text-align: center;
+}
+
+nav ul li.active {
+	background-color: #5d2a71;
+}
+
+nav ul li.active a {
+	pointer-events: none;
+	cursor: default;
+}
+
+input[type='radio'] {
+	opacity: 0;
+	width: 10px;
+}
+
+input[type='radio'] + label {
+	padding: 0 0 0 20px;
+	background: url(../img/radio.png) left center no-repeat;
+	text-align: left;
+	font-size: 90%;
+}
+
+input[type='radio'][value='0']:checked + label {
+	background: url(../img/radioamber.png) left center no-repeat;
+}
+
+input[type='radio'][value='1']:checked + label {
+	background: url(../img/radiogreen.png) left center no-repeat;
+}
+
+input[type='radio'][value='2']:checked + label {
+	background: url(../img/radiored.png) left center no-repeat;
+}
+
+.input.radio {
+	padding: 10px;
+}
+
+#teamicon {
+	float: left;
+	cursor: pointer;
+}
+
+#teambuttons img {
+	margin: 0 5px;
+}
+
+#loading {
 	position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+/* CSS from table from Manage Tweets and Write Tweets page */
+
+#table1 {
+    font-size: 100%;
+}
+
+.input.text {
+    font-size: 65%!important;
+}
+
+.mainheader {
+    background-color: #773d8d;
+    color: white;
+    height: 60px;
+}
+
+.mainheader th {
+    text-align: center;
+    padding: 10px;
+}
+
+#TweetBody {
+    font-size: 100%;
+}
+
+.day {
+    background: #dcdcdc;
+}
+
+.day.first {
+    border-top-left-radius: 5px;
+}
+
+.day.last {
+    border-top-right-radius: 5px;
+}
+
+#table tr {
+    height: 10px;
+}
+
+.writtenBy {
+    width: 10%;
+}
+
+.scheduled {
+    width: 15%;
+}
+
+.verified {
+    width: 20%;
+    text-align: left;
+}
+
+.topic {
+    width: 15%;
+}
+
+.divider {
+    margin: 10px 0;
+}
+
+#refresh,
+#table {
+    border-spacing: 0
+}
+
+#tweetsubmit {
+    font-weight:bold;
+    padding: 4px 8px;
+    background: #773d8d;
+    color:#fff;
+    border: 1px solid #773d8d;
+    border-radius: 4px;
+    text-decoration: none;
+    min-width: 100%;
+    height: 50px;
+    font-size: 200%
+}
+
+#tweetsubmit:hover {
+    background: #bd7fd5;
+}
+
+td {
+    border: 1px solid #e4e4e4;
+    text-align: center;
+}
+
+.tweetButtons {
+	
+}
+
+.awaitingProof {
+	padding: 18px;
+	background: url(../img/clock.png) left center no-repeat;
+}
+
+.queued {
+	padding: 18px;
+	background: url(../img/list.png) left center no-repeat;
+}
+
+.published {
+	padding: 18px;
+	background: url(../img/tick.png) left center no-repeat;
+}
+
+.needImproving {
+	padding: 18px;
+	background: url(../img/alert.png) left center no-repeat;
+}
+
+#filterLinks {
+	display: block;
+	margin-top: 30px;
+}
+/* End */
+
+
+#progress {
+	display: inline;
+	float: right;
+	margin-top: -45px;
+}
+
+#progress h2 {
+	width: 105px;
+	margin: 0 auto 20px auto;
+	font-size: 120%
+}
+
+#progress table {
+	border-collapse:collapse;	
+}
+
+#progress td {
+	border: none;
+	background: #fff;
+	padding: 0 10px;
+}
+
+.progress {
+	font-family: nevis;
+	color: #999;
+}
+
+.awaitingProofCount {
+	color: #ffcc00;
+}
+
+.queuedCount {
+	color: #21a750
+}
+
+.needImprovingCount {
+	color: #ff0000;
+}
+
+.progress.firstline {
+	font-size: 150%
+}
+
+#progress td.mid {
+	border-right: 1px solid #dcdcdc;
+	border-left: 1px solid #dcdcdc;
+}
+
+#filterAccountAccount {
+	margin: 10px 40px 10px 10px;
+}
+
+#filterUserUser {
+	margin: 10px 10px 10px 10px;
+}
+
+.selectimage {
+	margin: 10px 0; 
+}
+
+.notediting {
+	padding: 6px;
+}
+
+table#table {
+	margin-top: 50px;
+	float: left;
+}
+
+.shortsingle {
+	float: left;
 }

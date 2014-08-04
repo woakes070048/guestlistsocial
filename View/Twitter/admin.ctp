@@ -6,13 +6,11 @@
 	echo $this->Html->script('jquery.urlshortener');
 	echo $this->Html->css('calendar'); ?>
 
-<style>
-#AddTweet:disabled {opacity: .4}
-</style>
-
 <?php
 echo $this->Session->flash('auth');
+?>
 
+<?
 //Select Twitter Account
 echo $this->Form->create('TwitterAccount');
         echo $this->Form->input('Select Account:', array(
@@ -21,26 +19,25 @@ echo $this->Form->create('TwitterAccount');
         'options' => array('empty' => 'Select Account...', array_combine($accounts,$accounts)), //Setting the HTML "value" = to screen_name
         'selected' => $selected
     	)); 
-echo $this->Form->end();
-if (isset($info[0]['TwitterAccount']['infolink'])) {
-echo $this->Html->link('Info', $info[0]['TwitterAccount']['infolink'], array('target' => '_blank'));
-} ?>
+echo $this->Form->end();?>
 
+<div id="editinfobar">
 <?
-echo $this->Html->link('Edit Info', '/twitter/info');
-echo $this->Html->link('Editorial Calendar', '/twitter/calendar/0');
+if (isset($info[0]['TwitterAccount']['infolink'])) {
+echo $this->Html->link($this->Html->image('star.png', array('title' => 'Useful Link')), $info[0]['TwitterAccount']['infolink'], array('target' => '_blank', 'escape' => false));
+}
+if ($this->Session->read('access_token.screen_name')) {
+	//echo $this->Html->link('Edit Info | ', '/twitter/info');
+	//echo $this->Html->link('Editorial Calendar', '/twitter/calendar/0');
+	echo $this->Html->image('calendar.png', array('url' => '/twitter/calendar/0', 'title' => 'Editorial Calendar'));
+}
+echo $this->Html->image('twitter_add.png', array('url' => '/twitter/connect', 'title' => 'Add Twitter Account'));
 ?>
-<br/>
-<br/>
-<div id='addTweetWrapper'>
-<?php
-//Add Tweet
-echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter', 'action' => 'testing'), 'id' => 'submitTweet'));
-		echo $this->Form->textarea('body', array('label' => false, 'type' => 'post', 'class' => 'ttt'));
-		//URL Shortener
-		echo $this->Form->button('Shorten URL', array('id' => 'shortIt', 'class' => 'urlSubmit', 'type' => 'button'));
-echo $this->Form->end(array('id' => 'AddTweet', 'value' => 'AddTweet', 'class' => 'addTweet'));
-?>
+</div>
+
+<div id="teamwrapper">
+<div id='teamicon'>
+<? echo $this->Html->image('group.png'); ?>
 </div>
 <div id='team'>
 <table>
@@ -59,20 +56,35 @@ echo $this->Form->end(array('id' => 'AddTweet', 'value' => 'AddTweet', 'class' =
 	<? } ?>
 	<?php if ($this->Session->read('Auth.User.Team.id') == 0) {echo '<tr><td>' . $this->Html->link('Part of a marketing team?', '/teams/manage') . '</td></tr>';}?>
 </table>
+<div id="teambuttons">
 <? if ($this->Session->read('Auth.User.Team.id') != 0) {
-	echo '<small>Your team\'s code: <br />' . $this->Session->read('Auth.User.Team.hash') . '</small><br />'; 
-	if ($this->Session->read('Auth.User.group_id') == 1 || $this->Session->read('Auth.User.group_id') == 5) {
-		echo '<small>' . $this->Html->link('Manage Team', '/teams/manageteam') . '</small> <br />';
-		echo '<small>' . $this->Html->link('Manage Tweets', '/twitter/index') . '</small>';
+		echo $this->Html->image('groupadd.png', array('url' => '/teams/invite', 'title' => 'Invite'));
 	}
-	}?>
+	echo $this->Html->image('twitter_add.png', array('url' => '/twitter/connect', 'title' => 'Add Twitter Account'));?>
+</div>
+</div>
+</div>
+
+<h2>Write and Schedule Tweets</h2>
+<hr>
+
+<div id='addTweetWrapper' style="display: none;">
+<?php
+//Add Tweet
+echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter', 'action' => 'testing'), 'id' => 'submitTweet'));
+		//URL Shortener
+		echo $this->Form->button('Shorten all URLs', array('id' => 'shortIt', 'class' => 'urlSubmit', 'type' => 'button'));
+
+		echo $this->Form->textarea('body', array('label' => false, 'type' => 'post', 'class' => 'ttt'));
+echo $this->Form->end(array('id' => 'tweetsubmit', 'value' => 'AddTweet', 'label' => 'ADD TO QUEUE')); // add new form with hidden input fields to tweet now
+?>
 </div>
 
 <!--Table goes here -->
-<table id='table'>
-</table>
-<table id='table1'>
-</table>
+<div id='table'>
+</div>
+<div id='table1'>
+</div>
 <?php
 //Select Twitter Account
 echo $this->Form->create('TwitterAccount');
@@ -84,23 +96,29 @@ echo $this->Form->create('TwitterAccount');
     	)); 
 echo $this->Form->end();?>
 
-<?php echo $this->Html->link('Add Twitter Account', '/twitter/connect');?> <br />
-<?php echo $this->Html->link('Logout', '/users/logout');?>
-
 <!-- SCRIPTS -->
 <script> 
         // wait for the DOM to be loaded 
         $(document).ready(function () { 
-
         	
 			<? if ($this->Session->read('Auth.User.calendar_activated') == 1) {
 				if ($this->Session->read('access_token.account_id') !== null) {?>
+				$('#container').css('opacity', '.4');
+				$('#loading').show();
 				$('#table1').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
 					$('#addTweetWrapper').load("/editorial_calendars/editorialrefresh");
+					$('#addTweetWrapper').show();
+					$('#container').css('opacity', '1');
+					$('#loading').hide();
 				});
 				<?}?>
 			<?} else {?>
+				$('#container').css('opacity', '.4');
+				$('#loading').show();
 				$('#table').load('/twitter/tablerefresh', function() {
+					$('#addTweetWrapper').show();
+					$('#container').css('opacity', '1');
+					$('#loading').hide();
 				});
 			<?}?>
 			
@@ -120,6 +138,10 @@ echo $this->Form->end();?>
 
         	$("#table").on("change", ".TwitterVerified" , function() {
         		$("#table").css('opacity', '.4');
+        		if (this.checked == 'checked') {
+        			id = $(this).attr('id');
+        			$("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
+        		}
         		$('#edit').ajaxSubmit();
         		setTimeout(refresh, 100);//delaying the table refresh so that the form can successfully submit into the databases
         		function refresh() {
@@ -205,7 +227,6 @@ echo $this->Form->end();?>
 
     		jQuery.urlShortener.settings.apiKey = 'AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08';
 			$("#shortIt").click(function () {
-				alert('test');
     			//$("#shortUrlInfo").html("<img src='images/loading.gif'/>");
     			regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
     			var longUrlLink = $("#TweetBody").val().match(regex);
@@ -220,6 +241,11 @@ echo $this->Form->end();?>
         				$("#shortUrlInfo").html(JSON.stringify(err));
         			}
     			});
+			});
+
+			$("#team").hide();
+			$("#teamicon").on('click', function() {
+				$("#team").toggle( "slide", {direction:"right"} );
 			});
         });
 

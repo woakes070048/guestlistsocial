@@ -1,0 +1,141 @@
+
+* {
+	margin:0;
+	padding:0;
+}
+
+@font-face {
+    font-family: nevis;
+    src: url(../files/nevis.ttf);
+}
+
+body {
+	margin: 0;
+	background: #efefef
+}
+
+#content {
+	background-color: #773d8d;
+	height: 60%;
+	margin-top: 10%;
+	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, .75);
+	padding-top: 10px;
+}
+
+#loginlogo {
+	display: block;
+	margin: 0.5% auto;
+}
+
+.title {
+	font-family: nevis;
+	font-style: bold;
+	font-size: 28pt;
+	color: #fff;
+	display: block;
+	margin: 0 auto;
+	width: 465px;
+}
+
+#UserLoginForm,
+#UserForgotpwForm,
+#UserResetpwForm {
+	width: 424px;
+	margin: 0 auto;
+}
+
+input {
+	font-family: nevis;
+	width: 400px;
+	font-size: 12pt;
+	padding: 8px 8px 8px 44px;
+	margin: 7% 12px;
+	text-align: right;
+	border: 2px solid #fff;
+}
+
+#UserEmail {
+	background: #fff url(../img/user_grey23px.png) no-repeat 5px center;
+}
+
+#UserPassword,
+#UserPassword2 {
+	background: #fff url(../img/pass_grey23px.png) no-repeat 5px center;
+}
+
+#buttons,
+#buttons1 {
+	width: 400px;
+	display: block;
+	margin: 7% auto;
+	overflow: auto;
+}
+
+.submit {
+	float: right
+}
+
+.submit input {
+	width: 170px;
+	float: right;
+	padding: 0;
+	margin: 0 0 0 -2px;
+}
+
+#buttons1 .submit {
+	float: none;
+	margin: auto;
+	display: block;
+	width: 170px;
+}
+
+#buttons1 .submit input {
+	width: 170px;
+	padding: 0;
+	margin: auto;
+}
+
+button {
+	float: left;
+	width: 170px;
+	margin: 0 2px 0 0; 
+}
+
+input[type="submit"], button {
+	background-color: #fff;
+	color: #773d8d;
+	height: 50px;
+	font-family: nevis;
+	font-size: 14pt;
+	text-align: center;
+	border: 2px solid #fff;
+	border-radius: 5px;
+	
+}
+
+@media only screen and (max-width: 1400px) {
+	#content {
+		height: 80%;
+		margin-top: 5%;
+	}
+}
+
+#authMessage {
+	display: none;
+}
+
+h1 {
+	font-size: 100%;
+	font-family: nevis;
+	color: #fff;
+	width: 465px;
+	display: block;
+	margin: auto;
+}
+
+h1 a {
+	text-decoration: none;
+	float: right;
+	color: #fff;
+	width: 195px;
+}

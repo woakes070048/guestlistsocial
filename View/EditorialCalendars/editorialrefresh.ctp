@@ -1,19 +1,19 @@
 <?echo $this->Form->create('Calendar', array('url'=>$this->Html->url(array('controller'=>'editorial_calendars', 'action'=>'calendarsave')), 'id' => 'edit'));?>
 <table id="table1">
 <th class="tableheader"></th>
-<th class="tableheader">Monday</th>
-<th class="tableheader">Tueday</th>
-<th class="tableheader">Wednesday</th>
-<th class="tableheader">Thursday</th>
-<th class="tableheader">Friday</th>
-<th class="tableheader">Saturday</th>
-<th class="tableheader">Sunday</th>
+<th class="tableheader monday"><p class='dayheading'>Monday</p></th>
+<th class="tableheader tuesday"><p class='dayheading'>Tueday</p></th>
+<th class="tableheader wednesday"><p class='dayheading'>Wednesday</p></th>
+<th class="tableheader thursday"><p class='dayheading'>Thursday</p></th>
+<th class="tableheader friday"><p class='dayheading'>Friday</p></th>
+<th class="tableheader saturday"><p class='dayheading'>Saturday</p></th>
+<th class="tableheader sunday"><p class='dayheading'>Sunday</p></th>
 
 
 <?
 foreach ($calendar as $key) {?>
     <tr class="topic">
-        <td><b><? echo $key['EditorialCalendar']['time']; ?></b></td>
+        <td><? echo $key['EditorialCalendar']['time']; ?></td>
         <?
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
@@ -24,7 +24,7 @@ foreach ($calendar as $key) {?>
         }?>
     </tr>
     <tr class="content-type">
-        <td><b>Content type</b></td>
+        <td>Content type</td>
         <?
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
@@ -35,7 +35,7 @@ foreach ($calendar as $key) {?>
         }?>
     </tr>
     <tr class="notes">
-        <td><b>Notes</b></td>
+        <td>Notes</td>
         <?
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
@@ -45,52 +45,89 @@ foreach ($calendar as $key) {?>
             }
         }?>
     </tr>
-    <tr>
-    <td>
-    </td>
+    <tr style="height: 40px;">
+    
     </tr>
 <?
 }
 ?>
 </table>
+
 <div id='hide'>
-<? echo $this->Form->button('Hide editoral calendar', array('type' => 'button', 'class' => 'hide')); ?>
-<? echo $this->Form->button('Show editoral calendar', array('type' => 'button', 'class' => 'show')); ?>
+<? echo $this->Form->button('HIDE EDITORIAL CALENDAR', array('type' => 'button', 'class' => 'hide')); ?>
+<? echo $this->Form->button('SHOW EDITORIAL CALENDAR', array('type' => 'button', 'class' => 'show')); ?>
 </div>
 <script>
     $(document).ready(function () {
+
         $('.show').hide();
+
+        <?if ($this->Session->read('Auth.User.show_calendar') === 0) {?>
+            $('table#table1').hide();
+            $('.hide').hide();
+            $('.show').show();
+        <? } ?>
+        
         $('#hide').on('click', '.hide', function() {
             $('#table1').hide();
             $('.hide').hide();
             $('.show').show();
+            $.ajax({
+                url: "/editorial_calendars/hidecalendar"
+            })
         });
         $('#hide').on('click', '.show', function() {
             $('#table1').show();
             $('.show').hide();
             $('.hide').show();
+            $.ajax({
+                url: "/editorial_calendars/showcalendar"
+            })
         });
      });
 </script>
 <style>
 #table1 {
     font-size: 100%;
-}
-#addTweetWrapper {
-    width: 70%;
-    float: left;
+    border-spacing: 3px;
+    color: black;
 }
 .tableheader {
-    background: #c4e6f1;
+    background: #EBEBEB;
+    width: 7%;
 }
-.topic {
-    background: #b4ddb4!important;
+.monday {
+    background: #ABEADF;
+    width: 10%;
 }
-.content-type {
-    background: #ebc582!important;
+.tuesday {
+    background: #F7DFFF;
+    width: 10%;
 }
-.notes {
-    background: #c2afd4!important;
+.wednesday {
+    background: #AEE27E;
+    width: 10%;
+}
+.thursday {
+    background: #EDBF84;
+    width: 10%;
+}
+.friday {
+    background: #FCDAD9;
+    width: 10%;
+}
+.saturday {
+    background: #F5EDA4;
+    width: 10%;
+}
+.sunday {
+    background: #A2EDF3;
+    width: 10%;
+}
+.dayheading {
+    margin: 0 auto;
+    padding: 5px;
+    display: table;
 }
 .input.text {
     font-size: 65%!important;
@@ -98,7 +135,9 @@ foreach ($calendar as $key) {?>
 #TweetBody {
     font-size: 100%;
 }
-.day {
-    background: #6787e1;
+
+td {
+    border: 1px solid #e4e4e4;
+    text-align: center;
 }
 </style>

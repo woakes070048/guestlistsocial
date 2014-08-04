@@ -1,17 +1,17 @@
-<table>
-<tr><td><?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'edit')), 'id' => 'edit'));?>
+
+<?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'edit')), 'id' => 'edit'));?>
 <table id="table">
-	<th>Schedule</th>
-	<th>Written by</th>
-	<th>Tweet</th>
-	<th>Verified</th>
-	<th>Status</th>
-	<th></th>
+	<thead class='mainheader'>
+		<th>Schedule</th>
+		<th>Writer</th>
+		<th>Tweet</th>
+		<th>Status</th>
+	</thead>
 	<?php foreach ($tweets as $key) { ?>
 	<?php if ($key['Tweet']['verified'] == 1) {
 			$checked = 'checked';
 			$value = $key['Tweet']['time'];
-			$color = '#ffb400';
+			$color = 'Green';
 		} elseif ($key['Tweet']['verified'] == 1 && $key['Tweet']['client_verified'] == 1) {
 			$color = 'Green';
 		} else {
@@ -25,7 +25,7 @@
 				$disabled = '';
 			}?>
 	<tr>
-	  <td class= 'time' id='time<?php echo $key['Tweet']['id']?>'> 
+	  <td class= 'time scheduled' id='time<?php echo $key['Tweet']['id']?>'> 
 	  	<div class='notediting'><?php if($key['Tweet']['time'] && $key['Tweet']['published'] == 1) {
 	  		echo $key['Tweet']['time'] . '<small>[Published]</small>';
 	  		} elseif ($key['Tweet']['time']) {
@@ -49,10 +49,10 @@
 	  				echo "<span style='color: red'>*Tweet will not be sent until verified</span>";
 	  			}?>
 	  </td>
-	  <td>
+	  <td class='writtenBy'>
 	  	<?php echo $key['Tweet']['first_name']; ?>
 	  </td>
-	  <td class='tweetbody' id=<?php echo $key['Tweet']['id']?>>
+	  <td class='tweetbody nopadding' id=<?php echo $key['Tweet']['id']?>>
 	  	<div class='notediting'><?php echo $key['Tweet']['body']; ?></div>
 	  	<?php echo $this->Form->textarea('body', array(
 	  		'class' => 'editing', 
@@ -60,32 +60,37 @@
 	  		'name' => 'data[Tweet]['.$key['Tweet']['id'].'][body]', 
 	  		'label' => false, 
 	  		'style' => 'display: none',
-			'maxlength' => '140')); ?> 
+			'maxlength' => '140')); ?>
+            
+            <div class="tweetButtons">
+            <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
+            <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
+            </div> 
 	  </td>
-	  <td>
+	  <td class='verified'>
 	  	<?php echo $this->Form->input('verified', array(
-	  	'type' => 'checkbox', 
-	  	'value' => 1, 
-	  	'label' => false, 
+	  	'type' => 'radio', 
+	  	'options' => array(
+	  			1 => 'APPROVED', 
+	  			0 => 'AWAITING APPROVAL', 
+	  			2 => 'IMPROVE'
+	  			), 
+	  	'legend' => false, 
 	  	'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified]', 
-	  	$checked, 
-	  	$disabled,
-	  	'class' => 'TwitterVerified',
-	  	'id' => $key['Tweet']['id']));?>
-	  </td>
-	  <td class="color" id=<?php echo $key['Tweet']['id']?>>
-		  <div class='color verified' style='color: <?echo $color;?>'><?php if ($key['Tweet']['client_verified'] == 0 && $key['Tweet']['verified'] == 0) { ?>
-		  Red <?php } elseif ($key['Tweet']['client_verified'] == 0 && $key['Tweet']['verified'] == 1) {?>
-		  Amber <?php } elseif ($key['Tweet']['client_verified'] == 1 && $key['Tweet']['verified'] == 1) {?>
-		  Green <?php } ?></div>
-	  </td>
-	  <td>
-	  	<?php echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
+	  	'class' => 'TwitterVerified', 
+	  	'id' => $key['Tweet']['id'], 
+	  	'default' => $key['Tweet']['verified'], 
+	  	$disabled));?> 
+
+	  	<? if ($key['Tweet']['verified'] == 1) {?>
+	  	<i><small>-<? echo $key['Tweet']['verified_by'];?></small></i>
+	  	<?}?>
 	  </td>
 	  <?php echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['Tweet']['id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][id]'));
 	  		echo $this->Form->input('verfied_by', array(
 	  		'type' => 'hidden', 
-	  		'value' => '', 
+	  		'value' => $this->Session->read('Auth.User.first_name'), 
 	  		'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified_by]', 
 	  		'class' => 'verifiedby', 
 	  		'id' => $key['Tweet']['id'] . '_' . $this->Session->read('Auth.User.first_name')));?>
@@ -93,10 +98,10 @@
 	<?php } ?>
 </table>
 
-<?php echo $this->Form->end('Go'); ?></td></tr>
-</table>
+<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
 
 <script>
+            $(".verifiedby").prop('disabled', true);
 //Hiding and showing tweet body input on click
 			$("#table").on("click", ".tweetbody", function() {
 				id = $(this).attr('id');
@@ -143,4 +148,30 @@
     				altFormat: '@',
 				});
     		});
+
+    		warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
+            $(".editing").on('change', function () {
+                window.onbeforeunload = function () {
+                    if (warnMessage != null) return warnMessage;
+                }
+            });
+
+            $('input:submit').on('click', function() {
+                warnMessage = null;
+            });
+
+            $(".shortsingle").click(function () {
+                regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
+                textbox = $(this).closest('.nopadding').children('.editing');
+                var longUrlLink = textbox.val().match(regex);
+                    jQuery.urlShortener({
+                        longUrl: longUrlLink,
+                        success: function (shortUrl) {
+                            textbox.val(textbox.val().replace(longUrlLink, shortUrl));
+                        },
+                        error: function(err) {
+                            $("#shortUrlInfo").html(JSON.stringify(err));
+                        }
+                    });
+            });
 </script>

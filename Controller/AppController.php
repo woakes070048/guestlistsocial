@@ -49,7 +49,7 @@ class AppController extends Controller {
 
 
     public function beforeFilter() {
-        $this->Auth->allow('login', 'register', 'logout');
+        $this->Auth->allow('login', 'register', 'logout', 'forgotpw', 'resetpw');
     }
 
     

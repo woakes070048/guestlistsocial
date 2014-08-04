@@ -5,7 +5,6 @@ class TeamsController extends AppController {
     
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow();
     }
 
 
@@ -86,6 +85,9 @@ class TeamsController extends AppController {
 		}
 
 		$this->set('users', $users);
+
+        $teamMembers = $this->User->find('all', array('fields' => array('first_name', 'group_id', 'id'), 'conditions' => array('team_id' => $this->Session->read('Auth.User.Team.id'))));
+        $this->set('teamMembers', $teamMembers);
 	}
 
 	public function permissionSave() {
@@ -121,7 +123,7 @@ class TeamsController extends AppController {
 		$this->redirect('/teams/manageteam');
 	}
 
-	private function addtoTeam($teamHash) {
+	public function addtoTeam($teamHash) {
 		$team = $this->Team->find('all', array('fields' => array('id', 'name', 'hash'), 'conditions' => array('hash' => $teamHash)));
 		$this->User->id = $this->Session->read('Auth.User.id');
 		$this->User->saveField('team_id', $team[0]['Team']['id']);
@@ -129,5 +131,80 @@ class TeamsController extends AppController {
 		$this->Session->write('Auth.User.Team.name', $team[0]['Team']['name']);
 		$this->Session->write('Auth.User.Team.hash', $team[0]['Team']['hash']);
 		$this->Session->setFlash('You have been added to team ' . $this->Session->read('Auth.User.Team.name') . '. You will not have access to any of your team\'s twitter accounts until the team admin gives you permissions');
+		$this->redirect('/');
+	}
+
+	public function removeFromTeam($id) {
+		$team_id = $this->User->find('first', array('fields' => 'team_id', 'conditions' => array('User.id' => $id)));
+		if ($team_id['User']['team_id'] == $this->Session->read('Auth.User.Team.id')) {
+			$this->User->id = $id;
+			$this->User->saveField('team_id', 0);
+			$this->User->saveField('group_id', 2);
+		}
+
+		$this->redirect('/teams/manageteam');
+	}
+
+	public function makeadmin($id) {
+		$team_id = $this->User->find('first', array('fields' => 'team_id', 'conditions' => array('User.id' => $id)));
+		if ($team_id['User']['team_id'] == $this->Session->read('Auth.User.Team.id')) {
+			$this->User->id = $id;
+			$this->User->saveField('group_id', 1);
+		}
+
+		$this->redirect('/teams/manageteam');
+	}
+
+	public function makeproofer($id) {
+		$team_id = $this->User->find('first', array('fields' => 'team_id', 'conditions' => array('User.id' => $id)));
+		if ($team_id['User']['team_id'] == $this->Session->read('Auth.User.Team.id')) {
+			$this->User->id = $id;
+			$this->User->saveField('group_id', 7);
+		}
+
+		$this->redirect('/teams/manageteam');
+	}
+
+	public function removeadmin($id) {
+		$team_id = $this->User->find('first', array('fields' => 'team_id', 'conditions' => array('User.id' => $id)));
+		if ($team_id['User']['team_id'] == $this->Session->read('Auth.User.Team.id')) {
+			$this->User->id = $id;
+			$this->User->saveField('group_id', 2);
+		}
+
+		$this->redirect('/teams/manageteam');
+	}
+
+	public function invite() { //Add validation to addtoTeam to check if invite exists in table
+		if ($this->request->data) {
+			$data = $this->request->data;
+			$user = $data['invite']['email'];
+
+			$count = $this->User->find('count', array('conditions' => array('email' => $user)));
+			$teamname = $this->Session->read('Auth.User.Team.name');
+			$first_name = $this->Session->read('Auth.User.first_name');
+			$last_name = $this->Session->read('Auth.User.last_name');
+			$hash = $this->Session->read('Auth.User.Team.hash');
+
+			$Email = new CakeEmail();
+            $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
+            $Email->to($user);
+
+			if ($count == 0) {
+            	$Email->subject('You have been invited to join Guestlist Social');
+				$msg = "You have been invited to join Guestlist Social by $first_name $last_name. $first_name has also invited you to join their team! Click the link below to register and be automatically added to their team.
+
+				" . Router::url(array('controller' => 'users', 'action' => 'register', 'h' => $hash), true);
+            $Email->send($msg);
+            $this->Session->setFlash(__('Invite Sent.'));
+			} elseif ($count == 1) {
+            	$Email->subject('You have been invited to join a team at Guestlist Social');
+				$msg = "You have been invited to join the team $teamname by $first_name $last_name. Click the link below to join their team!
+
+				" . Router::url(array('action' => 'addtoTeam/' . $hash), true);
+				$Email->send($msg);
+            $this->Session->setFlash(__('Invite Sent.'));
+			}
+		}
 	}
 }

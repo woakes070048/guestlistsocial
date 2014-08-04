@@ -1,7 +1,7 @@
 <?php
 class EditorialCalendarsController extends AppController {
     public $components = array('Session', 'Auth');
-    public $helpers =  array('Html' , 'Form');
+    public $helpers =  array('Html' , 'Form', 'Session');
     var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar');
 
     public function calendarsave() {
@@ -10,7 +10,23 @@ class EditorialCalendarsController extends AppController {
             foreach ($data['EditorialCalendar'] as $key) {
                 $id = $key['id'];
                 $this->EditorialCalendar->id = $id;
-                $this->EditorialCalendar->save($key);    
+                $this->EditorialCalendar->save($key);
+
+                $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $id, 'timestamp >' => time())));
+                if ($tweets) {
+                    foreach ($tweets as $key1) {
+                        $id = $key1['Tweet']['id'];
+                        $this->Tweet->id = $id;
+
+                        $newtime = date('d-m-Y', $key1['Tweet']['timestamp']) . " " . $key['time'];
+                        $newtime = date('d-m-Y H:i', strtotime($newtime)); //this line corrects formatting issues with $key['time']
+
+                        $newtimestamp = strtotime($newtime);
+
+                        $this->Tweet->saveField('time', $newtime);
+                        $this->Tweet->saveField('timestamp', $newtimestamp);
+                    }
+                }
             }
         }
         $this->redirect(Controller::referer());
@@ -22,6 +38,7 @@ class EditorialCalendarsController extends AppController {
             $id = $key['id'];
             $this->Tweet->id = $id;
             $this->CronTweet->id = $id;
+            $tweet = $this->Tweet->find('first', array('conditions' => array('id' => $id)));
             } else {
                 $key['first_name'] = $this->Session->read('Auth.User.first_name');
             }
@@ -33,10 +50,23 @@ class EditorialCalendarsController extends AppController {
             $key['timestamp'] = 0;
             }
 
+            if (isset($key['verified_by'])) {
+                if ($key['verified'] == 2) {
+                    $key['verified'] == 0;
+                }
+            }
+
+            if ($tweet['Tweet']['verified'] == 2 && $key['verified'] == 2) {
+                if ($tweet['Tweet']['body'] != $key['body']) {
+                    $key['verified'] = 0;
+                }
+            }
+
             //$key['first_name'] = $this->Session->read('Auth.User.first_name');
 
             $key['user_id'] = $this->Session->read('Auth.User.id');
             $key['account_id'] = $this->Session->read('access_token.account_id');
+            
             if ($key['body']) {
                 if ($this->Tweet->save($key)) {
                     if ($key['verified'] == 1) {
@@ -81,6 +111,14 @@ class EditorialCalendarsController extends AppController {
         $calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
         $this->set('calendar', $calendar);
         $this->layout = '';
+    }
+
+    public function hideCalendar() {
+        $this->Session->write('Auth.User.show_calendar', 0);
+    }
+
+    public function showCalendar() {
+        $this->Session->write('Auth.User.show_calendar', 1);
     }
 }
 ?>
