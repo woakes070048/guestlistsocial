@@ -46,10 +46,13 @@ class User extends AppModel {
             'conditions' => '',
             'fields' => '',
             'order' => ''
-        ),
+        )
+    );
+
+    public $hasAndBelongsToMany = array(
         'Team' => array(
             'className' => 'Team',
-            'foreignKey' => 'team_id',
+            'foreignKey' => 'user_id',
             'conditions' => '',
             'fields' => '',
             'order' => ''

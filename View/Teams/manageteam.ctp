@@ -1,20 +1,20 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 
-<div id='team'>
+<!--<div id='team'>
 <table>
 <th>My Team</th>
 	<? foreach ($teamMembers as $key) { ?>
 	<tr>
 		<td>
-			<? if ($key['User']['group_id'] == 1 || $key['User']['group_id'] == 5) {
-				$admin = $this->Html->image('user_purple.png', array('url' => array('action' => 'removeadmin', $key['User']['id']), 'style' => 'float:right; margin-left: 5px', 'title' => 'Remove as admin'));
-			} elseif ($key['User']['group_id'] == 7) {
-				$admin = $this->Html->image('user_light_purple.png', array('url' => array('action' => 'makeadmin', $key['User']['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make admin'));
+			<? if ($key['group_id'] == 1 || $key['group_id'] == 5) {
+				$admin = $this->Html->image('user_purple.png', array('url' => array('action' => 'removeadmin', $key['id']), 'style' => 'float:right; margin-left: 5px', 'title' => 'Remove as admin'));
+			} elseif ($key['group_id'] == 7) {
+				$admin = $this->Html->image('user_light_purple.png', array('url' => array('action' => 'makeadmin', $key['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make admin'));
 			} else {
-				$admin = $this->Html->image('user_grey.png', array('url' => array('action' => 'makeproofer', $key['User']['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make proofer'));
+				$admin = $this->Html->image('user_grey.png', array('url' => array('action' => 'makeproofer', $key['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make proofer'));
 			}
-			$x = $this->Html->image('false.png', array('url' => array('action' => 'removeFromTeam', $key['User']['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");'));
-			echo $key['User']['first_name'] . $x . $admin . '<br />';?>
+			$x = $this->Html->image('false1.png', array('url' => array('action' => 'removeFromTeam', $key['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");'));
+			echo $key['first_name'] . $x . $admin . '<br />';?>
 		</td>
 	</tr>
 	<? } ?>
@@ -27,21 +27,23 @@
 		echo '<small>' . $this->Html->link('Manage Tweets', '/twitter/index') . '</small>';
 	}
 	}?>
-</div>
+</div>-->
 
+<div id='leftpanel'>
+<h2>MANAGE YOUR TEAMS</h2>
 <?
 echo $this->Form->create('filterAccount');
 echo $this->Form->input('account', array(
-	'label' => 'Select by Twitter Account:',
+	'label' => false,
 	'onchange' => 'this.form.submit()',
-	'options' => array('empty' => 'Select Account...', array_combine($dropdownaccounts,$dropdownaccounts))));
+	'options' => array('empty' => 'Select by Twitter Account', array_combine($dropdownaccounts,$dropdownaccounts))));
 echo $this->Form->end();
 
-echo $this->Form->create('filterUser');
-echo $this->Form->input('user', array(
-	'label' => 'Select by User:',
+echo $this->Form->create('filterTeam');
+echo $this->Form->input('team', array(
+	'label' => false,
 	'onchange' => 'this.form.submit()',
-	'options' => array('empty' => 'Select User...', $dropdownusers)));
+	'options' => array('empty' => 'Select by Team', $dropdownteams)));
 echo $this->Form->end();
 ?>
 
@@ -51,13 +53,12 @@ echo $this->Form->end();
 </div>
 
 <?if (isset($accountTable)) { //If they are filtering by account show this table?>
-<table>
-<th></th><?
-	echo '<th>' . $currentAccount .'</th>';
+<h1 id='manageteamtext'> <? echo strtoupper($currentAccount); ?> </h1>
+<table class='permissionstable'>
 
-foreach ($users as $key) {?>
+<? foreach ($users as $key) {?>
 	<tr>
-		<td> <? echo $key['name']; ?> </td>
+		
 	<? 
 		if (in_array($twitter_account_id, $key['permissions'])) {
 			$checked = 'checked';
@@ -68,22 +69,22 @@ foreach ($users as $key) {?>
 			//$value = 0;
 		}
 
-		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => '', 'name' => 'data[Teams]['.$key['user_id'].'][permissions]['.$value.']', 'value' => $key['user_id'])) . '</td>';
-		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $this->Session->read('Auth.User.Team.id'), 'name' => 'data[Teams]['.$key['user_id'].'][team_id]'));
-		echo $this->Form->input('user_id', array('type' => 'hidden', 'value' => $key['user_id'], 'name' => 'data[Teams]['.$key['user_id'].'][user_id]'));
+		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => $key['name'], 'name' => 'data[Teams]['.$key['team_id'].'][permissions]['.$value.']', 'value' => $key['team_id'])) . '</td>';
+		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key['team_id'], 'name' => 'data[Teams]['.$key['team_id'].'][team_id]'));?>
+	</tr><?
 	
 }
 ?>
 </table>
-<?} elseif (isset($userTable)) {//If they are filtering by account show this table?>
-<table>
-<th></th><?
-	echo '<th>' . $currentUser .'</th>';
 
-foreach ($accounts as $key) {?>
+<?} elseif (isset($teamTable)) {?>
+<h1 id='manageteamtext'> ACCOUNTS </h1> <h5 id='manageteamtext1'>| USERS</h5>
+<table class='permissionstable' id='permissionstable'>
+
+<? foreach ($accounts as $key) {?>
 	<tr>
-		<td> <? echo $key['TwitterAccount']['screen_name']; ?> </td>
-	<? 
+		
+	<?
 		if (in_array($key['TwitterAccount']['account_id'], $users['permissions'])) {
 			$checked = 'checked';
 			$value = $key['TwitterAccount']['account_id'];
@@ -93,17 +94,88 @@ foreach ($accounts as $key) {?>
 			//$value = 0;
 		}
 
-		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => '', 'name' => 'data[Teams]['.$users['user_id'].'][permissions]['.$value.']', 'value' => $users['user_id'])) . '</td>';
-		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $this->Session->read('Auth.User.Team.id'), 'name' => 'data[Teams]['.$users['user_id'].'][team_id]'));
-		echo $this->Form->input('user_id', array('type' => 'hidden', 'value' => $users['user_id'], 'name' => 'data[Teams]['.$users['user_id'].'][user_id]'));
+		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => $key['TwitterAccount']['screen_name'], 'name' => 'data[Teams]['.$value.'][permissions]['.$value.']', 'value' => $users['team_id'])) . '</td>';
+		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $users['team_id'], 'name' => 'data[Teams]['.$value.'][team_id]'));?>
+	</tr><?
 	
+}?>
+</table>
+<table class='permissionstable' id='teamMembers'>
+<? foreach ($teamMembers as $key) { ?>
+	<tr>
+		<td>
+		<? if ($key['TeamsUser']['group_id'] == 1 || $key['TeamsUser']['group_id'] == 5) {
+				$admin = $this->Html->image('user_purple.png', array('url' => array('action' => 'removeadmin', $key['id'], $currentTeamId), 'style' => 'float:right; margin-left: 5px', 'title' => 'Remove as admin'));
+			} elseif ($key['TeamsUser']['group_id'] == 7) {
+				$admin = $this->Html->image('user_light_purple.png', array('url' => array('action' => 'makeadmin', $key['id'], $currentTeamId), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make admin'));
+			} else {
+				$admin = $this->Html->image('user_grey.png', array('url' => array('action' => 'makeproofer', $key['id'], $currentTeamId), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make proofer'));
+			}
+			$x = $this->Html->image('false1.png', array('url' => array('action' => 'removeFromTeam', $key['id'], $currentTeamId), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");'));
+			echo $key['first_name'] . $x . $admin . '<br />';?>
+		</td>
+	</tr>
+<?}?>
+</table>
+<?
 }
 ?>
-</table>
-	<?}?>
 <? echo $this->Form->end('Submit changes'); ?>
+</div>
+<hr style='width: 1px; height: 200px; float: left; margin: 0; background-color: #dcdcdc'>
+
+<div id='rightpanel'>
+<div id='teamspanel'>
+	<table id='teamcomparison'>
+		<tr>
+			<td>
+				<h2 style='margin: 0'>TEAM COMPARISON</h2>
+			</td>
+			<td>
+				Team 1
+				<br>
+				<strong style='color: green'>40%</strong>
+			</td>
+			<td>
+				Team 2
+				<br>
+				<strong style='color: red'>40%</strong>
+			</td>
+			<td>
+				Team 3
+				<br>
+				<strong style='color: blue'>40%</strong>
+			</td>
+			<td>
+				<? echo $this->Html->link('Add more teams', array('action' => 'manage')); ?>
+			</td>
+		</tr>
+	</table>
+</div>
+</div>
+
+
 <script>
 $(document).ready(function () { 
+	$('#teamMembers').hide();
+	$('#leftpanel').on('click', '#manageteamtext1', function() {
+		$('#teamMembers').toggle();
+		$('#permissionstable').toggle();
+		$('#manageteamtext').replaceWith('<h5 id="manageteamtext2" style="float:left">' + 'ACCOUNTS' + '</h5>');
+
+		$('#manageteamtext1').replaceWith('<h1 id="manageteamtext">' + '| USERS' + '</h1>');
+	});
+
+	$('#leftpanel').on('click', '#manageteamtext2', function() {
+		$('#teamMembers').toggle();
+		$('#permissionstable').toggle();
+		$('#manageteamtext').replaceWith('<h5 id="manageteamtext1">' + '| USERS' + '</h5>');
+
+		$('#manageteamtext2').replaceWith('<h1 id="manageteamtext">' + 'ACCOUNTS' + '</h1>');
+	});
+
+
+	
 	$('#selectall').on('change', '.selectAll', function(e) {
 	  if(this.checked) {
 	      // Iterate each checkbox

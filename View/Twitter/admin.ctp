@@ -40,28 +40,31 @@ echo $this->Html->image('twitter_add.png', array('url' => '/twitter/connect', 't
 <? echo $this->Html->image('group.png'); ?>
 </div>
 <div id='team'>
+<? foreach ($teamMembers as $key) { ?>
 <table>
-<th>My Team</th>
-	<? foreach ($teamMembers as $key) { ?>
+<th><? echo $key[0]['teamName']; ?></th>
+	<? foreach ($key as $key1) { ?>
 	<tr>
 		<td>
-			<? if ($key['User']['group_id'] == 1 || $key['User']['group_id'] == 5) {
+			<? if ($key1['group_id'] == 1 || $key1['group_id'] == 5) {
 				$admin = '<i> - admin </i>';
 			} else {
 				$admin = '';
 			}
-			echo $key['User']['first_name'] . $admin;?>
+			echo $key1['first_name'] . $admin;?>
 		</td>
 	</tr>
 	<? } ?>
-	<?php if ($this->Session->read('Auth.User.Team.id') == 0) {echo '<tr><td>' . $this->Html->link('Part of a marketing team?', '/teams/manage') . '</td></tr>';}?>
+	<?php if ($this->Session->read('Auth.User.Team.0.id') == 0) {echo '<tr><td>' . $this->Html->link('Part of a marketing team?', '/teams/manage') . '</td></tr>';}?>
 </table>
 <div id="teambuttons">
-<? if ($this->Session->read('Auth.User.Team.id') != 0) {
+<? if ($this->Session->read('Auth.User.Team.0.id') != 0) {
 		echo $this->Html->image('groupadd.png', array('url' => '/teams/invite', 'title' => 'Invite'));
 	}
 	echo $this->Html->image('twitter_add.png', array('url' => '/twitter/connect', 'title' => 'Add Twitter Account'));?>
+
 </div>
+	<?}?>
 </div>
 </div>
 

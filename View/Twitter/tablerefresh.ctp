@@ -64,6 +64,10 @@
             
             <div class="tweetButtons">
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <? if ($img) {
+                    echo $this->Html->image($img);
+                }?>
+            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
             <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
             </div> 

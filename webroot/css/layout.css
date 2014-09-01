@@ -64,7 +64,7 @@ h2 {
 	font-size: 150%;
 	font-weight: bold;
 	margin-bottom: 10px;
-	margin-top: 50px
+	margin-top: 50px;
 }
 h3 {
 	color: #2c6877;
@@ -74,6 +74,15 @@ h3 {
 h4 {
 	color: #993;
 	font-weight: normal;
+}
+h5 {
+	color: #999;
+	font-family: Helvetica;
+	font-weight: normal;
+	font-size: 110%;
+	margin: 5px 0;
+	cursor: pointer;
+	float: left
 }
 ul, li {
 	margin: 0 15px;
@@ -1171,8 +1180,13 @@ td {
 	margin: 10px 40px 10px 10px;
 }
 
-#filterUserUser {
+#filterTeamTeam, #filterUserUser {
 	margin: 10px 10px 10px 10px;
+}
+
+#leftpanel {
+	width: 20%;
+	float: left;
 }
 
 .selectimage {
@@ -1190,4 +1204,86 @@ table#table {
 
 .shortsingle {
 	float: left;
+}
+
+input[type=file] {
+	opacity: 0;
+	padding-left: 100px;
+}
+
+.input.file {
+	background: url(../img/upload_image.png) left center no-repeat;
+	margin: 2px;
+	clear: none;
+	float: left;
+	width: 140px;
+}
+
+.input.file:hover {
+	background: url(../img/upload_image_hover.png) left center no-repeat;
+}
+
+.permissionstable {
+	width: 200px;
+}
+.permissionstable tr td {
+	background-color: #fff;
+	border: none;
+	text-align: left;
+}
+
+.permissionstable tr td div.input.checkbox {
+	margin: 0;
+}
+
+#TeamsTwitterPermissions {
+	opacity: 0;
+	float: right;
+	margin: 3px 11px 7px 2px;
+}
+
+#TeamsTwitterPermissions + label {
+	background: url(../img/false1.png) right center no-repeat;
+	padding: 0 76px 0 0;
+	width: 100px;
+	display: block!important;
+	height: 22px;
+}
+
+#TeamsTwitterPermissions:checked + label {
+	background: url(../img/true.png) right center no-repeat;
+}
+
+#manageteamtext {
+	font-size: 130%;
+	margin: 5px;
+	float: left
+}
+
+#rightpanel {
+	width: 79%;
+	float: right
+}
+
+#teamspanel {
+	border: 1px solid #dcdcdc;
+	float: left;
+}
+
+#teamcomparison {
+	width: auto;
+	margin: 10px 0;
+}
+
+#teamcomparison td {
+	border: none;
+	border-right: 1px solid #dcdcdc;
+}
+
+#teamcomparison td:last-child {
+	border: none;
+}
+
+#teamMembers td {
+	font-size: 110%;
 }

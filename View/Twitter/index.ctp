@@ -54,7 +54,7 @@ echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('cl
 <hr>
 
 <table id="table">
-<tr><td style="border: none"><?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit'));?>
+<tr><td style="border: none"><?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
 <table id="refresh">
 <thead class="mainheader">
     <th class='sort'><? echo $this->Paginator->sort('timestamp', 'Scheduled');?></th>
@@ -118,6 +118,10 @@ echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('cl
             
             <div class="tweetButtons">
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <? if ($key['Tweet']['img_url']) {
+                    echo $this->Html->image($key['Tweet']['img_url']);
+                }?>
+            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
             <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
             </div>

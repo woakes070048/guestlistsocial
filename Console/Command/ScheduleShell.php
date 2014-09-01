@@ -25,7 +25,11 @@ class ScheduleShell extends AppShell {
                 $client = $this->createClient();
 
                 if ($oauth_token&&$oauth_token_secret) {
-                    $client->post($oauth_token, $oauth_token_secret, 'https://api.twitter.com/1.1/statuses/update.json', array('status' => $toTweet[$i]['CronTweet']['body']));
+                    if ($toTweet[$i]['CronTweet']['img_url']) {
+                        $client->postMultipartFormData($oauth_token, $oauth_token_secret, 'https://api.twitter.com/1.1/statuses/update_with_media.json', array('media[]' => $toTweet[$i]['CronTweet']['img_url']), array('status' => $toTweet[$i]['CronTweet']['body']));
+                    } else {
+                        $client->post($oauth_token, $oauth_token_secret, 'https://api.twitter.com/1.1/statuses/update.json', array('status' => $toTweet[$i]['CronTweet']['body']));
+                    }
                     $this->Tweet->id = $toTweet[$i]['CronTweet']['id'];
                     $this->Tweet->saveField('published', 1);
                     $this->out('Complete');

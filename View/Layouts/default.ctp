@@ -40,7 +40,7 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 </head>
 
 <div id="loading" style="display: none;">
-<? echo $this->Html->image('ajax-loader.gif'); ?>
+<? echo $this->Html->image('ajax-loader.GIF'); ?>
 </div>
 
 <body>

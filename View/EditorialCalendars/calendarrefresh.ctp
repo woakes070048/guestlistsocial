@@ -38,7 +38,7 @@ echo $this->Form->end();
 
 ?>
 <? echo $this->Form->button('Shorten all URLs', array('id' => 'shortIt1', 'class' => 'urlSubmit1', 'type' => 'button'));
-echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet', 'id' => 'submitTweets'));
+echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet', 'id' => 'submitTweets', 'type' => 'file'));
 ?>
 
 <?php if (!empty($calendar)) { ?>
@@ -71,6 +71,7 @@ foreach ($calendar as $key1) {
             $value2 = $key2['body'];
             $value1 = $testid;
             $id = $key2['id'];
+            $img = $key2['img_url'];
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'editing'));
             $firstName = $key2['first_name'];
             $verified = $key2['verified'];
@@ -80,6 +81,7 @@ foreach ($calendar as $key1) {
             $value2 = '';
             $value1 = $testid;
             $id = '';
+            $img = '';
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'editing')); 
             $firstName = '';
             $verified = 3;
@@ -91,6 +93,7 @@ foreach ($calendar as $key1) {
         $value2 = '';
         $value1 = $testid;
         $id = '';
+        $img = '';
         $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'editing')); 
         $firstName = '';
         $verified = 3;
@@ -111,8 +114,10 @@ foreach ($calendar as $key1) {
         <div class="tweetButtons">
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
-            <? //echo $this->Form->input('Tweet.img_url', array('type' => 'file')); ?>
-            <? //add a button, onclick show dialog with input, upload?>
+            <? if ($img) {
+                    echo $this->Html->image($img);
+                }?>
+            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
         </div>
     </td>
     <td class="verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
@@ -130,6 +135,7 @@ foreach ($calendar as $key1) {
     'name' => 'data[Tweet]['.$value1.'][verified_by]', 
     'class' => 'verifiedby', 
     'id' => $id . '_' . $this->Session->read('Auth.User.first_name')));
+    echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => $img, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
     echo '</tr>';
 }
 }

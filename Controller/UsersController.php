@@ -2,7 +2,7 @@
 class UsersController extends AppController {
     public $helpers = array('Html','Form');
     public $components = array('Tickets');
-    var $uses = array('Team', 'User', 'Ticket');
+    var $uses = array('Team', 'User', 'Ticket', 'TeamsUser');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -21,12 +21,25 @@ class UsersController extends AppController {
                     $id = $this->User->getLastInsertId();
                         if (isset($this->passedArgs['h'])) {//adding to team if invited
                             $teamhash = $this->passedArgs['h'];
-                            $team = $this->Team->find('all', array('fields' => array('id', 'name', 'hash'), 'conditions' => array('hash' => $teamhash)));
-                            $this->User->id = $id;
-                            $this->User->saveField('team_id', $team[0]['Team']['id']);
-                            $calendar_activated = $this->User->find('first', array('fields' => 'calendar_activated', 'conditions' => array('team_id' => $this->Session->read('Auth.User.Team.id'), 'group_id' => 1)));
-                            $this->User->saveField('calendar_activated', $calendar_activated['User']['calendar_activated']);
+                            $team = $this->Team->find('first', array('fields' => array('id', 'name', 'hash'), 'conditions' => array('id' => $this->Tickets->get($teamhash))));
+                            if (isset($this->passedArgs['g'])) {
+                                $group = $this->passedArgs['g'];
+                            } else {
+                                $group = 2;
+                            }
+                            $save = array(
+                                    'TeamsUser' => array (
+                                        'user_id' => $id,
+                                        'team_id' => $this->Tickets->get($teamHash),
+                                        'group_id' => $this->Tickets->get($group)
+                                    )
+                                );
+                            $this->TeamsUser->save($save);
+                            $calendar_activated = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->Tickets->get($group))));
+                            $calendar_activated = $this->User->saveField('calendar_activated', $calendar_activated[0]['User'][0]['calendar_activated']);
                             $this->Session->setFlash('You have successfully been registered and added to team ' . $team[0]['Team']['name'] . '. Please log in. Note: You will not have access to any of your team\'s twitter accounts until the team admin gives you permissions');
+                            $this->Tickets->del($teamHash);
+                            $this->Tickets->del($group);
                             $this->redirect(array('controller' => 'users', 'action' => 'login'));
                         }
                     $msg = "Please click on the link below to activate you account with Guestlist Social:
@@ -81,6 +94,8 @@ class UsersController extends AppController {
         	if ($this->Auth->login()) {
         	 $this->User->id = $this->Session->read('Auth.User.id');
 	         $this->User->saveField('session_id', $this->Session->id());
+             $user = $this->User->find('all', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
+             $this->Session->write('Auth.User.Team', $user[0]['Team']);
            	 $this->redirect($this->Session->read('Auth.redirect'));
       	  } else {
            	 $this->Session->setFlash(__('Invalid username or password, try again'));

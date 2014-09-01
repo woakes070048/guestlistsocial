@@ -56,16 +56,32 @@ class EditorialCalendarsController extends AppController {
                 }
             }
 
-            if ($tweet['Tweet']['verified'] == 2 && $key['verified'] == 2) {
-                if ($tweet['Tweet']['body'] != $key['body']) {
-                    $key['verified'] = 0;
+            //if tweet is set to 'needs improving' and body has been changed, set back to 'awaiting proof'
+            if (isset($tweet)) {
+                if ($tweet['Tweet']['verified'] == 2 && $key['verified'] == 2) {
+                    if ($tweet['Tweet']['body'] != $key['body']) {
+                        $key['verified'] = 0;
+                    }
                 }
             }
 
-            //$key['first_name'] = $this->Session->read('Auth.User.first_name');
+            $key['first_name'] = $this->Session->read('Auth.User.first_name');
 
             $key['user_id'] = $this->Session->read('Auth.User.id');
             $key['account_id'] = $this->Session->read('access_token.account_id');
+
+            //Handling images
+            if ($key['img_url1']['error'] == 0) {
+                $z = explode(".", $key['img_url1']['name']);
+                $extension = end($z);
+                $allowed_extensions = array("gif", "jpeg", "jpg", "png");
+
+                if (in_array($extension, $allowed_extensions)) {
+                    $newFileName = $this->Session->read('Auth.User.id') . md5(time()) . "." . $extension;
+                    move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
+                    $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
+                }            
+            }
             
             if ($key['body']) {
                 if ($this->Tweet->save($key)) {
@@ -78,6 +94,7 @@ class EditorialCalendarsController extends AppController {
                 }
             } elseif ($key['id'] && !$key['body']) {
                 $this->Tweet->delete($id);
+                $this->CronTweet->delete($id);
             }
         }
 
