@@ -61,4 +61,35 @@ class AppController extends Controller {
         return false;
     
     }
+
+    public function refreshGroup($user_id) {
+        $user = $this->User->find('all', array('conditions' => array('User.id' => $user_id)));
+
+        foreach ($user[0]['Team'] as $key) {
+            $groups[] = $key['TeamsUser']['group_id'];
+        }
+
+        $this->User->id = $user[0]['User']['id'];
+
+        if (in_array(1, $groups)) {
+            if ($this->User->saveField('group_id', 1)) {
+                return true;
+            }
+        } elseif (in_array(7, $groups)) {
+            if ($this->User->saveField('group_id', 7)) {
+                return true;
+            }
+        } elseif (in_array(2, $groups)) {
+            if ($this->User->saveField('group_id', 2)) {
+                return true;
+            }
+        } elseif (in_array(0, $groups)) {
+            if ($this->User->saveField('group_id', 2)) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
 }

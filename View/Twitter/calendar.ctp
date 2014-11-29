@@ -26,9 +26,6 @@ if (isset($info[0]['TwitterAccount']['infolink'])) {
 echo $this->Html->link('Info', $info[0]['TwitterAccount']['infolink'], array('target' => '_blank'));
 } ?>
 
-<?
-echo $this->Html->link('Edit Info', '/twitter/info');
-?>
 <br/>
 <br/>
 
@@ -48,13 +45,13 @@ echo $this->Form->end();
 echo $this->Form->create('Calendar', array('url'=>$this->Html->url(array('controller'=>'editorial_calendars', 'action'=>'calendarsave')), 'id' => 'edit'));?>
 <table id="table1">
 <th class="tableheader"></th>
-<th class="tableheader">Monday</th>
-<th class="tableheader">Tueday</th>
-<th class="tableheader">Wednesday</th>
-<th class="tableheader">Thursday</th>
-<th class="tableheader">Friday</th>
-<th class="tableheader">Saturday</th>
-<th class="tableheader">Sunday</th>
+<th class="tableheader monday"><p class='dayheading'>Monday</p></th>
+<th class="tableheader tuesday"><p class='dayheading'>Tueday</p></th>
+<th class="tableheader wednesday"><p class='dayheading'>Wednesday</p></th>
+<th class="tableheader thursday"><p class='dayheading'>Thursday</p></th>
+<th class="tableheader friday"><p class='dayheading'>Friday</p></th>
+<th class="tableheader saturday"><p class='dayheading'>Saturday</p></th>
+<th class="tableheader sunday"><p class='dayheading'>Sunday</p></th>
 
 
 <?
@@ -65,7 +62,7 @@ foreach ($calendar as $key) {?>
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
                 if (strpos($key1, 'topic')) {
-                    echo '<td>' . $this->Form->input($value1, array(
+                    echo '<td>' . $this->Form->textarea($value1, array(
                         'name' => 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .']['. $key1 .']',
                         'value' => $value1,
                         'label' => false)) . '</td>';
@@ -74,12 +71,12 @@ foreach ($calendar as $key) {?>
         }?>
     </tr>
     <tr class="content-type">
-        <td><b>Content type</b></td>
+        <td>Content type</td>
         <?
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
                 if (strpos($key1, 'content')) {
-                    echo '<td>' . $this->Form->input($value1, array(
+                    echo '<td>' . $this->Form->textarea($value1, array(
                         'name' => 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .']['. $key1 .']',
                         'value' => $value1,
                         'label' => false)) . '</td>';
@@ -88,12 +85,12 @@ foreach ($calendar as $key) {?>
         }?>
     </tr>
     <tr class="notes">
-        <td><b>Notes</b></td>
+        <td>Notes</td>
         <?
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
                 if (strpos($key1, 'notes')) {
-                    echo '<td>' . $this->Form->input($value1, array(
+                    echo '<td>' . $this->Form->textarea($value1, array(
                         'name' => 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .']['. $key1 .']',
                         'value' => $value1,
                         'label' => false)) . '</td>';
@@ -101,15 +98,15 @@ foreach ($calendar as $key) {?>
             }
         }?>
     </tr>
-    <tr style="height:20px"><td><?php echo $this->Html->Link('delete', array('controller' => 'editorial_calendars', 'action' => 'deletecalendar', $key['EditorialCalendar']['id'])); ?></td></tr>
+    <tr style="height:20px"><td><div class='deleteimage'><?php echo $this->Html->Link('Delete', array('controller' => 'editorial_calendars', 'action' => 'deletecalendar', $key['EditorialCalendar']['id'])); ?></div></td></tr>
 <?
 echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['EditorialCalendar']['id'], 'name' => 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .'][id]'));
 }
 ?>
 </table>
 <?php 
-echo $this->Html->Link('Add', array('controller' => 'editorial_calendars', 'action' => 'addCalendar'));
-echo $this->Form->end('Go'); ?>
+echo $this->Html->Link('Add +', array('controller' => 'editorial_calendars', 'action' => 'addCalendar'), array('style' => 'font-weight:bold'));
+echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
 
 <? 
 $base = strtotime(date('Y-m',time()) . '-01 00:00:01');
@@ -131,6 +128,7 @@ for ($i=$day; $i<=$daysinmonth; $i++) {
     $days[date('d-m-Y',mktime(0,0,0,$month,$i,$year))] = date('l',mktime(0,0,0,$month,$i,$year));
 }
 
+?><!--
 echo $this->Form->input('Select Month', array(
     'options' => array(
         0 => date('F Y', strtotime('+0 month', $base)),
@@ -236,6 +234,7 @@ echo $this->Form->end();?>
 
 <?php echo $this->Html->link('Add Twitter Account', '/twitter/connect');?> <br />
 <?php echo $this->Html->link('Logout', '/users/logout');?>
+-->
 
 <!-- SCRIPTS -->
 <script> 
@@ -285,19 +284,45 @@ echo $this->Form->end();?>
 <style>
 #table1 {
     font-size: 100%;
+    border-spacing: 3px;
+    color: black;
 }
 .tableheader {
-    background: #c4e6f1;
+    background: #EBEBEB;
+    width: 7%;
 }
-.topic {
-    background: #b4ddb4!important;
+.monday {
+    background: #ABEADF;
     width: 10%;
 }
-.content-type {
-    background: #ebc582!important;
+.tuesday {
+    background: #F7DFFF;
+    width: 10%;
 }
-.notes {
-    background: #c2afd4!important;
+.wednesday {
+    background: #AEE27E;
+    width: 10%;
+}
+.thursday {
+    background: #EDBF84;
+    width: 10%;
+}
+.friday {
+    background: #FCDAD9;
+    width: 10%;
+}
+.saturday {
+    background: #F5EDA4;
+    width: 10%;
+}
+.sunday {
+    background: #A2EDF3;
+    width: 10%;
+}
+.dayheading {
+    margin: 0 auto;
+    padding: 5px;
+    display: table;
 }
 .input.text {
     font-size: 65%!important;
@@ -305,16 +330,16 @@ echo $this->Form->end();?>
 #TweetBody {
     font-size: 100%;
 }
-.day {
-    background: #6787e1;
+
+td {
+    border: 1px solid #e4e4e4;
+    text-align: center;
+    height: 48px
 }
-.writtenBy {
-    width: 10%;
-}
-.scheduled {
-    width: 15%;
-}
-.verified {
-    width: 10%;
+
+textarea {
+    height: 100%;
+    width: 100%;
+    font-size: 100%;
 }
 </style>

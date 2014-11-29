@@ -1121,9 +1121,23 @@ td {
 	background: url(../img/alert.png) left center no-repeat;
 }
 
+.daybyday {
+	padding: 18px;
+	background: url(../img/calendarsmall.png) left center no-repeat;
+}
+
+.notPublished {
+	padding: 18px;
+	background: url(../img/crosssmall.png) left center no-repeat;
+}
+
 #filterLinks {
 	display: block;
 	margin-top: 30px;
+}
+
+#filterLinks .active {
+	color: #bd7fd5;
 }
 /* End */
 
@@ -1177,7 +1191,7 @@ td {
 }
 
 #filterAccountAccount {
-	margin: 10px 40px 10px 10px;
+	margin: 10px 10px 10px 10px;
 }
 
 #filterTeamTeam, #filterUserUser {
@@ -1185,7 +1199,7 @@ td {
 }
 
 #leftpanel {
-	width: 20%;
+	width: 250px;
 	float: left;
 }
 
@@ -1224,7 +1238,7 @@ input[type=file] {
 }
 
 .permissionstable {
-	width: 200px;
+	width: 240px;
 }
 .permissionstable tr td {
 	background-color: #fff;
@@ -1244,7 +1258,7 @@ input[type=file] {
 
 #TeamsTwitterPermissions + label {
 	background: url(../img/false1.png) right center no-repeat;
-	padding: 0 76px 0 0;
+	padding: 0 116px 0 0;
 	width: 100px;
 	display: block!important;
 	height: 22px;
@@ -1257,11 +1271,17 @@ input[type=file] {
 #manageteamtext {
 	font-size: 130%;
 	margin: 5px;
-	float: left
+	float: left;
+	width: 110px;
+}
+
+#manageteamtext1,
+#manageteamtext2 {
+	width: 110px
 }
 
 #rightpanel {
-	width: 79%;
+	width: 74%;
 	float: right
 }
 
@@ -1286,4 +1306,121 @@ input[type=file] {
 
 #teamMembers td {
 	font-size: 110%;
+}
+
+.addteam {
+	display: block;
+	padding: 0;
+	color:#bbb;
+	border:1px solid #bbb;
+	width: 95%;
+	min-width: 50px;
+	margin: 10px auto;
+}
+
+.addteam p {
+	width: 80px;
+	background: url(../img/greyplus.png) right center no-repeat;
+	padding: 10px 70px;
+	margin: auto
+}
+
+.addteam .ta {
+	padding: 10px 27px;
+	width: 166px;
+	font-size: 90%;
+}
+
+.addteam .iu {
+	padding: 10px 60px;
+	width: 100px
+}
+
+.submit .addteam {
+	border-radius: 0;
+	display: block;
+	padding: 0;
+	color:#bbb;
+	border:1px solid #bbb;
+	width: 98%;
+	min-width: 50px;
+	margin: 10px auto;
+	background: #fff;
+	float: left
+}
+
+.smallerheader {
+	font-size: 130%;
+}
+
+#filterAccountManageteamForm select option,
+#filterTeamManageteamForm select option {
+	font-size: 90%;
+}
+
+#filterAccountManageteamForm select,
+#filterTeamManageteamForm select {
+	width: 90%;
+}
+
+.floatleft {
+	float: left;
+	margin: 5px 0;
+	color: #999;
+}
+
+#paginatorcontainer {
+	float: left;
+	background-color: #773d8d;
+	padding: 10px;
+	color: #fff;
+}
+
+#paginatorcontainer a {
+}
+
+#paginatorcontainer .current {
+	color: #999;
+	font-weight: bold;
+}
+
+.deleteimage {
+	float:right;
+	padding-right: 20px;
+	background: url(../img/trash.png) no-repeat right center;
+	color: #333;
+}
+
+.imagecontainer {
+	width: 500px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.calendar_topic {
+	background-color: #EFE3F4;
+	margin-top: 5px;
+	display: block;
+	padding:5px;
+	min-height: 30px;
+	overflow: hidden;
+	font-size: 90%;
+}
+.calendar_content_type {
+	background-color: #D9B2EA;
+	margin-top: 5px;
+	display: block;
+	padding:5px;
+	min-height: 30px;
+	overflow: hidden;
+	font-size: 90%;
+}
+.calendar_notes {
+	background-color: #B277C8;
+	margin-top: 5px;
+	display: block;
+	padding:5px;
+	min-height: 30px;
+	overflow: hidden;
+	font-size: 90%;
 }

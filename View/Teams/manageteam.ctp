@@ -30,7 +30,7 @@
 </div>-->
 
 <div id='leftpanel'>
-<h2>MANAGE YOUR TEAMS</h2>
+<h2 class='smallerheader'>MANAGE YOUR TEAMS</h2>
 <?
 echo $this->Form->create('filterAccount');
 echo $this->Form->input('account', array(
@@ -46,6 +46,8 @@ echo $this->Form->input('team', array(
 	'options' => array('empty' => 'Select by Team', $dropdownteams)));
 echo $this->Form->end();
 ?>
+
+<? echo $this->Html->link('<p> ADD TEAM </p>', '/teams/manage', array('class' => 'addteam', 'escape' => false));?>
 
 <? echo $this->Form->create('Teams', array('action' => 'permissionSave'));?>
 <div id='selectall'>
@@ -77,11 +79,11 @@ echo $this->Form->end();
 ?>
 </table>
 
-<?} elseif (isset($teamTable)) {?>
-<h1 id='manageteamtext'> ACCOUNTS </h1> <h5 id='manageteamtext1'>| USERS</h5>
+<?} elseif (isset($teamTable)) { //If they are filtering by team show this table?>
+<h1 id='manageteamtext'> ACCOUNTS </h1> <p class='floatleft'>| </p><h5 id='manageteamtext1'>USERS</h5>
 <table class='permissionstable' id='permissionstable'>
-
-<? foreach ($accounts as $key) {?>
+<? 
+foreach ($accounts as $key) {?>
 	<tr>
 		
 	<?
@@ -97,7 +99,6 @@ echo $this->Form->end();
 		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => $key['TwitterAccount']['screen_name'], 'name' => 'data[Teams]['.$value.'][permissions]['.$value.']', 'value' => $users['team_id'])) . '</td>';
 		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $users['team_id'], 'name' => 'data[Teams]['.$value.'][team_id]'));?>
 	</tr><?
-	
 }?>
 </table>
 <table class='permissionstable' id='teamMembers'>
@@ -118,14 +119,17 @@ echo $this->Form->end();
 <?}?>
 </table>
 <?
+echo $this->Html->link('<p class="ta"> ADD TWITTER ACCOUNT </p>', '/twitter/connect', array('class' => 'addteam', 'escape' => false));
+echo $this->Html->link('<p class="iu"> INVITE USER </p>', '/teams/invite', array('class' => 'addteam', 'escape' => false));
 }
 ?>
-<? echo $this->Form->end('Submit changes'); ?>
+<hr style='width:95%; background-color:#bbb; display: block; margin: auto;'></hr>
+<? echo $this->Form->submit('Submit changes', array('class' => 'addteam')); ?>
 </div>
-<hr style='width: 1px; height: 200px; float: left; margin: 0; background-color: #dcdcdc'>
+<hr style='width: 1px; height: 1500px; float: left; margin: 0; background-color: #dcdcdc'>
 
 <div id='rightpanel'>
-<div id='teamspanel'>
+<!--<div id='teamspanel'>
 	<table id='teamcomparison'>
 		<tr>
 			<td>
@@ -151,7 +155,7 @@ echo $this->Form->end();
 			</td>
 		</tr>
 	</table>
-</div>
+</div>-->
 </div>
 
 
@@ -163,13 +167,13 @@ $(document).ready(function () {
 		$('#permissionstable').toggle();
 		$('#manageteamtext').replaceWith('<h5 id="manageteamtext2" style="float:left">' + 'ACCOUNTS' + '</h5>');
 
-		$('#manageteamtext1').replaceWith('<h1 id="manageteamtext">' + '| USERS' + '</h1>');
+		$('#manageteamtext1').replaceWith('<h1 id="manageteamtext">' + 'USERS' + '</h1>');
 	});
 
 	$('#leftpanel').on('click', '#manageteamtext2', function() {
 		$('#teamMembers').toggle();
 		$('#permissionstable').toggle();
-		$('#manageteamtext').replaceWith('<h5 id="manageteamtext1">' + '| USERS' + '</h5>');
+		$('#manageteamtext').replaceWith('<h5 id="manageteamtext1">' + 'USERS' + '</h5>');
 
 		$('#manageteamtext2').replaceWith('<h1 id="manageteamtext">' + 'ACCOUNTS' + '</h1>');
 	});

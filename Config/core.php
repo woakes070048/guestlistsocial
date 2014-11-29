@@ -191,6 +191,7 @@
 		'defaults' => 'php'
 	));
 
+	Configure::write('Session.timeout', 1000);
 /**
  * A random string used in security hashing methods.
  */

@@ -4,9 +4,10 @@ class TicketsComponent extends Component {
 	public function set($info = null) {
 		$this->Ticket = ClassRegistry::init('Ticket');
 		if ($info) {
-			$data['Ticket']['hash'] = md5(time());
+			$data['Ticket']['hash'] = md5(mt_rand(1000000000,9999999999));
 			$data['Ticket']['data'] = $info;
 
+			$this->Ticket->create();
 			if ($this->Ticket->save($data)) {
                 return $data['Ticket']['hash'];
             }

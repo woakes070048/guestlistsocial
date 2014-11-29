@@ -92,6 +92,7 @@ class TeamsController extends AppController {
         	$this->set('teamMembers', $teamMembers[0]['User']);
 			$this->set('currentTeam', $currentTeam['Team']['name']);
 			$this->set('currentTeamId', $this->request->data['filterTeam']['team']);
+			$this->Session->write('Auth.User.currentTeamId', $this->request->data['filterTeam']['team']);
 			$this->set('teamTable', true);
 		} else {
 			$users = '';
@@ -105,7 +106,6 @@ class TeamsController extends AppController {
 
 	public function permissionSave() {
 		$data = $this->request->data;
-		debug($this->request->data);
 		//$dbComparisons = $this->TwitterPermission->find('all', array('conditions' => array('team_id' => $this->Session->read('Auth.User.Team.id'))));
 		$i = 0;
 		foreach ($data['Teams'] as $key) {
@@ -154,6 +154,8 @@ class TeamsController extends AppController {
 		$this->Tickets->del($teamHash);
 		$this->Tickets->del($group);
 
+		$this->refreshGroup($this->Session->read('Auth.User.id'));
+
 		$user = $this->User->find('first', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
 		$this->Session->write('Auth.User.Team', $user['Team']);
 		$this->Session->setFlash('You have been added to team ' . $team['Team']['name']);
@@ -168,6 +170,8 @@ class TeamsController extends AppController {
 			$this->TeamsUser->delete($id['TeamsUser']['id']);
 		}
 
+		$this->refreshGroup($user_id);
+
 		$this->redirect('/teams/manageteam');
 	}
 
@@ -177,6 +181,8 @@ class TeamsController extends AppController {
 			$this->TeamsUser->id = $teamsuser['TeamsUser']['id'];
 			$this->TeamsUser->savefield('group_id', 1);
 		}
+
+		$this->refreshGroup($user_id);
 
 		$this->redirect('/teams/manageteam');
 	}
@@ -188,6 +194,8 @@ class TeamsController extends AppController {
 			$this->TeamsUser->savefield('group_id', 7);
 		}
 
+		$this->refreshGroup($user_id);
+		
 		$this->redirect('/teams/manageteam');
 	}
 
@@ -198,15 +206,16 @@ class TeamsController extends AppController {
 			$this->TeamsUser->savefield('group_id', 2);
 		}
 
+		$this->refreshGroup($user_id);
+
 		$this->redirect('/teams/manageteam');
 	}
 
-	public function invite() { //Add validation to addtoTeam to check if invite exists in table
+	public function invite() {
 		foreach ($this->Session->read('Auth.User.Team') as $key) {
 			$dropdownteams[$key['id']] = $key['name'];
 		}
 		$this->set('dropdownteams', $dropdownteams);
-
 		if ($this->request->data) {
 			$data = $this->request->data;
 			$user = $data['invite']['email'];

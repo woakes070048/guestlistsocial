@@ -1,4 +1,4 @@
-<tr><td style="border: none"><?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
+<?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
 <table id="refresh">
 <thead class="mainheader">
     <th class='sort'><? echo $this->Paginator->sort('timestamp', 'Schedules');?></th>
@@ -20,12 +20,12 @@
             $value = '';
             $color = 'Red';} 
 
-            if ($this->Session->read('Auth.User.group_id') == 2) {
+            if ($this->Session->read('Auth.User.group_id') == 2 || $params == 'h:archived') {
                 $disabled = 'disabled';
             } else {
                 $disabled = '';
             }?>
-    <tr>
+    <tr class="row">
       <td class='scheduled' id='time<?php echo $key['Tweet']['id']?>'> 
         <div class='notediting'><?php if($key['Tweet']['time'] && $key['Tweet']['published'] == 1) {
             echo $key['Tweet']['time'] . '<small>[Published]</small>';
@@ -63,12 +63,15 @@
             
             <div class="tweetButtons">
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
-            <? if ($key['Tweet']['img_url']) {
-                    echo $this->Html->image($key['Tweet']['img_url']);
-                }?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
             <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
+            <? if ($key['Tweet']['img_url']) { ?>
+                    <div class='imagecontainer'>
+                    <? echo $this->Html->image($key['Tweet']['img_url'], array('style' => 'max-width:500px')); ?>
+                    <? echo $this->Html->link("<div class='deleteimage'>Delete image</div>", array('action' => 'deleteImage', $key['Tweet']['id']), array('escape' => false));?>
+                    </div>
+            <?  }  ?>
             </div>
       </td>
       <td class='verified'>
@@ -84,6 +87,10 @@
         'class' => 'TwitterVerified1', 
         'id' => $key['Tweet']['id'], 
         'default' => $key['Tweet']['verified']));?>
+
+        <? if ($key['Tweet']['verified'] == 1 || $key['Tweet']['verified'] == 2) {?>
+        <i><small>-<? echo $key['Tweet']['verified_by'];?></small></i>
+        <?}?>
       </td>
       <?php echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['Tweet']['id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][id]'));
             echo $this->Form->input('verfied_by', array(
@@ -98,7 +105,12 @@
     <?php } ?>
 </table>
 
-<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?></td></tr>
-<tr><td>
+<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
+
+<div id='paginatorcontainer'>
 <?echo $this->Paginator->numbers();?>
-</td></tr>
+</div>
+
+<script>
+$('.editing').charCount({css: 'counter counter1'});
+</script>

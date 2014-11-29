@@ -18,9 +18,9 @@ $count = $daysinmonth - $day;
 for ($i=$day; $i<=$daysinmonth; $i++) {
     $days[date('d-m-Y',mktime(0,0,0,$month,$i,$year))] = date('l',mktime(0,0,0,$month,$i,$year));
 }
-?><hr>
+?>
 <?
-echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => 'admin'), 'id' => 'monthForm'));
+echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => 'index/h:daybyday'), 'id' => 'monthForm'));
 echo $this->Form->input('Select Month', array(
     'options' => array(
         0 => date('F Y', strtotime('+0 month', $base)),
@@ -38,7 +38,7 @@ echo $this->Form->end();
 
 ?>
 <? echo $this->Form->button('Shorten all URLs', array('id' => 'shortIt1', 'class' => 'urlSubmit1', 'type' => 'button'));
-echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet', 'id' => 'submitTweets', 'type' => 'file'));
+echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet1', 'id' => 'submitTweets', 'type' => 'file'));
 ?>
 
 <?php if (!empty($calendar)) { ?>
@@ -108,16 +108,24 @@ foreach ($calendar as $key1) {
         }?>
     <td class="scheduled"><? echo date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']));?> </td>
     <td class="writtenBy"><? echo $firstName; ?> </td>
-    <td class="topic"><b><? echo $key1['EditorialCalendar'][strtolower($value) . '_topic']; ?></b></td>
+    <td class="topic">
+    <div class='calendar_topic'><? echo $key1['EditorialCalendar'][strtolower($value) . '_topic']; ?></div>
+
+    <div class='calendar_content_type'><? echo $key1['EditorialCalendar'][strtolower($value) . '_content_type']; ?></div>
+
+    <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div></td>
     <td class="nopadding">
     <?echo $body;?>
         <div class="tweetButtons">
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
-            <? if ($img) {
-                    echo $this->Html->image($img);
-                }?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
+            <? if ($img) { ?>
+                    <div class='imagecontainer'>
+                        <? echo $this->Html->image($img, array('style' => 'max-width:500px')); ?>
+                        <? echo $this->Html->link("<div class='deleteimage'>Delete image</div>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
+                    </div>
+            <?  }  ?>
         </div>
     </td>
     <td class="verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
@@ -169,24 +177,9 @@ foreach ($calendar as $key1) {
                 $('#monthForm').submit(); 
             });
 
-            $('#table1').on('change', '.TwitterVerified1', function() {
-                if ($(this).prop('checked') == true) {
-                    id = $(this).attr('id');
-                    id = id.slice(0, -1);
-                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
-
-
-                    if ($(this).attr('value') == 0) {
-                        color = '#ffcc00';
-                    } else if ($(this).attr('value') == 1) {
-                        color = '#21a750';
-                    } else if ($(this).attr('value') == 2) {
-                        color = '#ff0000';
-                    }
-                    $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
-                }
-            });
-
+            
+            
+            jQuery.urlShortener.settings.apiKey = 'AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08';
             //shorten all URLs
             $("#shortIt1").click(function () {
                 //$("#shortUrlInfo").html("<img src='images/loading.gif'/>");
@@ -209,21 +202,20 @@ foreach ($calendar as $key1) {
                 });
             });
 
-            //shorten single URL
             $(".shortsingle").click(function () {
-                regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
-                textbox = $(this).closest('.nopadding').children('.editing');
-                var longUrlLink = textbox.val().match(regex);
-                    jQuery.urlShortener({
-                        longUrl: longUrlLink,
-                        success: function (shortUrl) {
-                            textbox.val(textbox.val().replace(longUrlLink, shortUrl));
-                        },
-                        error: function(err) {
-                            $("#shortUrlInfo").html(JSON.stringify(err));
-                        }
-                    });
-            });
+            regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
+            textbox = $(this).closest('.nopadding').children('.editing');
+            var longUrlLink = textbox.val().match(regex);
+                jQuery.urlShortener({
+                    longUrl: longUrlLink,
+                    success: function (shortUrl) {
+                        textbox.val(textbox.val().replace(longUrlLink, shortUrl));
+                    },
+                    error: function(err) {
+                        $("#shortUrlInfo").html(JSON.stringify(err));
+                    }
+                });
+        });
 
             $('.editing').charCount({css: 'counter counter1'});
 
@@ -237,6 +229,22 @@ foreach ($calendar as $key1) {
             $('input:submit, button:submit').on('click', function() {
                 warnMessage = null;
             });
+
+            $('.input.file input').on('change', function() {
+                $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
+            });
+
+            /*$(".approveAll").click(function () {
+            $(".verified").each(function () {
+                $(this).find(".input.radio input:radio[value=1]").prop('checked', true);
+                //$("#table").css('opacity', '.4');
+                    id = $(this).find(".input.radio input:radio[value=1]").attr('id');
+                    id = id.slice(0, -1);
+                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
+
+                    
+            });
+            });*/
         });
 
 </script>

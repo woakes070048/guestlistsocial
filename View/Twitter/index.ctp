@@ -1,6 +1,9 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 <script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script> 
-<? echo $this->Html->script('charCount');
+<? 
+echo $this->Html->script('jquery-ui-1.10.3.custom'); 
+echo $this->Html->script('charCount');
+echo $this->Html->script('jquery.urlshortener');
 echo $this->Html->script('jquery.infinitescroll'); ?>
 <?php
 echo $this->Session->flash('auth');
@@ -14,6 +17,10 @@ echo $this->Form->input('account', array(
     'options' => array('empty' => 'Select by Twitter Account', array_combine($dropdownaccounts,$dropdownaccounts)),
     'selected' => $this->Session->read('filterAccount')));
 echo $this->Form->end();
+
+if ($this->Session->read('access_token.account_id')) {
+    echo $this->Html->image('calendar.png', array('url' => '/twitter/calendar/0', 'title' => 'Editorial Calendar', 'style' => 'margin: 10px 50px 10px 10px'));
+}
 
 echo $this->Html->image('user_purple.png', array('class' => 'selectimage'));
 echo $this->Form->create('filterUser');
@@ -44,17 +51,22 @@ echo $this->Form->end();
 </div>
 
 <div id="filterLinks">
-<? echo $this->Html->link('Awaiting Proof', '/twitter/index/', array('class' => 'awaitingProof'));
-echo $this->Html->link('Queued', '/twitter/index/h:queued', array('class' => 'queued'));
-echo $this->Html->link('Published', '/twitter/index/h:published', array('class' => 'published'));
-echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('class' => 'needImproving'));
+<? echo $this->Html->link('Awaiting Proof', '/twitter/index/', array('class' => (empty($this->params['named']['h']))?'awaitingProof active' :'awaitingProof inactive'));
+echo $this->Html->link('Queued', '/twitter/index/h:queued', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='queued') )?'queued active' :'queued inactive'));
+echo $this->Html->link('Published', '/twitter/index/h:published', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='published') )?'published active' :'published inactive'));
+echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='improving') )?'needImproving active' :'needImproving inactive'));
+echo $this->Html->link('Day-by-Day', '/twitter/index/h:daybyday', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='daybyday') )?'daybyday active' :'daybyday inactive'));
+echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
 ?>
 </div>
 
 <hr>
 
-<table id="table">
-<tr><td style="border: none"><?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
+<? if ($params == 'h:daybyday') {
+        echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
+    } ?>
+<div id="table">
+<?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
 <table id="refresh">
 <thead class="mainheader">
     <th class='sort'><? echo $this->Paginator->sort('timestamp', 'Scheduled');?></th>
@@ -118,12 +130,15 @@ echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('cl
             
             <div class="tweetButtons">
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
-            <? if ($key['Tweet']['img_url']) {
-                    echo $this->Html->image($key['Tweet']['img_url']);
-                }?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
             <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
+            <? if ($key['Tweet']['img_url']) { ?>
+                    <div class='imagecontainer'>
+                    <? echo $this->Html->image($key['Tweet']['img_url'], array('style' => 'max-width:500px')); ?>
+                    <? echo $this->Html->link("<div class='deleteimage'>Delete image</div>", array('action' => 'deleteImage', $key['Tweet']['id']), array('escape' => false));?>
+                    </div>
+            <?  }  ?>
             </div>
       </td>
       <td class='verified'>
@@ -137,7 +152,8 @@ echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('cl
         'legend' => false, 
         'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified]', 
         'class' => 'TwitterVerified1', 
-        'id' => $key['Tweet']['id'], 
+        'id' => $key['Tweet']['id'],
+        $disabled,
         'default' => $key['Tweet']['verified']));?>
 
         <? if ($key['Tweet']['verified'] == 1 || $key['Tweet']['verified'] == 2) {?>
@@ -157,17 +173,26 @@ echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('cl
     <?php } ?>
 </table>
 
-<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?></td></tr>
-<tr><td>
+<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
+<div id='paginatorcontainer'>
 <?echo $this->Paginator->numbers();?>
-</td></tr>
-</table>
-<?php echo $this->Html->link('Add Twitter Account', '/twitter/connect');?> <br />
-<?php echo $this->Html->link('Logout', '/users/logout');?>
-<?php echo $this->Paginator->next();?>
+</div>
+</div>
+<?php //echo $this->Html->link('Add Twitter Account', '/twitter/connect');?> <br />
+<?php //echo $this->Html->link('Logout', '/users/logout');?>
+<?php //echo $this->Paginator->next();?>
 
 <script>
 $(document).ready(function() { 
+        <? if ($params == 'h:daybyday' && $this->Session->read('access_token.account_id')) {?>
+        $('#table').css('opacity', '.4');
+        $('#loading').show();
+        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function () {
+            $('#table').css('opacity', '1');
+            $('#loading').hide();
+        });
+        <? } ?>
+
         $(".TwitterVerified1:checked").each( function() {
             if ($(this).attr('value') == 0) {
                 color = '#ffcc00';
@@ -179,7 +204,11 @@ $(document).ready(function() {
             $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
         });
 
-        $(".verifiedby").prop('disabled', true);
+        <? if ($params == 'h:queued') {?>
+            $(".verifiedby").prop('disabled', false);
+        <? } else { ?>
+            $(".verifiedby").prop('disabled', true);
+        <? } ?>
 
         $("#table").on("click", ".delete", function() {
             id = $(this).attr('id');
@@ -203,13 +232,31 @@ $(document).ready(function() {
                     }
                     $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
                 }
-                $('#edit').ajaxSubmit();
-                setTimeout(refresh, 100);//delaying the table refresh so that the form can successfully submit into the databases
+
+                <? if ($params == 'h:daybyday') {  ?>
+                        $('#submitTweets').ajaxSubmit({success: function() {
+                            refresh();
+                        }});
+                <? } else {  ?>
+                        $('#edit').ajaxSubmit({success: function() {
+                            refresh();
+                        }});
+                <? }  ?>
+                //setTimeout(refresh, 500);//delaying the table refresh so that the form can successfully submit into the databases
                 function refresh() {
-                    $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function() {
-                    $("#table").css('opacity', '1');
-                });
+                    <? if ($params == 'h:daybyday') {  ?>
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                $("#table").css('opacity', '1');
+                            });
+                    <? } else {  ?>
+                            $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function() {
+                                $("#table").css('opacity', '1');
+                            });
+                    <? }  ?>
+                    
                 };
+
+                $('#progress table').load('/twitter/progressrefresh');
         });
 
         $('.editing').charCount({css: 'counter counter1'});
@@ -223,6 +270,50 @@ $(document).ready(function() {
 
         $('input:submit, button:submit').on('click', function() {
             warnMessage = null;
+        });
+
+        jQuery.urlShortener.settings.apiKey = 'AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08';
+        $(".shortsingle").click(function () {
+            regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
+            textbox = $(this).closest('.nopadding').children('.editing');
+            var longUrlLink = textbox.val().match(regex);
+                jQuery.urlShortener({
+                    longUrl: longUrlLink,
+                    success: function (shortUrl) {
+                        textbox.val(textbox.val().replace(longUrlLink, shortUrl));
+                    },
+                    error: function(err) {
+                        $("#shortUrlInfo").html(JSON.stringify(err));
+                    }
+                });
+        });
+
+        $('.input.file input').on('change', function() {
+            $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
+        });
+
+        $(".approveAll").click(function () {
+            $(".verified").each(function () {
+                if ($(this).find(".input.radio input:radio[value=0]").prop('checked') || $(this).find(".input.radio input:radio[value=2]").prop('checked')) {
+                    $(this).find(".input.radio input:radio[value=1]").prop('checked', true);
+                }
+                $("#table").css('opacity', '.4');
+                    id = $(this).find(".input.radio input:radio[value=1]").attr('id');
+                    id = id.slice(0, -1);
+                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
+
+                    
+            });
+            $('#submitTweets').ajaxSubmit({success: function() {
+                refresh();
+            }});
+
+            function refresh() {
+                $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                    $("#table").css('opacity', '1');
+                });
+            };
+            $('#progress table').load('/twitter/progressrefresh');
         });
 
         /*$("#refresh").infinitescroll({
