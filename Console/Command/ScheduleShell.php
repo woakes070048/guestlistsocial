@@ -6,8 +6,8 @@ class ScheduleShell extends AppShell {
 	public $uses = array('TwitterAccount', 'CronTweet', 'Tweet');
 
     public function main() {
-        $lowerbound = time() + 3600 - 120; //adding 3600 due to GMT -> BST, remove if not // will come up with a solution soon
-        $upperbound = time() + 3600;
+        $lowerbound = time() - 120;
+        $upperbound = time();
         $toTweet = $this->CronTweet->find('all', array('conditions' => array('timestamp <' => $upperbound, 'timestamp >' => $lowerbound)));
         $count = $this->CronTweet->find('count', array('conditions' => array('timestamp <' => $upperbound, 'timestamp >' => $lowerbound)));
         $toDelete = $this->CronTweet->find('list', array('fields' => array('id'), 'conditions' => array('timestamp <' => $upperbound, 'timestamp >' => $lowerbound)));

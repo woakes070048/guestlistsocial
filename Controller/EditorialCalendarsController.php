@@ -133,6 +133,8 @@ class EditorialCalendarsController extends AppController {
                 $original = $this->Tweet->find('first', array('conditions' => array('id' => $key['id'])));
                 $key['first_name'] = $this->Session->read('Auth.User.first_name');
                 $key['account_id'] = $this->Session->read('access_token.account_id');
+                $key['time'] = $key['timestamp'];
+                $key['timestamp'] = strtotime($key['timestamp']);
 
                 if ($original['Tweet']['body'] != $key['body']) {
                     $key['verified'] = 0;
@@ -166,8 +168,8 @@ class EditorialCalendarsController extends AppController {
 
                 if ($key['body']) {
                     $this->Tweet->save($toSave);
-                    if ($toSave['verified'] == 1 && strtotime($key['timestamp']) > time()) {
-                        $this->CronTweet->save($toSave);
+                    if ($toSave['verified'] == 1 && $key['timestamp'] > time()) {
+                        $this->CronTweet->save($key);
                     }
                 } else {
                     $this->Tweet->delete($key['id']);
