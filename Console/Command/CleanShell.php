@@ -6,7 +6,7 @@ class CleanShell extends AppShell {
 	public $uses = array('TwitterAccount', 'CronTweet');
 
     public function main() {
-        $upperbound = time();
+        $upperbound = time() - 300;
         $count = $this->CronTweet->find('count', array('conditions' => array('timestamp <' => $upperbound)));
         $toDelete = $this->CronTweet->find('list', array('fields' => array('id'), 'conditions' => array('timestamp <' => $upperbound)));
 

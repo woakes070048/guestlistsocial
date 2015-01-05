@@ -609,19 +609,13 @@ class TwitterController extends AppController {
     }
 
     public function test() {
-        $tweets = $this->Tweet->query("SELECT * 
-FROM  `tweets` 
-GROUP BY `body`
-HAVING COUNT( * ) >1");
-$i = 0;
+        /*$tweets = $this->Tweet->find('all', array('conditions' => array('timestamp >' => strtotime('01-01-2014 00:00:00'), 'timestamp <' => strtotime('31-01-2014 23:59:00'))));
+        //debug($tweets);
+
         foreach ($tweets as $key) {
-            $stweets = $this->Tweet->find('all', array('conditions' => array('body' => $key['tweets']['body'])));
-
-            for ($j = 1; $j <= count($stweets) - 1; $j++) {
-                $this->Tweet->delete($stweets[$j]['Tweet']['id']);
-            }
-            debug($stweets);
-        }
-
-}
+            $key['timestamp'] += 31536000;
+            $key['time'] = date('d-m-Y H:i', $key['timestamp']);
+            debug($key['time']);
+        }*/
+    }
 }

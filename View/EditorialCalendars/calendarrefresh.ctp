@@ -12,6 +12,7 @@ if ($months == 0) {
 } elseif ($months !== 0) {
     $day = 1;
 } 
+//$year = date('Y', strtotime('+' . $months . ' month', $base));
 $year = date('Y');
 
 $count = $daysinmonth - $day;
@@ -117,7 +118,7 @@ foreach ($calendar as $key1) {
     <td class="nopadding">
     <?echo $body;?>
         <div class="tweetButtons">
-            <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
+            <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
             <? if ($img) { ?>
@@ -233,6 +234,24 @@ foreach ($calendar as $key1) {
             $('.input.file input').on('change', function() {
                 $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
             });
+
+            /*$(".smallSaveButton").click(function () {
+                $("#table").css('opacity', '.4');
+                $('#loading').show();
+                        $('#submitTweets').ajaxSubmit({success: function() {
+                            refresh();
+                        }});
+                //setTimeout(refresh, 500);//delaying the table refresh so that the form can successfully submit into the databases
+                function refresh() {
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                $("#table").css('opacity', '1');
+                                $('#loading').hide();
+                            });
+                    
+                };
+
+                $('#progress table').load('/twitter/progressrefresh');
+            });*/
 
             /*$(".approveAll").click(function () {
             $(".verified").each(function () {

@@ -316,6 +316,34 @@ $(document).ready(function() {
             $('#progress table').load('/twitter/progressrefresh');
         });
 
+        $("#table").on("click", ".smallSaveButton", function() {
+            $("#table").css('opacity', '.4');
+            <? if ($params == 'h:daybyday') {  ?>
+                        $('#submitTweets').ajaxSubmit({success: function() {
+                            refresh();
+                        }});
+                <? } else {  ?>
+                        $('#edit').ajaxSubmit({success: function() {
+                            refresh();
+                        }});
+                <? }  ?>
+                //setTimeout(refresh, 500);//delaying the table refresh so that the form can successfully submit into the databases
+                function refresh() {
+                    <? if ($params == 'h:daybyday') {  ?>
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                $("#table").css('opacity', '1');
+                            });
+                    <? } else {  ?>
+                            $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function() {
+                                $("#table").css('opacity', '1');
+                            });
+                    <? }  ?>
+                    
+                };
+
+                $('#progress table').load('/twitter/progressrefresh');
+        });
+
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
             nextSelector : '.next a',  // selector for the NEXT link (to page 2)

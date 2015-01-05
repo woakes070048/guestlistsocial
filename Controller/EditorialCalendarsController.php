@@ -127,6 +127,7 @@ class EditorialCalendarsController extends AppController {
 
     public function editcalendartweet1() {
         foreach ($this->request->data['Tweet'] as $key) {
+            debug($key);
             if (!$key['body'] && !$key['id']) { //Empty Tweets
 
             } elseif (!empty($key['id'])) { //Edited Tweets
@@ -147,10 +148,12 @@ class EditorialCalendarsController extends AppController {
                 }
 
                 //Image Handling
-                if ($x = $this->imageHandling($key)) {
-                    $key['img_url'] = $x;
-                } else {
-                    //$this->Session->setFlash('There was an error processing your image, please try again.');
+                if (!empty($key['img_url1']['name'])) {
+                    if ($x = $this->imageHandling($key)) {
+                        $key['img_url'] = $x;
+                    } else {
+                        //$this->Session->setFlash('There was an error processing your image, please try again.');
+                    }
                 }
 
                 $toSave = array();
@@ -230,6 +233,7 @@ class EditorialCalendarsController extends AppController {
     }
 
     private function imageHandling($key) {
+        debug($key['img_url1']['name']);
         if ($key['img_url1']['error'] == 0) {
             $z = explode(".", $key['img_url1']['name']);
             $extension = end($z);
