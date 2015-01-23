@@ -26,9 +26,9 @@
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
-	Router::connect('/', array('controller' => 'twitter', 'action' => 'admin'));
+	Router::connect('/', array('controller' => 'twitter', 'action' => 'index'));
 	Router::connect('/debug_kit/*', array('plugin' => 'debug_kit'));
-	Router::connect('/twitter/', array('controller' => 'twitter', 'action' => 'admin'));
+	Router::connect('/twitter/', array('controller' => 'twitter', 'action' => 'index'));
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

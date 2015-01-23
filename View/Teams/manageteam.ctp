@@ -129,33 +129,34 @@ echo $this->Html->link('<p class="iu"> INVITE USER </p>', '/teams/invite', array
 <hr style='width: 1px; height: 1500px; float: left; margin: 0; background-color: #dcdcdc'>
 
 <div id='rightpanel'>
-<!--<div id='teamspanel'>
-	<table id='teamcomparison'>
-		<tr>
-			<td>
-				<h2 style='margin: 0'>TEAM COMPARISON</h2>
-			</td>
-			<td>
-				Team 1
-				<br>
-				<strong style='color: green'>40%</strong>
-			</td>
-			<td>
-				Team 2
-				<br>
-				<strong style='color: red'>40%</strong>
-			</td>
-			<td>
-				Team 3
-				<br>
-				<strong style='color: blue'>40%</strong>
-			</td>
-			<td>
-				<? echo $this->Html->link('Add more teams', array('action' => 'manage')); ?>
-			</td>
-		</tr>
+<div id='teamspanel'>
+	Top Tweeters
+	<table>
+	<th>Name</th>
+	<th><? echo date('D', strtotime('-6 day'));?></th>
+	<th><? echo date('D', strtotime('-5 day'));?></th>
+	<th><? echo date('D', strtotime('-4 day'));?></th>
+	<th><? echo date('D', strtotime('-3 day'));?></th>
+	<th><? echo date('D', strtotime('-2 day'));?></th>
+	<th><? echo date('D', strtotime('-1 day'));?></th>
+	<th><? echo date('D', strtotime('-0 day'));?></th>
+	<th>7 day total</th>
+
+	<? foreach ($counts as $key) {?>
+	<tr>
+		<td><? echo $key['name'] ?> </td>
+		<td><? echo $key[6] ?> </td>
+		<td><? echo $key[5] ?> </td>
+		<td><? echo $key[4] ?> </td>
+		<td><? echo $key[3] ?> </td>
+		<td><? echo $key[2] ?> </td>
+		<td><? echo $key[1] ?> </td>
+		<td><? echo $key[0] ?> </td>
+		<td><? echo $key['sum'] ?> </td>
+	</tr>
+	<?}?>
 	</table>
-</div>-->
+</div>
 </div>
 
 

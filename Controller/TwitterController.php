@@ -150,7 +150,7 @@ class TwitterController extends AppController {
     }
 
     //not used anymore
-    public function admin() {
+    /*public function admin() {
         if (isset($this->request->data['currentmonth'])) {
             $this->Session->write('Auth.User.monthSelector', $this->request->data['currentmonth']['Select Month']);
         } elseif ($this->Session->read('Auth.User.monthSelector') == false) {
@@ -196,7 +196,7 @@ class TwitterController extends AppController {
         }
         
         $this->set('accounts', $accounts);
-    }
+    }*/
 
     public function calendar($months) {
         if (isset($this->request->data['calendar_activated']['calendar_activated'])) {
@@ -341,12 +341,17 @@ class TwitterController extends AppController {
     public function testing() {//temporary non-verified tweet save
         if ($this->request->data) {
                     //$this->request->data['CronTweet']['time']['hour'] += $this->Session->read('Auth.User.GMT_offset');
-                    $this->Tweet->save($this->request->data);
-                    $this->Tweet->saveField('user_id', $this->Session->read('Auth.User.id'));
-                    $this->Tweet->saveField('account_id', $this->Session->read('access_token.account_id'));
-                    $this->Tweet->saveField('team_id', $this->Session->read('Auth.User.Team.id'));
-                    $this->Tweet->saveField('first_name', $this->Session->read('Auth.User.first_name'));
-                    $this->redirect(array('action' => 'admin'));
+                    $toSave['user_id'] = $this->Session->read('Auth.User.id');
+                    $toSave['account_id'] = $this->Session->read('access_token.account_id');
+                    $toSave['first_name'] = $this->Session->read('Auth.User.first_name');
+                    $toSave['verified'] = 0;
+                    $toSave['body'] = $this->request->data['Tweet']['body'];
+                    $toSave['time'] = $this->request->data['Tweet']['timestamp'];
+                    $toSave['timestamp'] = strtotime($this->request->data['Tweet']['timestamp']);
+
+                    $this->Tweet->create();
+                    $this->Tweet->save($toSave);
+                    $this->redirect(array('action' => 'index'));
         }
 
         //$this->redirect('/twitter/');
@@ -609,13 +614,10 @@ class TwitterController extends AppController {
     }
 
     public function test() {
-        /*$tweets = $this->Tweet->find('all', array('conditions' => array('timestamp >' => strtotime('01-01-2014 00:00:00'), 'timestamp <' => strtotime('31-01-2014 23:59:00'))));
-        //debug($tweets);
-
-        foreach ($tweets as $key) {
-            $key['timestamp'] += 31536000;
-            $key['time'] = date('d-m-Y H:i', $key['timestamp']);
-            debug($key['time']);
-        }*/
+        $Email = new CakeEmail();
+        $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
+        $Email->to("sharif9876@hotmail.com");
+        $Email->subject('TEST');
+        debug($Email->send('THIS IS A TEST'));
     }
 }

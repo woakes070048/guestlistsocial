@@ -1,10 +1,12 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 <script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script> 
 <? 
-echo $this->Html->script('jquery-ui-1.10.3.custom'); 
+echo $this->Html->script('jquery-ui-1.10.3.custom');
+echo $this->Html->script('jquery-ui-timepicker-addon');
 echo $this->Html->script('charCount');
 echo $this->Html->script('jquery.urlshortener');
-echo $this->Html->script('jquery.infinitescroll'); ?>
+echo $this->Html->script('jquery.infinitescroll');
+echo $this->Html->css('calendar'); ?>
 <?php
 echo $this->Session->flash('auth');
 ?>
@@ -62,6 +64,25 @@ echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('
 
 <hr>
 
+<? if ($params != 'h:daybyday' && $this->Session->read('filterAccount')) {?>
+    <div id='addTweetWrapper'>
+<?
+//Add Tweet
+echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter', 'action' => 'testing'), 'id' => 'submitTweet'));
+
+        echo $this->Form->textarea('body', array('label' => false, 'type' => 'post', 'class' => 'ttt', 'placeholder' => 'Body'));
+        echo $this->Form->input('timestamp', array(
+            'type' => 'text', 
+            'label' => false, 
+            'class' => 'schedule', 
+            'id' => 'schedule',
+            'placeholder' => 'Date & Time'
+            ));
+        echo $this->Form->end(array('id' => 'tweetsubmit', 'value' => 'AddTweet', 'label' => 'ADD A TWEET')); // add new form with hidden input fields to tweet now
+?>
+</div>
+<?}?>
+
 <? if ($params == 'h:daybyday') {
         echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
     } ?>
@@ -71,7 +92,6 @@ echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('
 <thead class="mainheader">
     <th class='sort'><? echo $this->Paginator->sort('timestamp', 'Scheduled');?></th>
     <th class='sort'><? echo $this->Paginator->sort('screen_name', 'Account');?></th>
-    <th class='sort'><? echo $this->Paginator->sort('first_name', 'Written By');?></th>
     <th class='sort'><? echo $this->Paginator->sort('body', 'Tweet');?></th>
     <th>Verified</th>
 </thead>
@@ -115,10 +135,7 @@ echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('
             }?>
       </td>
       <td>
-        <? echo $key['Tweet']['screen_name']; ?>
-      </td>
-      <td class='writtenBy'>
-        <?php echo $key['Tweet']['first_name']; ?>
+        <span class='screenName'><? echo $key['Tweet']['screen_name']; ?></span>
       </td>
       <td class='nopadding' id=<?php echo $key['Tweet']['id'];?>>
         <?php echo $this->Form->textarea('body', array(
@@ -128,6 +145,7 @@ echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('
             'label' => false, 
             'maxlength' => '140')); ?> 
             
+            <span style='float: left'>Written by: <? echo $key['Tweet']['first_name']; ?></span>
             <div class="tweetButtons">
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
@@ -342,6 +360,13 @@ $(document).ready(function() {
                 };
 
                 $('#progress table').load('/twitter/progressrefresh');
+        });
+
+        $('.schedule').each(function(){
+            $(this).datetimepicker({
+                dateFormat: 'dd-mm-yy',
+                altFormat: '@',
+            });
         });
 
         /*$("#refresh").infinitescroll({

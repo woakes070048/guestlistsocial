@@ -1424,3 +1424,16 @@ input[type=file] {
 	overflow: hidden;
 	font-size: 90%;
 }
+#addTweetWrapper {
+	width: 45%;
+	float: right;
+	background: #5d2a71;
+	padding: 10px 10px 0px 10px;
+	margin-bottom: 10px;
+	border-radius: 5px
+}
+.screenName {
+	padding-left: 21px;
+	background: url(../img/twitter19px.png) no-repeat left center;
+	color: #773d8d;
+}

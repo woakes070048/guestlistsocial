@@ -1,6 +1,6 @@
 <?php 
 class TeamsController extends AppController {
-    var $uses = array('User', 'Team', 'TwitterAccount', 'TwitterPermission', 'TeamsUser', 'Ticket');
+    var $uses = array('User', 'Team', 'TwitterAccount', 'TwitterPermission', 'TeamsUser', 'Ticket', 'Tweet');
     public $helpers =  array('Html' , 'Form');
     public $components = array('Tickets');
     
@@ -101,6 +101,35 @@ class TeamsController extends AppController {
 		$this->set('users', $users);
 
 
+		//right panel
+		$allusers = array();
+		foreach ($this->Session->read('Auth.User.Team') as $key) {
+			$id = $key['id'];
+			$users = $this->TeamsUser->find('list', array('fields' => 'user_id', 'conditions' => array('team_id' => $id)));
+			$allusers = array_merge($allusers, $users);
+			$allusers = array_unique($allusers);
+		}
+
+		$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
+		$counts = array();
+		foreach ($allusers as $key => $value) {
+			$user = $this->User->find('first', array('conditions' => array('User.id' => $value)));
+			$counts[$value][6] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-6 day', $base)), date("Y-m-d H:i:s", strtotime('-5 day', $base))))));
+			$counts[$value][5] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-5 day', $base)), date("Y-m-d H:i:s", strtotime('-4 day', $base))))));
+			$counts[$value][4] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-4 day', $base)), date("Y-m-d H:i:s", strtotime('-3 day', $base))))));
+			$counts[$value][3] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-3 day', $base)), date("Y-m-d H:i:s", strtotime('-2 day', $base))))));
+			$counts[$value][2] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-2 day', $base)), date("Y-m-d H:i:s", strtotime('-1 day', $base))))));
+			$counts[$value][1] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-1 day', $base)), date("Y-m-d H:i:s", strtotime('0 day', $base))))));
+			$counts[$value][0] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('0 day', $base)), date("Y-m-d H:i:s", time())))));		
+			$counts[$value]['sum'] = array_sum($counts[$value]);
+			$counts[$value]['name'] = $user['User']['first_name'];
+		}
+		function cmp_by_sum($a, $b) {
+		  return $b['sum'] - $a['sum'];
+		}
+
+		usort($counts, 'cmp_by_sum');
+		$this->set('counts', $counts);
         //$teamMembers = debug($this->User->find('all', array('fields' => array('first_name', 'group_id', 'id'))));
 	}
 

@@ -41,8 +41,8 @@ class AppController extends Controller {
         	'authenticate' => array('Form' => array( 'userModel' => 'User',
                                     'fields' => array('username' => 'email',
                                                       'password' => 'password'))),
-            'loginRedirect' => array('controller' => 'twitter', 'action' => 'admin'),
-            'logoutRedirect' => array('controller' => 'twitter', 'action' => 'admin'),
+            'loginRedirect' => array('controller' => 'twitter', 'action' => 'index'),
+            'logoutRedirect' => array('controller' => 'twitter', 'action' => 'index'),
             'authorize' => array('Actions' => array('actionPath' => 'controllers'))
             //'authorize' => array('Controller')
         ));

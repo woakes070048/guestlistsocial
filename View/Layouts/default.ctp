@@ -52,10 +52,6 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 			<? echo $this->Html->image('beta.png', array('class' => 'beta'));?>
 			<nav>
 				<ul>
-					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='admin') )?'active' :'inactive' ?>">
-						<? echo $this->Html->link('write tweets', '/');?>
-					</li>
-
 					<? //if ($this->Session->read('Auth.User.Group.id') == 1 || $this->Session->read('Auth.User.Group.id') == 5) { ?>
 
 						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='manageteam') )?'active' :'inactive' ?>">

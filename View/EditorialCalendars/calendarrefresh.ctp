@@ -46,7 +46,6 @@ echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalen
 <table id='refresh'>
 <thead class="mainheader">
     <th>Scheduled</th>
-    <th>Writer</th>
     <th>Topic</th>
     <th>Tweet</th>
     <th>Status</th>
@@ -108,7 +107,6 @@ foreach ($calendar as $key1) {
             $disabled = '';
         }?>
     <td class="scheduled"><? echo date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']));?> </td>
-    <td class="writtenBy"><? echo $firstName; ?> </td>
     <td class="topic">
     <div class='calendar_topic'><? echo $key1['EditorialCalendar'][strtolower($value) . '_topic']; ?></div>
 
@@ -117,6 +115,7 @@ foreach ($calendar as $key1) {
     <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div></td>
     <td class="nopadding">
     <?echo $body;?>
+    <span style='float: left'>Written by: <? echo $firstName; ?></span>
         <div class="tweetButtons">
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
             <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
