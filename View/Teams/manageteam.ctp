@@ -131,6 +131,14 @@ echo $this->Html->link('<p class="iu"> INVITE USER </p>', '/teams/invite', array
 <div id='rightpanel'>
 <div id='teamspanel'>
 	Top Tweeters
+	<div id="filterLinks">
+		<? echo $this->Html->link('Awaiting Proof', '/teams/manageteam/', array('class' => (empty($this->params['named']['h']))?'awaitingProof active' :'awaitingProof inactive'));
+		echo $this->Html->link('Queued', '/teams/manageteam/h:queued', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='queued') )?'queued active' :'queued inactive'));
+		echo $this->Html->link('Published', '/teams/manageteam/h:published', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='published') )?'published active' :'published inactive'));
+		echo $this->Html->link('Need Improving', '/teams/manageteam/h:improving', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='improving') )?'needImproving active' :'needImproving inactive'));
+		echo $this->Html->Link('Not Published', '/teams/manageteam/h:notpublished', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
+		?>
+	</div>
 	<table>
 	<th>Name</th>
 	<th><? echo date('D', strtotime('-6 day'));?></th>

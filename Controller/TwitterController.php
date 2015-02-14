@@ -439,6 +439,7 @@ class TwitterController extends AppController {
 
             if ($this->Tweet->saveField('verified', $key['verified'])) {
                 $this->Tweet->saveField('body', $key['body']);
+                $this->Tweet->saveField('comments', $key['comments']);
                 if ($key['verified']) {
                     $this->Tweet->saveField('verified_by', $key['verified_by']);
                 }
@@ -475,6 +476,13 @@ class TwitterController extends AppController {
     }
 
     public function indexrefresh() {
+        $permissions = array();
+        foreach ($this->Session->read('Auth.User.Team') as $key) {
+            $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
+            $permissions = array_merge($permissionsx, $permissions);
+            $myteam[] = $key['id'];
+        }
+
         $v = 0;
         $p = 0;
         $t = time();
@@ -512,12 +520,12 @@ class TwitterController extends AppController {
 
         if ($this->Session->read('filterUser')) {
             $written_by = $this->User->find('first', array('fields' => 'first_name', 'conditions' => array('User.id' => $this->Session->read('filterUser'))));
-            $c = array('team_id' => $myteam, 'verified' => $v, 'published' => $p, 'timestamp >' => $t, 'first_name' => $written_by['User']['first_name']);
+            $c = array('verified' => $v, 'published' => $p, 'timestamp >' => $t, 'first_name' => $written_by['User']['first_name']);
         } elseif ($this->Session->read('filterAccount')) {
             $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => 'account_id', 'conditions' => array('screen_name' => $this->Session->read('filterAccount'))));
-            $c = array('team_id' => $myteam, 'verified' => $v, 'published' => $p, 'timestamp >' => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
+            $c = array('verified' => $v, 'published' => $p, 'timestamp >' => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         } else {
-            $c = array('team_id' => $myteam, 'verified' => $v, 'published' => $p, 'timestamp >' => $t);
+            $c = array('verified' => $v, 'published' => $p, 'timestamp >' => $t, 'account_id' => $permissions);
         }
 
         $this->Paginator->settings = array(
@@ -614,10 +622,33 @@ class TwitterController extends AppController {
     }
 
     public function test() {
-        $Email = new CakeEmail();
+        /*$Email = new CakeEmail();
         $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
         $Email->to("sharif9876@hotmail.com");
         $Email->subject('TEST');
-        debug($Email->send('THIS IS A TEST'));
+        debug($Email->send('THIS IS A TEST'));*/
+        $test = array(
+            (int) 0 => array(
+                'id' => '38349',
+                'body' => 'helloooooofgfg000',
+                'verified' => '1',
+                'verified_by' => 'SharifsTest',
+                'img_url' => '',
+                'first_name' => 'SharifsTest'
+            ),
+            (int) 1 => array(
+                'body' => 'hellooooo',
+                'verified' => (int) 0,
+                'user_id' => '64',
+                'verified_by' => 'SharifsTest',
+                'calendar_id' => '1',
+                'timestamp' => (int) 1422349200,
+                'time' => '27-01-2015 09:00',
+                'account_id' => '1',
+                'first_name' => 'SharifsTest'
+            )
+        );
+
+        $this->Tweet->saveAll($test);
     }
 }

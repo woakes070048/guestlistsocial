@@ -102,6 +102,27 @@ class TeamsController extends AppController {
 
 
 		//right panel
+		$v = "AND verified =";
+        $p = "AND published =";
+		if (isset($this->passedArgs['h'])) {
+            if ($this->passedArgs['h'] == 'queued') {
+                $v = $v . 1;
+                $p = $p . 0;            } elseif ($this->passedArgs['h'] == 'published') {
+                $v = $v . 1;
+                $p = $p . 1;
+            } elseif ($this->passedArgs['h'] == 'improving') {
+                $v = $v . 2;
+                $p = $p . 0;
+            } elseif ($this->passedArgs['h'] == 'notpublished') {
+                $v = "AND verified IN (0, 2)";
+                $p = $p . 0 . " AND timestamp < " . time();
+            }
+        } else {
+        	$v = '';
+        	$p = '';
+        }
+
+
 		$allusers = array();
 		foreach ($this->Session->read('Auth.User.Team') as $key) {
 			$id = $key['id'];
@@ -112,7 +133,7 @@ class TeamsController extends AppController {
 
 		$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
 		$counts = array();
-		foreach ($allusers as $key => $value) {
+		/*foreach ($allusers as $key => $value) {
 			$user = $this->User->find('first', array('conditions' => array('User.id' => $value)));
 			$counts[$value][6] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-6 day', $base)), date("Y-m-d H:i:s", strtotime('-5 day', $base))))));
 			$counts[$value][5] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-5 day', $base)), date("Y-m-d H:i:s", strtotime('-4 day', $base))))));
@@ -123,14 +144,60 @@ class TeamsController extends AppController {
 			$counts[$value][0] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('0 day', $base)), date("Y-m-d H:i:s", time())))));		
 			$counts[$value]['sum'] = array_sum($counts[$value]);
 			$counts[$value]['name'] = $user['User']['first_name'];
+		}*/
+		//foreach ($allusers as $key => $value) {
+			//foreach (range(6,0) as $i) {
+				//$counts[$i] = $this->Tweet->find('count', array('group' => array('id', 'user_id'), 'conditions' => array('user_id' => $allusers, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime(-$i . ' day', $base)), date("Y-m-d H:i:s", strtotime(-$i + 1 . ' day', $base))))));
+				//debug(-$i + 1 . ' day');
+			//}
+		//}
+
+		//$counts = $this->Tweet->find('count', array('conditions' => array('user_id' => $allusers, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-6 day', $base)), date("Y-m-d H:i:s", strtotime('-5 day', $base))))));
+		
+			$allusersquery = join(',', $allusers);
+			foreach ($allusers as $key => $value) {
+			$user[$value] = $this->User->find('first', array('fields' => 'first_name', 'conditions' => array('User.id' => $value)));
 		}
+		foreach (range(6,0) as $i) {
+			$firstdate = date("Y-m-d H:i:s", strtotime(-$i . " day", $base));
+			$seconddate = date("Y-m-d H:i:s", strtotime(-$i + 1 . " day", $base));
+			$query[$i] = $this->Tweet->query("SELECT COUNT(user_id), user_id
+											FROM tweets
+											WHERE created BETWEEN  '$firstdate' AND '$seconddate' AND
+											user_id IN ($allusersquery) $v $p
+											GROUP BY user_id");
+			foreach ($allusers as $key) {
+				$counts[$key][$i] = '0';
+				$counts[$key]['name'] = $user[$key]['User']['first_name'];
+			}
+
+			foreach ($query[$i] as $key) {
+				$tempcount = $key[0]['COUNT(user_id)'];
+				$tempid = $key['tweets']['user_id'];
+				$counts[$tempid][$i] = $tempcount;
+			}
+		}
+
+		foreach ($counts as $key => $value) {
+			$counts[$key]['sum'] = array_sum($value);
+		}
+		
+		//debug($query);
+		//debug($counts);
+
+		/*foreach ($allusers as $key => $value) {
+			foreach (range(6,0) as $i) {
+				$counts1[$value][$i] = $count;
+			}
+		}*/
+
 		function cmp_by_sum($a, $b) {
 		  return $b['sum'] - $a['sum'];
 		}
 
 		usort($counts, 'cmp_by_sum');
 		$this->set('counts', $counts);
-        //$teamMembers = debug($this->User->find('all', array('fields' => array('first_name', 'group_id', 'id'))));
+        //$teamMembers = debug($this->User->find('all', array('fields' => array('first_name', 'group_id', 'id'))));*/
 	}
 
 	public function permissionSave() {

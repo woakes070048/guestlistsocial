@@ -126,8 +126,9 @@ class EditorialCalendarsController extends AppController {
     }*/
 
     public function editcalendartweet1() {
+        $test = array();
+        $verified = array();
         foreach ($this->request->data['Tweet'] as $key) {
-            debug($key);
             if (!$key['body'] && !$key['id']) { //Empty Tweets
 
             } elseif (!empty($key['id'])) { //Edited Tweets
@@ -138,7 +139,11 @@ class EditorialCalendarsController extends AppController {
                 $key['timestamp'] = strtotime($key['timestamp']);
 
                 if ($original['Tweet']['body'] != $key['body']) {
-                    $key['verified'] = 0;
+                    if ($original['Tweet']['verified'] == 0 && $key['verified'] == 1) {
+                        $key['verified'] = 1;
+                    } else {
+                        $key['verified'] = 0;
+                    }
                     $key['user_id'] = $this->Session->read('Auth.User.id');
                 }
 
@@ -170,15 +175,18 @@ class EditorialCalendarsController extends AppController {
                 $toSave['first_name'] = $key['first_name'];
 
                 if ($key['body']) {
-                    $this->Tweet->save($toSave);
+                    //$this->Tweet->save($toSave);
                     if ($toSave['verified'] == 1 && $key['timestamp'] > time()) {
-                        $this->CronTweet->save($key);
+                        //$this->CronTweet->save($key);
+                        $verified[] = $key;
+                    } elseif ($toSave['verified'] != 1 && $original['Tweet']['verified'] == 1) {
+                        $this->CronTweet->delete($key['id']);
                     }
                 } else {
                     $this->Tweet->delete($key['id']);
                     $this->CronTweet->delete($key['id']);
                 }
-
+                $test[] = $toSave;
 
             } else { //New Tweets
                 $key['first_name'] = $this->Session->read('Auth.User.first_name');
@@ -219,16 +227,21 @@ class EditorialCalendarsController extends AppController {
                 $toSave['first_name'] = $key['first_name'];
 
                 if ($key['body']) {
-                    $this->Tweet->create();
-                    $this->Tweet->save($toSave);
+                    //$this->Tweet->create();
+                    //$this->Tweet->save($toSave);
                     if ($toSave['verified'] == 1 && $key['timestamp'] > time()) {
-                        $this->CronTweet->save($toSave);
+                        //$this->CronTweet->save($toSave);
+                        $verified[] = $toSave;
                         unset($toSave);
                     }
                 }
+                $test[] = $toSave;
             }
             unset($key);
         }
+        //debug($test);
+        $this->Tweet->saveAll($test);
+        $this->CronTweet->saveAll($verified);
         $this->redirect(Controller::referer());
     }
 

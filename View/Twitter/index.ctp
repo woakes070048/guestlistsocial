@@ -6,6 +6,8 @@ echo $this->Html->script('jquery-ui-timepicker-addon');
 echo $this->Html->script('charCount');
 echo $this->Html->script('jquery.urlshortener');
 echo $this->Html->script('jquery.infinitescroll');
+echo $this->Html->script('jquery.qtip.min');
+echo $this->Html->css('jquery.qtip.min');
 echo $this->Html->css('calendar'); ?>
 <?php
 echo $this->Session->flash('auth');
@@ -151,6 +153,13 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
             <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
             <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
+            <? if ($key['Tweet']['comments']) {
+                $val = 'Comments(1)';
+            } else {
+                $val = 'Comments(0)';
+            }?>
+            <? echo $this->Form->button($val, array('type' => 'button', 'class' => 'comments' , 'id' => $key['Tweet']['id'])); ?>
+            <div id="<?echo $key['Tweet']['id'];?>-comments" style="display: none" class="empty"><? echo $this->Form->input('comments', array('value' => $key['Tweet']['comments'], 'label' => false, 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][comments]'));?></div>
             <? if ($key['Tweet']['img_url']) { ?>
                     <div class='imagecontainer'>
                     <? echo $this->Html->image($key['Tweet']['img_url'], array('style' => 'max-width:500px')); ?>
@@ -341,6 +350,12 @@ $(document).ready(function() {
                             refresh();
                         }});
                 <? } else {  ?>
+                        $('.qtip-content .empty').each(function () {
+                            val = $(this).find('input').val();
+                            id = $(this).attr('id');
+                            id = id.slice(0, -9);
+                            $('td#' + id).find('.tweetButtons').find('#' + id + '-comments').find('input').attr('value', val);
+                        });
                         $('#edit').ajaxSubmit({success: function() {
                             refresh();
                         }});
@@ -368,6 +383,27 @@ $(document).ready(function() {
                 altFormat: '@',
             });
         });
+       
+        //$('.comments').hover( function() {
+            //id = $(this).attr('id');
+            $('.comments').qtip({ 
+            content: {
+                text: function() {
+                    id = $(this).attr('id'); 
+                    return $('#' + id + '-comments').clone();
+                }, 
+                button: true
+            },
+            hide: {
+                event: false
+            },
+            position: {
+                my: 'bottom center',
+                at: 'top center', 
+                target: $('.comments')
+            }
+        });
+        //})
 
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
