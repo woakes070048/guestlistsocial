@@ -1,8 +1,8 @@
 # User specific & automatically generated files #
 #################################################
-app/Config/.env
-app/Config/core.php
-app/Config/database.php
-tmp
-Plugin
-vendor
+/app/Config/.env
+/app/Config/core.php
+/app/Config/database.php
+/tmp
+/Plugin
+/vendor
