@@ -39,7 +39,7 @@ if (!defined('DS')) {
  *
  */
 if (!defined('ROOT')) {
-	define('ROOT', dirname(dirname(dirname(__FILE__))));
+	define('ROOT', dirname(dirname(__FILE__)));
 }
 
 /**
@@ -47,8 +47,13 @@ if (!defined('ROOT')) {
  *
  */
 if (!defined('APP_DIR')) {
-	define('APP_DIR', basename(dirname(dirname(__FILE__))));
+	define('APP_DIR', 'app');
 }
+
+/**
+ * TMP directory path
+ */
+define('TMP', ROOT . DS . 'tmp' . DS);
 
 /**
  * The absolute path to the "Cake" directory, WITHOUT a trailing DS.
@@ -62,6 +67,7 @@ if (!defined('APP_DIR')) {
  * /lib/Cake/Console/Templates/skel/webroot/test.php
  */
 //define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
+define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS . 'lib');
 
 /**
  * Editing below this line should not be necessary.
@@ -88,7 +94,7 @@ if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 	}
 }
 if (!empty($failed)) {
-	trigger_error("CakePHP core could not be found. Check the value of CAKE_CORE_INCLUDE_PATH in APP/webroot/index.php. It should point to the directory containing your " . DS . "cake core directory and your " . DS . "vendors root directory.", E_USER_ERROR);
+	trigger_error("CakePHP core could not be found. Check the value of CAKE_CORE_INCLUDE_PATH in webroot/index.php. It should point to the directory containing your " . DS . "cake core directory and your " . DS . "vendors root directory.", E_USER_ERROR);
 }
 
 if (Configure::read('debug') < 1) {
