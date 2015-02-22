@@ -128,11 +128,23 @@ class EditorialCalendarsController extends AppController {
     public function editcalendartweet1() {
         $test = array();
         $verified = array();
+        $originals = array();
+        foreach ($this->request->data['Tweet'] as $key) {
+            if (!empty($key['id'])) {
+                $originals[] = $key['id'];
+            }
+        }
+        $originals = $this->Tweet->find('all', array('conditions' => array('id' => $originals)));
+        foreach ($originals as $key => $value) {
+            $originals[$value['Tweet']['id']] = $originals[$key];
+            unset($originals[$key]);
+        }
+        debug($originals);
         foreach ($this->request->data['Tweet'] as $key) {
             if (!$key['body'] && !$key['id']) { //Empty Tweets
 
             } elseif (!empty($key['id'])) { //Edited Tweets
-                $original = $this->Tweet->find('first', array('conditions' => array('id' => $key['id'])));
+                $original = $originals[$key['id']];
                 $key['first_name'] = $this->Session->read('Auth.User.first_name');
                 $key['account_id'] = $this->Session->read('access_token.account_id');
                 $key['time'] = $key['timestamp'];
@@ -206,10 +218,12 @@ class EditorialCalendarsController extends AppController {
                 }
 
                 //Image Handling
-                if ($x = $this->imageHandling($key)) {
-                    $key['img_url'] = $x;
-                } else {
-                    //$this->Session->setFlash('There was an error processing your image, please try again.');
+                if (!empty($key['img_url1']['name'])) {
+                    if ($x = $this->imageHandling($key)) {
+                        $key['img_url'] = $x;
+                    } else {
+                        //$this->Session->setFlash('There was an error processing your image, please try again.');
+                    }
                 }
 
                 $toSave = array();

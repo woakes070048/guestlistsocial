@@ -164,6 +164,23 @@ class UsersController extends AppController {
         $this->layout = 'loginlayout';
     }
 
+    public function manage() {
+        $user = $this->User->find('first', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
+        $firstname = $user['User']['first_name'];
+        $lastname = $user['User']['last_name'];
+        $this->set('firstname', $firstname);
+        $this->set('lastname', $lastname);
+
+        if (empty($this->request->data['User']['password'])) {
+            unset($this->request->data['User']['password']);
+        }
+
+        if ($this->request->data) {
+            $this->User->id = $this->Session->read('Auth.User.id');
+            $this->User->save($this->request->data);
+        }
+    }
+
     public function initDB() {
     /*
     Group id's and names
@@ -192,15 +209,15 @@ class UsersController extends AppController {
     //$this->Acl->allow($group, 'controllers/users/logout');
 
     $group->id = 1;
-    $this->Acl->allow($group, 'controllers/teams/permissionSave');
+    $this->Acl->allow($group, 'controllers/users/manage');
     //$this->Acl->allow($group, 'controllers/teams/removeFromTeam');
     $group->id = 2;
-    $this->Acl->allow($group, 'controllers/teams/addtoTeam');
+    $this->Acl->allow($group, 'controllers/users/manage');
     $group->id = 5;
-    $this->Acl->allow($group, 'controllers/teams/permissionSave');
+    $this->Acl->allow($group, 'controllers/users/manage');
     //$this->Acl->allow($group, 'controllers/teams/removeFromTeam');
     $group->id = 7;
-    $this->Acl->allow($group, 'controllers/teams/addtoTeam');
+    $this->Acl->allow($group, 'controllers/users/manage');
     // we add an exit to avoid an ugly "missing views" error message
     echo "all done";
     exit;

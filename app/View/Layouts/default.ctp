@@ -65,7 +65,7 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 					<? //} ?>
 
 					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='#') )?'active' :'inactive' ?>">
-						<? echo $this->Html->link('you', '#');?>
+						<? echo $this->Html->link('my account', array('controller' => 'users', 'action' => 'manage'));?>
 					</li>
 				</ul>
 			</nav>

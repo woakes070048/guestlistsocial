@@ -27,8 +27,7 @@ class User extends AppModel {
         'password2' => array(
             'equaltofield' => array(
             'rule' => array('equaltofield','password'),
-            'message' => 'Passwords do not match.',
-            'on' => 'create'
+            'message' => 'Passwords do not match.'
             )
         ),
         'first_name' => array(
@@ -36,7 +35,13 @@ class User extends AppModel {
                 'rule' => array('notEmpty'),
                 'message' => 'Please enter your first name'
             )
-        )
+        ),
+        'curr_password' => array(
+            'equaltodb' => array(
+                'rule' => array('equaltodb', 'password'),
+                'message' => 'Current password incorrect'
+            )
+        ),
     );
 
     public $belongsTo = array(
@@ -95,7 +100,18 @@ class User extends AppModel {
             break;
         }
         return $this->data[$this->name][$otherfield] === $this->data[$this->name][$fname];
-    } 
+    }
+
+    function equaltodb($check, $dbfield) {
+        foreach ($check as $key => $value) {
+            $fname = $key;
+            break;
+        }
+        $check1 = $this->data[$this->alias][$fname] = AuthComponent::password($this->data[$this->alias][$fname]);
+        $this->id = AuthComponent::user('id');
+        $check2 = $this->field($dbfield);
+        return ($check1 === $check2);
+    }
 
 }
 ?>
