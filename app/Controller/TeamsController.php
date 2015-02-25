@@ -324,8 +324,8 @@ class TeamsController extends AppController {
 			$hash = $this->Tickets->set($data['invite']['team']);
 			$grouphash = $this->Tickets->set($data['invite']['group']);
 
-			$Email = new CakeEmail();
-            $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
+			$Email = new CakeEmail('default');
+            $Email->from(array('no-reply@guestlistsocial.com' => 'Guestlist Social'));
             $Email->to($user);
 
 			if ($count == 0) {

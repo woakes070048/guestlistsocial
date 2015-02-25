@@ -46,8 +46,8 @@ class UsersController extends AppController {
                     $msg = "Please click on the link below to activate you account with Guestlist Social:
 
                     " . Router::url(array('action' => 'verify', 'id' => $id, 'h' => $hash), true);
-                    $Email = new CakeEmail();
-                    $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
+                    $Email = new CakeEmail('default');
+                    $Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
                     $Email->to($this->request->data['User']['email']);
                     $Email->subject('Confirm Registration for Guestlist Social');
                     $Email->send($msg);
@@ -128,8 +128,8 @@ class UsersController extends AppController {
                 If you would like to reset you password, please click the link below:
                 " . Router::url(array('action' => 'resetpw', $this->Tickets->set($user['User']['email'])), true);
 
-                $Email = new CakeEmail();
-                $Email->from(array('admin@social.guestlist.net' => 'Guestlist Social'));
+                $Email = new CakeEmail('default');
+                $Email->from(array('no-reply@guestlistsocial.com' => 'Guestlist Social'));
                 $Email->to($this->request->data['User']['email']);
                 $Email->subject('Password Reset');
                 $Email->send($msg);
