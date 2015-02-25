@@ -22,14 +22,17 @@ $ds = DIRECTORY_SEPARATOR;
 $dispatcher = 'Cake' . $ds . 'Console' . $ds . 'ShellDispatcher.php';
 
 if (function_exists('ini_set')) {
-	$root = dirname(dirname(dirname(__FILE__)));
+	$root = dirname(dirname(dirname(__FILE__))) . $ds . 'vendor' . $ds . 'cakephp';
 
 	// the following line differs from its sibling
 	// /lib/Cake/Console/Templates/skel/Console/cake.php
-	ini_set('include_path', $root . $ds . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
+	ini_set('include_path', $root . $ds . 'cakephp' . $ds . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
 }
 
-if (!include($dispatcher)) {
+define('TMP', dirname(dirname(dirname(__FILE__))) . $ds . 'tmp' . $ds);
+define('WWW_ROOT', dirname(dirname(dirname(__FILE__))) . $ds . 'webroot' . $ds);
+
+if (!include $dispatcher) {
 	trigger_error('Could not locate CakePHP core files.', E_USER_ERROR);
 }
 unset($paths, $path, $dispatcher, $root, $ds);
