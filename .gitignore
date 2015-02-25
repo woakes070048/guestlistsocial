@@ -4,6 +4,7 @@
 /app/Config/core.php
 /app/Config/database.php
 /app/Config/email.php
+/webroot/img/uploads
 /tmp
 /Plugin
 /vendor
