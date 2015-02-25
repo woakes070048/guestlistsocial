@@ -328,4 +328,3 @@ class EditorialCalendarsController extends AppController {
         $this->Session->write('Auth.User.show_calendar', 1);
     }
 }
-?>

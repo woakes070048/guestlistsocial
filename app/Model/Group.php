@@ -7,4 +7,3 @@ class Group extends AppModel {
 	    return null;
 	}
 }
-?>

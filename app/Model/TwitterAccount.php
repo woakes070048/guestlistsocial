@@ -20,4 +20,3 @@ class TwitterAccount extends AppModel {
     public $primaryKey = 'account_id';
 
 }
-?>

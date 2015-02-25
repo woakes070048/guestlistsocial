@@ -7,4 +7,3 @@ class GroupsController extends AppController {
 		}
 	}
 }
-?>
