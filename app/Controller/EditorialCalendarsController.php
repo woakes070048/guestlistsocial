@@ -159,11 +159,6 @@ class EditorialCalendarsController extends AppController {
                     $key['user_id'] = $this->Session->read('Auth.User.id');
                 }
 
-                //Just in case something has gone wrong
-                if (empty($key['verified'])) {
-                    $key['verified'] = 0;
-                }
-
                 //Image Handling
                 if (!empty($key['img_url1']['name'])) {
                     if ($x = $this->imageHandling($key)) {
@@ -253,10 +248,17 @@ class EditorialCalendarsController extends AppController {
             }
             unset($key);
         }
-        //debug($test);
-        $this->Tweet->saveAll($test);
-        $this->CronTweet->saveAll($verified);
-        $this->redirect(Controller::referer());
+        debug($test);
+        debug($verified);
+        if (!empty($verified)) {
+            $this->Tweet->saveAll($test);
+        }
+
+        if (!empty($verified)) {
+            $this->CronTweet->saveAll($verified);
+        }
+
+        //$this->redirect(Controller::referer());
     }
 
     private function imageHandling($key) {
