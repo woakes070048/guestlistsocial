@@ -248,8 +248,6 @@ class EditorialCalendarsController extends AppController {
             }
             unset($key);
         }
-        debug($test);
-        debug($verified);
         if (!empty($verified)) {
             $this->Tweet->saveAll($test);
         }
@@ -258,7 +256,7 @@ class EditorialCalendarsController extends AppController {
             $this->CronTweet->saveAll($verified);
         }
 
-        //$this->redirect(Controller::referer());
+        $this->redirect(Controller::referer());
     }
 
     private function imageHandling($key) {
