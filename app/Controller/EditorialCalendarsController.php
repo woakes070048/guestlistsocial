@@ -248,7 +248,7 @@ class EditorialCalendarsController extends AppController {
             }
             unset($key);
         }
-        if (!empty($verified)) {
+        if (!empty($test)) {
             $this->Tweet->saveAll($test);
         }
 
