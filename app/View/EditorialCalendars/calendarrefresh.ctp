@@ -136,14 +136,14 @@ foreach ($calendar as $key1) {
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]'));
     echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
-    echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
-    echo $this->Form->input('verfied_by', array(
+    //echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
+    /*echo $this->Form->input('verfied_by', array(
     'type' => 'hidden', 
     'value' => $this->Session->read('Auth.User.first_name'), 
     'name' => 'data[Tweet]['.$value1.'][verified_by]', 
     'class' => 'verifiedby', 
-    'id' => $id . '_' . $this->Session->read('Auth.User.first_name')));
-    echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => $img, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
+    'id' => $id . '_' . $this->Session->read('Auth.User.first_name')));*/
+    //echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => $img, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
     echo '</tr>';
 }
 }
@@ -167,7 +167,7 @@ foreach ($calendar as $key1) {
                 $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
             });
 
-            $(".verifiedby").prop('disabled', true);
+            //$(".verifiedby").prop('disabled', true);
 
             $('#table1').on('click', '#tweetsubmit', function() {
                 $('#submitTweets').submit();

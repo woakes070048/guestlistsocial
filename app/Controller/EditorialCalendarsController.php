@@ -139,13 +139,11 @@ class EditorialCalendarsController extends AppController {
             $originals[$value['Tweet']['id']] = $originals[$key];
             unset($originals[$key]);
         }
-        debug($originals);
         foreach ($this->request->data['Tweet'] as $key) {
-            if (!$key['body'] && !$key['id']) { //Empty Tweets
+            if (empty($key['body']) && empty($key['id'])) { //Empty Tweets
 
             } elseif (!empty($key['id'])) { //Edited Tweets
                 $original = $originals[$key['id']];
-                $key['first_name'] = $this->Session->read('Auth.User.first_name');
                 $key['account_id'] = $this->Session->read('access_token.account_id');
                 $key['time'] = $key['timestamp'];
                 $key['timestamp'] = strtotime($key['timestamp']);
@@ -156,7 +154,12 @@ class EditorialCalendarsController extends AppController {
                     } else {
                         $key['verified'] = 0;
                     }
+                    $key['first_name'] = $this->Session->read('Auth.User.first_name');
                     $key['user_id'] = $this->Session->read('Auth.User.id');
+                }
+
+                if ($original['Tweet']['verified'] != 1 && $key['verified'] == 1) {
+                    $key['verified_by'] = $this->Session->read('Auth.User.first_name');
                 }
 
                 //Image Handling
@@ -178,8 +181,14 @@ class EditorialCalendarsController extends AppController {
                 if (!empty($key['verified_by'])) {
                     $toSave['verified_by'] = $key['verified_by'];
                 }
-                $toSave['img_url'] = $key['img_url'];
-                $toSave['first_name'] = $key['first_name'];
+
+                if (!empty($key['img_url'])) {
+                    $toSave['img_url'] = $key['img_url'];
+                }
+                
+                if (!empty($key['first_name'])) {
+                    $toSave['first_name'] = $key['first_name'];
+                }
 
                 if ($key['body']) {
                     //$this->Tweet->save($toSave);
@@ -193,7 +202,10 @@ class EditorialCalendarsController extends AppController {
                     $this->Tweet->delete($key['id']);
                     $this->CronTweet->delete($key['id']);
                 }
-                $test[] = $toSave;
+
+                //if ($original['Tweet']['body'] != $key['body'] || $original['Tweet']['verified'] != $toSave['verified']) {
+                    $test[] = $toSave;
+                //}
 
             } else { //New Tweets
                 $key['first_name'] = $this->Session->read('Auth.User.first_name');
@@ -210,6 +222,11 @@ class EditorialCalendarsController extends AppController {
 
                 if (empty($key['verified_by'])) {
                     $key['verified_by'] = '';
+                }
+
+
+                if ($original['Tweet']['verified'] != 1 && $key['verified'] == 1) {
+                    $key['verified_by'] = $this->Session->read('Auth.User.first_name');
                 }
 
                 //Image Handling
@@ -255,7 +272,7 @@ class EditorialCalendarsController extends AppController {
         if (!empty($verified)) {
             $this->CronTweet->saveAll($verified);
         }
-
+        
         $this->redirect(Controller::referer());
     }
 

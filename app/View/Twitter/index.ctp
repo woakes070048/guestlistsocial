@@ -245,7 +245,7 @@ $(document).ready(function() {
 
         $("#table").on("change", ".TwitterVerified1", function() {
             $("#table").css('opacity', '.4');
-                if (this.checked == true) {
+                /*if (this.checked == true) {
                     id = $(this).attr('id');
                     id = id.slice(0, -1);
                     $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
@@ -258,7 +258,7 @@ $(document).ready(function() {
                         color = '#ff0000';
                     }
                     $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
-                }
+                }*/
 
                 <? if ($params == 'h:daybyday') {  ?>
                         $('#submitTweets').ajaxSubmit({success: function() {
@@ -325,9 +325,9 @@ $(document).ready(function() {
                     $(this).find(".input.radio input:radio[value=1]").prop('checked', true);
                 }
                 $("#table").css('opacity', '.4');
-                    id = $(this).find(".input.radio input:radio[value=1]").attr('id');
+                    /*id = $(this).find(".input.radio input:radio[value=1]").attr('id');
                     id = id.slice(0, -1);
-                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
+                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);*/
 
                     
             });
