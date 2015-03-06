@@ -225,7 +225,7 @@ class EditorialCalendarsController extends AppController {
                 }
 
 
-                if ($original['Tweet']['verified'] != 1 && $key['verified'] == 1) {
+                if ($key['verified'] == 1) {
                     $key['verified_by'] = $this->Session->read('Auth.User.first_name');
                 }
 

@@ -33,12 +33,19 @@ class ScheduleShell extends AppShell {
                     }
                     
                     $this->Tweet->id = $toTweet[$i]['CronTweet']['id'];
-                    $this->Tweet->saveField('published', 1);
+                    $json = json_decode($log, true);
+                    if (!empty($json['errors'][0]['code'])) {
+                        foreach ($json['errors'] as $key) {
+                            $error_code = (int)$key['code'];
+                            $this->out($error_code);
+                            $this->log("
+                                        id:" . $toTweet[0]['Tweet']['id'] . " not sent. Error code: " . $error_code);
+                            $this->Tweet->saveField('error', $error_code);
+                        }
+                    } else {
+                        $this->Tweet->saveField('published', 1);
+                    }
                     $this->out('Complete');
-                    $this->log("
-                        " . $toTweet[$i]['CronTweet']['id'] . "
-
-                        " . $log);
                 }
             $this->CronTweet->deleteAll(array('id' => $toDelete));
 
