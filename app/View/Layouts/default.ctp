@@ -17,7 +17,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = __d('cake_dev', 'social.guestlist.net');
+$cakeDescription = __d('cake_dev', 'tweetPROOF');
 ?>
 <!DOCTYPE html>
 <html>
@@ -36,6 +36,7 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
+	<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
 </li>
 </head>
 
@@ -47,32 +48,40 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 	<div id="container">
 		<div id="header">
 		<div id="headercontainer">
-			<? echo $this->Html->image('GLogo60px.png', array('url' => '/')); ?>
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://social.guestlist.net'); ?></h1>
-			<? echo $this->Html->image('beta.png', array('class' => 'beta'));?>
+			<div id="logo">
+				<h1><a href='http://social.guestlist.net'>tweet<b>PROOF</b></a></h1>
+				<? echo $this->Html->image('beta.png', array('class' => 'beta'));?>
+			</div>
 			<nav>
 				<ul>
 					<? //if ($this->Session->read('Auth.User.Group.id') == 1 || $this->Session->read('Auth.User.Group.id') == 5) { ?>
 
+						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='index') )?'active' :'inactive' ?>">
+							<? echo $this->Html->link('Manage Tweets', array('controller' => 'twitter', 'action' => 'index'), array('class' => 'managetweets'));?>
+						</li>
+
 						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='manageteam') )?'active' :'inactive' ?>">
-							<? echo $this->Html->link('manage team', array('controller' => 'teams', 'action' => 'manageteam'));?>
+							<? echo $this->Html->link('Manage Teams', array('controller' => 'teams', 'action' => 'manageteam'), array('class' => 'manageteams'));?>
 						</li>
 	
-						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='index') )?'active' :'inactive' ?>">
-							<? echo $this->Html->link('manage tweets', array('controller' => 'twitter', 'action' => 'index'));?>
-						</li>
-
 					<? //} ?>
 
-					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='#') )?'active' :'inactive' ?>">
-						<? echo $this->Html->link('my account', array('controller' => 'users', 'action' => 'manage'));?>
+					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='manage') )?'active' :'inactive' ?>">
+						<? echo $this->Html->link('Settings', array('controller' => 'users', 'action' => 'manage'), array('class' => 'settings'));?>
 					</li>
 				</ul>
 			</nav>
-			<div class = 'fr'> <?php echo $this->Session->read('Auth.User.email') . ' | ' . $this->Html->link('log out', array('controller' => 'users', 'action' => 'logout')) ; ?> </div>
+			
 		</div>
 		</div>
 		<div id="content">
+			<div id='searchbar'>
+				<? echo $this->Form->create('search');
+				echo $this->Form->input('search', array('type' => 'text', 'label' => false, 'placeholder' => 'Search...')); 
+				echo $this->Form->end();?>
+
+				<div class = 'fr'> <?php echo $this->Session->read('Auth.User.email') . ' | ' . $this->Html->link('log out', array('controller' => 'users', 'action' => 'logout')) ; ?> </div>
+			</div>
 
 			<?php echo $this->Session->flash(); ?>
 

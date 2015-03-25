@@ -25,7 +25,7 @@
 			counterElement: 'span',
 			cssWarning: 'warning',
 			cssExceeded: 'exceeded',
-			counterText: 'characters remaining'
+			counterText: 'CHARACTERS REMAINING'
 		}; 
 			
 		var options = $.extend(defaults, options); 

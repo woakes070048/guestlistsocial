@@ -1,18 +1,12 @@
 <?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
-<table id="refresh">
-<thead class="mainheader">
-    <th class='sort'><? echo $this->Paginator->sort('timestamp', 'Schedules');?></th>
-    <th class='sort'><? echo $this->Paginator->sort('screen_name', 'Account');?></th>
-    <th class='sort'><? echo $this->Paginator->sort('first_name', 'Written By');?></th>
-    <th class='sort'><? echo $this->Paginator->sort('body', 'Tweet');?></th>
-    <th>Verified</th>
-    <th></th>
-</thead>
-    <?php foreach ($tweets as $key) { ?>
+<div id="refresh">
+      <div style="display: inline">
+        <span class='screenName'><? echo '@' . $key['Tweet']['screen_name']; ?></span>
+      </div>
     <?php if ($key['Tweet']['verified'] == 1) {
             $checked = 'checked';
             $value = $key['Tweet']['time'];
-            $color = '#ffb400';
+            $color = 'Green';
         } elseif ($key['Tweet']['verified'] == 1 && $key['Tweet']['client_verified'] == 1) {
             $color = 'Green';
         } else {
@@ -20,20 +14,47 @@
             $value = '';
             $color = 'Red';} 
 
-            if ($this->Session->read('Auth.User.group_id') == 2 || $params == 'h:archived') {
+            if ($this->Session->read('Auth.User.group_id') == 2 || $status == 'published') {
                 $disabled = 'disabled';
             } else {
                 $disabled = '';
             }?>
-    <tr class="row">
-      <td class='scheduled' id='time<?php echo $key['Tweet']['id']?>'> 
-        <div class='notediting'><?php if($key['Tweet']['time'] && $key['Tweet']['published'] == 1) {
-            echo $key['Tweet']['time'] . '<small>[Published]</small>';
+      <div class='verified'>
+        <?php echo $this->Form->input('verified', array(
+        'type' => 'select', 
+        'options' => array(
+            1 => 'APPROVED', 
+            0 => 'AWAITING APPROVAL', 
+            2 => 'IMPROVE'
+            ), 
+        'label' => false, 
+        'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified]', 
+        'class' => 'TwitterVerified1', 
+        'id' => $key['Tweet']['id'],
+        $disabled,
+        'default' => $key['Tweet']['verified']));?>
+
+        <? if ($key['Tweet']['verified'] == 1 || $key['Tweet']['verified'] == 2) {?>
+        <i><small>-<? echo $key['Tweet']['verified_by'];?></small></i>
+        <?}?>
+      </div>
+    <div class="row">
+      <div class='scheduled' id='time<?php echo $key['Tweet']['id']?>'> 
+        SCHEDULE
+        <hr style="margin: 5px 0;">
+        <div class='notediting'>
+            <?php 
+            if($key['Tweet']['time'] && $key['Tweet']['published'] == 1) {
+                echo date('d.m.Y', $key['Tweet']['timestamp']) . '<small>[Published]</small>' . '<br />';
             } elseif ($key['Tweet']['time']) {
-                echo $key['Tweet']['time'];
+                echo date('d.m.Y', $key['Tweet']['timestamp']) . '<br />';
             } else {
-                echo '';
-                } ?>
+                    echo '';
+            } 
+
+            echo '<b class="' .date('l', $key['Tweet']['timestamp']) . '">' . strtoupper(date('l', $key['Tweet']['timestamp'])) . '</b>' . '<br />';
+
+            echo date('H:i', $key['Tweet']['timestamp']);?>
         </div>
         <?php if($key['Tweet']['published'] == 0) {
             echo $this->Form->input('timestamp', array(
@@ -46,14 +67,12 @@
             'style' => 'display: none'
             ));
             }?>
-      </td>
-      <td>
-        <? echo $key['Tweet']['screen_name']; ?>
-      </td>
-      <td class='writtenBy'>
-        <?php echo $key['Tweet']['first_name']; ?>
-      </td>
-      <td class='nopadding' id=<?php echo $key['Tweet']['id']?>>
+
+            <hr style="margin: 5px 0;">
+
+            <span class='writer' style='float: left'>WRITER <br /> <b><? echo $key['Tweet']['first_name']; ?></b></span>
+      </div>
+      <div class='nopadding' id=<?php echo $key['Tweet']['id'];?>>
         <?php echo $this->Form->textarea('body', array(
             'class' => 'editing', 
             'value' => $key['Tweet']['body'], 
@@ -62,10 +81,17 @@
             'maxlength' => '140')); ?> 
             
             <div class="tweetButtons">
-            <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <? if ($key['Tweet']['comments']) {
+                $val = 'Comments(1)';
+            } else {
+                $val = 'Comments(0)';
+            }?>
+            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment1.png')">COMMENTS</div>
+            <span class='savetweet'>SAVE</span>
+            <span class='deletetweet' id="<? echo $key['Tweet']['id'];?>">DELETE</span>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
-            <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
-            <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
+            <? echo $this->Form->button('SHORTEN URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <div id="<?echo $key['Tweet']['id'];?>-comments" style="display: none" class="empty"><? echo $this->Form->input('comments', array('value' => $key['Tweet']['comments'], 'label' => false, 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][comments]'));?></div>
             <? if ($key['Tweet']['img_url']) { ?>
                     <div class='imagecontainer'>
                     <? echo $this->Html->image($key['Tweet']['img_url'], array('style' => 'max-width:500px')); ?>
@@ -73,25 +99,7 @@
                     </div>
             <?  }  ?>
             </div>
-      </td>
-      <td class='verified'>
-        <?php echo $this->Form->input('verified', array(
-        'type' => 'radio', 
-        'options' => array(
-            1 => 'APPROVED', 
-            0 => 'AWAITING APPROVAL', 
-            2 => 'IMPROVE'
-            ), 
-        'legend' => false, 
-        'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified]', 
-        'class' => 'TwitterVerified1', 
-        'id' => $key['Tweet']['id'], 
-        'default' => $key['Tweet']['verified']));?>
-
-        <? if ($key['Tweet']['verified'] == 1 || $key['Tweet']['verified'] == 2) {?>
-        <i><small>-<? echo $key['Tweet']['verified_by'];?></small></i>
-        <?}?>
-      </td>
+      </div>
       <?php echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['Tweet']['id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][id]'));
             echo $this->Form->input('verfied_by', array(
             'type' => 'hidden', 
@@ -101,9 +109,9 @@
             'id' => $key['Tweet']['id'] . '_' . $this->Session->read('Auth.User.first_name')));
             echo $this->Form->input('user_id', array('type' => 'hidden', 'value' => $key['Tweet']['user_id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][user_id]'));
             echo $this->Form->input('account_id', array('type' => 'hidden', 'value' => $key['Tweet']['account_id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][account_id]'));?>
-    </tr>
+    </div>
+</div>
     <?php } ?>
-</table>
 
 <?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
 

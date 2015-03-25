@@ -17,9 +17,10 @@ class TwitterController extends AppController {
         foreach ($this->Session->read('Auth.User.Team') as $key) {
             $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
             $permissions = array_merge($permissionsx, $permissions);
-            $myteam[] = $key['id'];
+            $myteam[$key['id']] = $key['name'];
         }
         $conditions = array('account_id' => $permissions);
+        $this->set('myteam', $myteam);
 
         $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('screen_name'), 'conditions' => $conditions, 'order' => array('screen_name' => 'ASC')));
         $dropdownaccounts = array(0 => 'All Accounts') + $dropdownaccounts;
@@ -43,7 +44,7 @@ class TwitterController extends AppController {
         //$dropdownusers = array(0 => 'All Users') + $dropdownusers;
         $this->set('dropdownusers', $dropdownusers);
 
-        $v = 0;
+        /*$v = 0;
         $p = 0;
         $t = time();
         $timestamp = 'timestamp >';
@@ -107,8 +108,100 @@ class TwitterController extends AppController {
                 $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $permissions);
             }
 
+        }*/
+        
+        $v = array(0, 1, 2);
+        $p = 0;
+        $t = time();
+        $timestamp = 'timestamp >';
+        $order = 'asc';
+        $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
+        $this->set('status', $this->Session->read('filter.status'));
+        $this->set('user', $this->Session->read('filter.user'));
+        $this->set('account', $this->Session->read('filter.account'));
+        $this->set('team', $this->Session->read('filter.team'));
+        $this->set('params', '');
+
+        $filter = $this->Session->read('filter');
+
+        if (!empty($this->request->data['filter'])) {
+            $filter1 = $this->request->data['filter'];
+            if ($filter1['status']) {
+                $filter['status'] = $filter1['status'];
+            }
+            if ($filter1['user']) {
+                $filter['user'] = $filter1['user'];
+            }
+            if ($filter1['account']) {
+                $filter['account'] = $filter1['account'];
+            }
+            if ($filter1['team']) {
+                $filter['team'] = $filter1['team'];
+            }
         }
 
+        if (!empty($filter['status'])) {
+            if ($filter['status'] == 'queued') {
+                $v = 1;
+                $this->set('status', 'queued');
+                $this->Session->write('filter.status', 'queued');
+            } elseif ($filter['status'] == 'awaitingproof') {
+                $v = 0;
+                $this->set('status', 'awaitingproof');
+                $this->Session->write('filter.status', 'awaitingproof');
+            } elseif ($filter['status'] == 'improving') {
+                $v = 2;
+                $this->set('status', 'improving');
+                $this->Session->write('filter.status', 'improving');
+            } elseif ($filter['status'] == 'published') {
+                $p = 1;
+                $t = -1;
+                $order = 'desc';
+                $this->set('status', 'published');
+                $this->Session->write('filter.status', 'published');
+            } elseif ($filter['status'] == 'notpublished') {
+                $v = array(0, 2);
+                $p = 0;
+                $timestamp = 'timestamp <';
+                $order = 'desc';
+                $this->set('status', 'notpublished');
+                $this->Session->write('filter.status', 'notpublished');
+            } elseif ($filter['status'] == 'All Statuses') {
+                $this->set('status', 'All Statuses');
+                $this->Session->write('filter.status', 'All Statuses');
+            }
+        }
+
+        if (!empty($filter['user'])) {
+            $user_id = $filter['user'];
+            $this->set('user', $user_id);
+            $this->Session->write('filter.user', $user_id);
+        }
+
+        if (!empty($filter['account'])) {
+            $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
+            if ($filter['account'] == 'All Accounts') {
+                $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
+            } else {
+                $this->Session->write('access_token.account_id', $twitter_account_id['TwitterAccount']['account_id']);
+                $this->Session->write('access_token.screen_name', $twitter_account_id['TwitterAccount']['screen_name']);
+            }
+            $this->set('account', $filter['account']);
+            $this->Session->write('filter.account', $filter['account']);
+        }
+
+        if (!empty($filter['team'])) {
+            $twitter_account_id['TwitterAccount']['account_id'] = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $filter['team'])));
+            $this->set('team', $filter['team']);
+            $this->Session->write('filter.team', $filter['team']);
+        }
+
+        if (!empty($user_id)) {
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
+        } else {
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
+        }
+        
         $this->Paginator->settings = array(
         'conditions' => $c,
         'limit' => 10,
@@ -119,12 +212,12 @@ class TwitterController extends AppController {
         $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
         $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
         //setting the counts on the write tweets page
-        if ($this->Session->read('filterUser')) {
-            $id = $this->Session->read('filterUser');
+        if (!empty($filter['user'])) {
+            $id = $filter['user'];
             $countConditions0['user_id'] = $id;
             $countConditions1['user_id'] = $id;
             $countConditions2['user_id'] = $id;
-        } elseif ($this->Session->read('filterAccount')) {
+        } elseif (!empty($filter['account'])) {
             $id = $twitter_account_id['TwitterAccount']['account_id'];
             $countConditions0['account_id'] = $id;
             $countConditions1['account_id'] = $id;
@@ -464,7 +557,7 @@ class TwitterController extends AppController {
         if($this->Tweet->delete($id)) {
             $this->CronTweet->delete($id);
             $this->Session->setFlash('Tweet has been deleted.');
-            $this->redirect(array('action' => 'admin'));
+            $this->redirect('/');
         }
     }
 
@@ -482,7 +575,7 @@ class TwitterController extends AppController {
             $permissions = array_merge($permissionsx, $permissions);
             $myteam[] = $key['id'];
         }
-
+        /*
         $v = 0;
         $p = 0;
         $t = time();
@@ -526,6 +619,66 @@ class TwitterController extends AppController {
             $c = array('verified' => $v, 'published' => $p, 'timestamp >' => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         } else {
             $c = array('verified' => $v, 'published' => $p, 'timestamp >' => $t, 'account_id' => $permissions);
+        }*/
+
+
+        $v = array(0, 1, 2);
+        $p = 0;
+        $t = time();
+        $timestamp = 'timestamp >';
+        $order = 'asc';
+        $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
+        $this->set('status', '');
+        $this->set('user', '');
+        $this->set('account', '');
+        $this->set('team', '');
+        $this->set('params', '');
+            $filter = $this->Session->read('filter');
+        if (!empty($filter)) {
+            if ($filter['status'] == 'queued') {
+                $v = 1;
+                $this->set('status', 'queued');
+            } elseif ($filter['status'] == 'awaitingproof') {
+                $v = 0;
+                $this->set('status', 'awaitingproof');
+            } elseif ($filter['status'] == 'improving') {
+                $v = 2;
+                $this->set('status', 'improving');
+            } elseif ($filter['status'] == 'published') {
+                $p = 1;
+                $t = -1;
+                $order = 'desc';
+                $this->set('status', 'published');
+            } elseif ($filter['status'] == 'notpublished') {
+                $v = array(0, 2);
+                $p = 0;
+                $timestamp = 'timestamp <';
+                $order = 'desc';
+                $this->set('status', 'notpublished');
+            }
+
+            if (!empty($filter['user'])) {
+                $user_id = $filter['user'];
+                $this->set('user', $user_id);
+            }
+
+            if (!empty($filter['account'])) {
+                $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
+                $this->Session->write('access_token.account_id', $twitter_account_id['TwitterAccount']['account_id']);
+                $this->Session->write('access_token.screen_name', $twitter_account_id['TwitterAccount']['screen_name']);
+                $this->set('account', $filter['account']);
+            }
+
+            if (!empty($filter['team'])) {
+                $twitter_account_id['TwitterAccount']['account_id'] = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $filter['team'])));
+                $this->set('team', $filter['team']);
+            }
+        }
+
+        if (!empty($user_id)) {
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
+        } else {
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         }
 
         $this->Paginator->settings = array(

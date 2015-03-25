@@ -7,12 +7,13 @@ echo $this->Html->script('charCount');
 echo $this->Html->script('jquery.urlshortener');
 echo $this->Html->script('jquery.infinitescroll');
 echo $this->Html->script('jquery.qtip.min');
+echo $this->Html->script('jquery.selectric.min');
 echo $this->Html->css('jquery.qtip.min');
 echo $this->Html->css('calendar'); ?>
 <?php
 echo $this->Session->flash('auth');
 ?>
-<?
+<!--<?
 echo $this->Form->create('filterAccount');
 echo $this->Html->image('twitter19px.png', array('class' => 'selectimage'));
 echo $this->Form->input('account', array(
@@ -63,16 +64,64 @@ echo $this->Html->link('Day-by-Day', '/twitter/index/h:daybyday', array('class' 
 echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
 ?>
 </div>
+-->
+
+<div class='filter'>
+    <?
+    echo $this->Form->create('filter');
+    echo $this->Form->input('account', array(
+        'label' => false,
+        'onchange' => 'this.form.submit()',
+        'options' => array('' => 'Select by Twitter Account', array_combine($dropdownaccounts,$dropdownaccounts)),
+        'selected' => $account,
+        'class' => 'filterAccount'));
+    ?>
+
+    <? if ($this->Session->read('access_token.account_id')) {
+        echo $this->Html->image('calendar.png', array('url' => '/twitter/calendar/0', 'title' => 'Editorial Calendar', 'style' => 'margin: 10px 50px 10px 10px'));
+    }
+
+    echo $this->Form->input('user', array(
+        'label' => false,
+        'onchange' => 'this.form.submit()',
+        'options' => array('' => 'Select by User', $dropdownusers),
+        'selected' => $user,
+        'class' => 'filterUser'));
+
+    echo $this->Form->input('status', array(
+        'onchange' => 'this.form.submit()',
+        'label' => false,
+        'options' => array(
+            '' => 'Select by Status',
+            'All Statuses' => 'All Statuses',
+            'queued' => 'Queued',
+            'awaitingproof' => 'Awaiting Proof',
+            'improving' => 'Need Improving',
+            'published' => 'Publsihed'),
+        'selected' => $status,
+        'class' => 'filterStatus'));
+
+    echo $this->Form->input('team', array(
+        'label' => false,
+        'onchange' => 'this.form.submit()',
+        'options' => array(
+            '' => 'Select by Team',
+            $myteam),
+        'selected' => $team,
+        'class' => 'filterTeam'));
+    echo $this->Form->end();
+    ?>
+</div>
 
 <hr>
 
-<? if ($params != 'h:daybyday' && $this->Session->read('filterAccount')) {?>
+<div id='addtweetprogress'>
+
+<? if ($params != 'h:daybyday' && $account) {?>
     <div id='addTweetWrapper'>
 <?
 //Add Tweet
 echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter', 'action' => 'testing'), 'id' => 'submitTweet'));
-
-        echo $this->Form->textarea('body', array('label' => false, 'type' => 'post', 'class' => 'ttt', 'placeholder' => 'Body'));
         echo $this->Form->input('timestamp', array(
             'type' => 'text', 
             'label' => false, 
@@ -80,24 +129,40 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             'id' => 'schedule',
             'placeholder' => 'Date & Time'
             ));
-        echo $this->Form->end(array('id' => 'tweetsubmit', 'value' => 'AddTweet', 'label' => 'ADD A TWEET')); // add new form with hidden input fields to tweet now
+        echo $this->Form->textarea('body', array('label' => false, 'type' => 'post', 'class' => 'ttt', 'placeholder' => 'Body'));
+        echo $this->Form->end(array('id' => 'tweetsubmit1', 'value' => 'AddTweet', 'label' => 'ADD A TWEET')); // add new form with hidden input fields to tweet now
 ?>
 </div>
 <?}?>
+
+<div id="progress">
+    <h2>PROGRESS</h2>
+    <table>
+        <tr class='progress firstline'>
+            <td class='queuedCount'><? echo $queuedCount;?></td>
+            <td class='awaitingProofCount mid'><? echo $awaitingProofCount;?></td>
+            <td class='needImprovingCount'><? echo $needImprovingCount;?></td>
+        </tr>
+        <tr class='progress secondline'>
+            <td>QUEUED</td>
+            <td class='mid'>AWAITING PROOF</td>
+            <td>NEED IMPROVING</td>
+        </tr>
+    </table>
+</div>
+
+</div>
 
 <? if ($params == 'h:daybyday') {
         echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
     } ?>
 <div id="table">
 <?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
-<table id="refresh">
-<thead class="mainheader">
-    <th class='sort'><? echo $this->Paginator->sort('timestamp', 'Scheduled');?></th>
-    <th class='sort'><? echo $this->Paginator->sort('screen_name', 'Account');?></th>
-    <th class='sort'><? echo $this->Paginator->sort('body', 'Tweet');?></th>
-    <th>Verified</th>
-</thead>
     <?php foreach ($tweets as $key) { ?>
+    <div id="refresh">
+      <div style="display: inline">
+        <span class='screenName'><? echo '@' . $key['Tweet']['screen_name']; ?></span>
+      </div>
     <?php if ($key['Tweet']['verified'] == 1) {
             $checked = 'checked';
             $value = $key['Tweet']['time'];
@@ -109,20 +174,47 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             $value = '';
             $color = 'Red';} 
 
-            if ($this->Session->read('Auth.User.group_id') == 2 || $params == 'h:archived') {
+            if ($this->Session->read('Auth.User.group_id') == 2 || $status == 'published') {
                 $disabled = 'disabled';
             } else {
                 $disabled = '';
             }?>
-    <tr class="row">
-      <td class='scheduled' id='time<?php echo $key['Tweet']['id']?>'> 
-        <div class='notediting'><?php if($key['Tweet']['time'] && $key['Tweet']['published'] == 1) {
-            echo $key['Tweet']['time'] . '<small>[Published]</small>';
+      <div class='verified'>
+        <?php echo $this->Form->input('verified', array(
+        'type' => 'select', 
+        'options' => array(
+            1 => 'APPROVED', 
+            0 => 'AWAITING APPROVAL', 
+            2 => 'IMPROVE'
+            ), 
+        'label' => false, 
+        'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified]', 
+        'class' => 'TwitterVerified1', 
+        'id' => $key['Tweet']['id'],
+        $disabled,
+        'default' => $key['Tweet']['verified']));?>
+
+        <? if ($key['Tweet']['verified'] == 1 || $key['Tweet']['verified'] == 2) {?>
+        <i><small>-<? echo $key['Tweet']['verified_by'];?></small></i>
+        <?}?>
+      </div>
+    <div class="row">
+      <div class='scheduled' id='time<?php echo $key['Tweet']['id']?>'> 
+        SCHEDULE
+        <hr style="margin: 5px 0;">
+        <div class='notediting'>
+            <?php 
+            if($key['Tweet']['time'] && $key['Tweet']['published'] == 1) {
+                echo date('d.m.Y', $key['Tweet']['timestamp']) . '<small>[Published]</small>' . '<br />';
             } elseif ($key['Tweet']['time']) {
-                echo $key['Tweet']['time'];
+                echo date('d.m.Y', $key['Tweet']['timestamp']) . '<br />';
             } else {
-                echo '';
-                } ?>
+                    echo '';
+            } 
+
+            echo '<b class="' .date('l', $key['Tweet']['timestamp']) . '">' . strtoupper(date('l', $key['Tweet']['timestamp'])) . '</b>' . '<br />';
+
+            echo date('H:i', $key['Tweet']['timestamp']);?>
         </div>
         <?php if($key['Tweet']['published'] == 0) {
             echo $this->Form->input('timestamp', array(
@@ -135,11 +227,12 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             'style' => 'display: none'
             ));
             }?>
-      </td>
-      <td>
-        <span class='screenName'><? echo $key['Tweet']['screen_name']; ?></span>
-      </td>
-      <td class='nopadding' id=<?php echo $key['Tweet']['id'];?>>
+
+            <hr style="margin: 5px 0;">
+
+            <span class='writer' style='float: left'>WRITER <br /> <b><? echo $key['Tweet']['first_name']; ?></b></span>
+      </div>
+      <div class='nopadding' id=<?php echo $key['Tweet']['id'];?>>
         <?php echo $this->Form->textarea('body', array(
             'class' => 'editing', 
             'value' => $key['Tweet']['body'], 
@@ -147,18 +240,17 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             'label' => false, 
             'maxlength' => '140')); ?> 
             
-            <span style='float: left'>Written by: <? echo $key['Tweet']['first_name']; ?></span>
             <div class="tweetButtons">
-            <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
-            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
-            <? echo $this->Form->button('Delete', array('type' => 'button', 'class' => 'delete', 'id' => $key['Tweet']['id'])); ?>
-            <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton'));?>
             <? if ($key['Tweet']['comments']) {
                 $val = 'Comments(1)';
             } else {
                 $val = 'Comments(0)';
             }?>
-            <? echo $this->Form->button($val, array('type' => 'button', 'class' => 'comments' , 'id' => $key['Tweet']['id'])); ?>
+            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment1.png')">COMMENTS</div>
+            <span class='savetweet'>SAVE</span>
+            <span class='deletetweet' id="<? echo $key['Tweet']['id'];?>">DELETE</span>
+            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
+            <? echo $this->Form->button('SHORTEN URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
             <div id="<?echo $key['Tweet']['id'];?>-comments" style="display: none" class="empty"><? echo $this->Form->input('comments', array('value' => $key['Tweet']['comments'], 'label' => false, 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][comments]'));?></div>
             <? if ($key['Tweet']['img_url']) { ?>
                     <div class='imagecontainer'>
@@ -167,26 +259,7 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
                     </div>
             <?  }  ?>
             </div>
-      </td>
-      <td class='verified'>
-        <?php echo $this->Form->input('verified', array(
-        'type' => 'radio', 
-        'options' => array(
-            1 => 'APPROVED', 
-            0 => 'AWAITING APPROVAL', 
-            2 => 'IMPROVE'
-            ), 
-        'legend' => false, 
-        'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified]', 
-        'class' => 'TwitterVerified1', 
-        'id' => $key['Tweet']['id'],
-        $disabled,
-        'default' => $key['Tweet']['verified']));?>
-
-        <? if ($key['Tweet']['verified'] == 1 || $key['Tweet']['verified'] == 2) {?>
-        <i><small>-<? echo $key['Tweet']['verified_by'];?></small></i>
-        <?}?>
-      </td>
+      </div>
       <?php echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['Tweet']['id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][id]'));
             echo $this->Form->input('verfied_by', array(
             'type' => 'hidden', 
@@ -196,9 +269,9 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             'id' => $key['Tweet']['id'] . '_' . $this->Session->read('Auth.User.first_name')));
             echo $this->Form->input('user_id', array('type' => 'hidden', 'value' => $key['Tweet']['user_id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][user_id]'));
             echo $this->Form->input('account_id', array('type' => 'hidden', 'value' => $key['Tweet']['account_id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][account_id]'));?>
-    </tr>
+    </div>
+    </div>
     <?php } ?>
-</table>
 
 <?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
 <div id='paginatorcontainer'>
@@ -220,15 +293,20 @@ $(document).ready(function() {
         });
         <? } ?>
 
-        $(".TwitterVerified1:checked").each( function() {
-            if ($(this).attr('value') == 0) {
+        $('.editing').charCount({css: 'counter counter1'});
+
+        $(".TwitterVerified1").each( function() {
+            if ($(this).val() == 0) {
                 color = '#ffcc00';
-            } else if ($(this).attr('value') == 1) {
+            } else if ($(this).val() == 1) {
                 color = '#21a750';
-            } else if ($(this).attr('value') == 2) {
+            } else if ($(this).val() == 2) {
                 color = '#ff0000';
             }
-            $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
+            $(this).closest("#refresh").find('#TweetBody').css("border", "1px solid" + color);
+            $(this).closest("#refresh").find('#TweetBody').css("border-bottom", "none");
+            $(this).closest("#refresh").find('.counter1').css("border", "1px solid" + color);
+            $(this).closest("#refresh").find('.counter1').css("border-top", "none");
         });
 
         <? if ($params == 'h:queued') {?>
@@ -237,7 +315,7 @@ $(document).ready(function() {
             $(".verifiedby").prop('disabled', true);
         <? } ?>
 
-        $("#table").on("click", ".delete", function() {
+        $("#table").on("click", ".deletetweet", function() {
             id = $(this).attr('id');
             $.ajax({url: "/twitter/delete/" + id, success: function() {
             window.location.reload(true);}});
@@ -285,8 +363,6 @@ $(document).ready(function() {
 
                 $('#progress table').load('/twitter/progressrefresh');
         });
-
-        $('.editing').charCount({css: 'counter counter1'});
 
         warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
         $(".editing").on('change', function () {
@@ -343,7 +419,7 @@ $(document).ready(function() {
             $('#progress table').load('/twitter/progressrefresh');
         });
 
-        $("#table").on("click", ".smallSaveButton", function() {
+        $("#table").on("click", ".savetweet", function() {
             $("#table").css('opacity', '.4');
             <? if ($params == 'h:daybyday') {  ?>
                         $('#submitTweets').ajaxSubmit({success: function() {
@@ -404,6 +480,8 @@ $(document).ready(function() {
             }
         });
         //})
+
+        $('select').selectric();
 
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
