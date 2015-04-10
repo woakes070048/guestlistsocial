@@ -6,7 +6,7 @@ class HelloShell extends AppShell {
     public $uses = array('TwitterAccount', 'CronTweet', 'Tweet');
 
     public function main() {
-        $toTweet = $this->Tweet->find('all', array('conditions' => array('id' => 44648)));
+        $toTweet = $this->Tweet->find('all', array('conditions' => array('id' => 49518)));
 
         $accountID = $toTweet[0]['Tweet']['account_id'];
         $accountDetails = $this->TwitterAccount->find('all', array('conditions' => array('account_id' => $accountID)));

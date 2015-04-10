@@ -92,7 +92,7 @@ a {
 
 a:hover {
 
-	color: #bd7fd5;
+	color: #fff;
 
 	text-decoration:none;
 
@@ -217,6 +217,8 @@ p {
 	left: 0;
 	
 	top: 0;
+	
+	z-index: 1;
 
 }
 
@@ -266,6 +268,10 @@ p {
 
 #headercontainer h1 a b {
 	color: #4ec3ff;
+}
+
+#headercontainer .inactive:hover {
+	background: rgba(36, 49, 53, 0.7);
 }
 
 .beta {
@@ -1544,6 +1550,10 @@ span.counter.exceeded {
 	margin-top: -3px;
 	
 	font-weight: 700;
+	
+	background: #fff;
+	
+	text-align: left;
 
 }
 
@@ -1616,18 +1626,25 @@ textarea.editing {
 }
 
 
+.calendar.editing {
+	width: 100%;
+}
+
+.editing:focus {
+	outline: 0;
+}
+
+
 
 .schedule {
 
 	font-size: 95%;
 	
-	width: 80px;
+	width: 95px;
 	
 	float: left;
 	
 	margin-left: 10px;
-	
-	height: 20px;
 
 }
 
@@ -1638,9 +1655,9 @@ textarea.editing {
 	
 	float: right;
 	
-	width: 280px;
+	width: 225px;
 	
-	height: 20px;
+	height: 50px;
 }
 
 .color.verified {
@@ -1657,11 +1674,13 @@ textarea.editing {
 	
 	position: absolute;
 
-	font-size: 106%;
+	font-size: 115%;
 
 	background: url(../img/user_white.png) no-repeat;
 
 	padding-left: 25px;
+	
+	padding-bottom: 30px;
 	
 	top: 25%;
 	
@@ -1669,11 +1688,14 @@ textarea.editing {
 	
 	color: #fff;
 	
-	width: 35%;
+	margin-right: 50px;
 
 }
 
-
+.fr div {
+	vertical-align: top;
+	padding-bottom: 30px;
+}
 
 .fr a {
 
@@ -1686,6 +1708,74 @@ textarea.editing {
 .fr a:hover {
 
 	color: #bd7fd5;
+
+}
+
+.fr img {
+	padding: 3px 10px 0 10px;
+	vertical-align: top;
+}
+
+
+#userlogout {
+	
+	background-color: #fff;
+	
+	position: absolute;
+	
+	width: 170px;
+	
+	margin-left: -30px;
+	
+	margin-top: 30px;
+	
+	top: 0;
+	
+	z-index: 100;
+	
+	border-bottom-left-radius: 4px;
+	
+	border-bottom-right-radius: 4px;
+	
+	padding: 0;
+	
+	font-size: 90%;
+	
+	display: none;
+
+}
+
+
+#userlogout ul {
+	
+	list-style-type: none;
+	
+	padding: 0;
+	
+	margin: 0;
+
+}
+
+
+#userlogout ul li {
+	
+	padding: 10px 10px;
+	
+	margin: 5px 0;
+	
+}
+
+
+#userlogout ul li:hover {
+	
+	background-color: #dedede;
+	
+}
+
+
+#userlogout ul a {
+
+	color: #243135;
 
 }
 
@@ -1763,6 +1853,12 @@ textarea.editing {
 
 	clear: none;
 
+}
+
+
+.calendar.nopadding {
+	width: 55%;
+	float: none;
 }
 
 
@@ -2134,12 +2230,22 @@ input[type='radio'][value='2']:checked + label {
 
 .mainheader {
 
-    background-color: #773d8d;
+    background-color: #243135;
 
     color: white;
 
     height: 60px;
 
+}
+
+
+.mainheader th:first-child {
+	border-top-left-radius: 4px;
+}
+
+
+.mainheader th:last-child {
+	border-top-right-radius: 4px;
 }
 
 
@@ -2169,10 +2275,16 @@ input[type='radio'][value='2']:checked + label {
 }
 
 
+.day b {
+	
+    margin-left: 150px;
+}
+
+
 
 .day.first {
 
-    border-top-left-radius: 5px;
+    border-top-left-radius: 8px;
 
 }
 
@@ -2180,7 +2292,7 @@ input[type='radio'][value='2']:checked + label {
 
 .day.last {
 
-    border-top-right-radius: 5px;
+    border-top-right-radius: 8px;
 
 }
 
@@ -2217,6 +2329,14 @@ input[type='radio'][value='2']:checked + label {
 }
 
 
+.calendar.scheduled {
+	float: none;
+	display: table-cell;
+	margin: 0;
+	font-size: 11pt;
+}
+
+
 
 .verified {
 
@@ -2224,6 +2344,11 @@ input[type='radio'][value='2']:checked + label {
     
     float: right;
 
+}
+
+
+.calendar.verified {
+	float: none;
 }
 
 
@@ -2253,12 +2378,27 @@ input[type='radio'][value='2']:checked + label {
 }
 
 
+#table {
+	
+	margin: 30px 0 0 5%;
+	
+  	width: 940px;
+
+}
+
+
 #refresh {
 	background: #fff;
-	margin: 30px 0 30px 5%;
 	padding: 20px;
 	width: 900px;
-	float: left
+	float: left;
+	margin-top: 30px;
+}
+
+table#refresh {
+	padding: 0;
+	width: 940px;
+	border-radius: 4px;
 }
 
 
@@ -2286,7 +2426,7 @@ input[type='radio'][value='2']:checked + label {
     
     float: left;
     
-   	margin-left: 5%;
+    margin: 0;
 
 }
 
@@ -2296,9 +2436,9 @@ input[type='radio'][value='2']:checked + label {
 
     padding: 4px 8px;
 
-    background: #fff;
+    background: #243135;
 
-    color:#243135;
+    color: #fff;
 
     border: 1px solid #243135;
 
@@ -2306,15 +2446,19 @@ input[type='radio'][value='2']:checked + label {
 
     text-decoration: none;
 
-    min-width: 430px;
+    min-width: 150px;
 
-    height: 50px;
+    height: 30px;
 
     font-size: 150%;
     
     float: left;
     
-   	margin-left: 10px;
+   	margin-left: 115px;
+   	
+   	margin-bottom: 0;
+   	
+   	font-size: 10pt;
 
 }
 
@@ -2432,7 +2576,7 @@ td {
 
 	float: right;
 	
-	width: 460px;
+	width: 400px;
 	
 	height: 122px;
 	
@@ -2462,7 +2606,7 @@ td {
 
 	border-collapse:collapse;
 	
-	margin-top: 10px;
+	margin-top: 5px;
 
 }
 
@@ -2583,7 +2727,8 @@ td {
 }
 
 
-.notediting b {
+.notediting b,
+.calendar.scheduled b {
 
 	font-weight: 900;
 	
@@ -2970,7 +3115,7 @@ input[type=file] {
 
 .calendar_topic {
 
-	background-color: #EFE3F4;
+	background-color: #88E3FF;
 
 	margin-top: 5px;
 
@@ -2988,7 +3133,7 @@ input[type=file] {
 
 .calendar_content_type {
 
-	background-color: #D9B2EA;
+	background-color: #7CB4C5;
 
 	margin-top: 5px;
 
@@ -3006,7 +3151,7 @@ input[type=file] {
 
 .calendar_notes {
 
-	background-color: #B277C8;
+	background-color: #2D5561;
 
 	margin-top: 5px;
 
@@ -3019,22 +3164,26 @@ input[type=file] {
 	overflow: hidden;
 
 	font-size: 90%;
+	
+	color: #fff;
 
 }
 
 #addTweetWrapper {
 
-	width: 440px;
+	width: 380px;
 
 	float: left;
 
-	background: #243135;
+	background: #fff;
 
 	padding: 10px 10px 0px 10px;
 
 	margin-bottom: 10px;
 
-	border-radius: 5px
+	border-radius: 5px;
+	
+	height: 112px;
 
 }
 
@@ -3119,7 +3268,7 @@ input[type=file] {
 .selectric-filterUser {
 	margin: 10px 10px 10px 15px;
 	padding-left: 30px;
-	background: url(../img/user_purple.png) no-repeat left center;
+	background: url(../img/userblue.png) no-repeat left center;
 	clear: none;
 	float: right;
 }
@@ -3127,7 +3276,7 @@ input[type=file] {
 .selectric-filterStatus {
 	margin: 10px 10px 10px 15px;
 	padding-left: 30px;
-	background: url(../img/user_purple.png) no-repeat left center;
+	background: url(../img/tickblue.png) no-repeat left center;
 	clear: none;
 	float: right;
 }
@@ -3135,7 +3284,7 @@ input[type=file] {
 .selectric-filterTeam {
 	margin: 10px 10px 10px 15px;
 	padding-left: 30px;
-	background: url(../img/user_purple.png) no-repeat left center;
+	background: url(../img/groupblue.png) no-repeat left center;
 	clear: none;
 	float: left;
 }
@@ -3181,7 +3330,7 @@ input[type=file] {
 	
 	position: absolute;
 	
-	left: 200px;
+	left: 0;
 	
 	top: 0;
 	
@@ -3199,7 +3348,7 @@ input[type=file] {
 	
 	padding: 0 0 0 20px;
 	
-	margin: 0;
+	margin: 0 0 0 200px;
 	
 	border: none;
 	
@@ -3212,6 +3361,56 @@ input[type=file] {
 
 #searchSearch:focus {
 	outline: 0;
+}
+
+.selectric-calendar .selectric {
+	width: 140px;
+}
+
+#dbdbox {
+	float: right;
+	background-color: #243135;
+	color: #fff;
+	height: 102px;
+	border-radius: 5px;
+	margin: 0 10px;
+	width: 120px;
+	text-align: center;
+	padding: 10px 0;
+}
+
+#dbdbox b {
+	font-weight: 700;
+}
+
+#dbdbox .calendarlarge {
+	background: url(../img/calendarlarge.png) no-repeat center top;
+	padding-top: 45px;
+	margin-top: 5px
+}
+
+#dbdbox:hover {
+	background-color: #45585e;
+}
+
+#calendarbuttons {
+	display: block;
+	margin-top: 170px;
+}
+
+#debug-kit-toolbar {
+	display: none;
+}
+
+#noaccount {
+	display: none;
+	background-color: #fff;
+	color: #243135;
+	padding: 20px;
+	margin: 180px 0 0 5%;
+	width: 900px;
+	text-align: center;
+	font-weight: 700;
 }
 
 /*======================================================================
@@ -3355,6 +3554,7 @@ input[type=file] {
 .selectricItems .selectricScroll {
   height: 100%;
   overflow: auto;
+  margin: 0;
 }
 .selectricAbove .selectricItems {
   top: auto;
@@ -3390,4 +3590,23 @@ input[type=file] {
   color: #BBB;
   border-top-color: #FAFAFA;
   cursor: default;
+}
+.selectric-TwitterVerified1 .ico {
+  display: inline-block;
+  vertical-align: middle;
+  zoom: 1;
+  height: 12px;
+  width: 12px;
+  margin: 0 6px 0 0;
+}
+
+.selectric-TwitterVerified1 .ico-1 {
+	background: url(../img/radiogreen.png) no-repeat left center;
+}
+.selectric-TwitterVerified1 .ico-0 {
+
+	background: url(../img/radioamber.png) no-repeat left center;
+}
+.selectric-TwitterVerified1 .ico-2 {
+	background: url(../img/radiored.png) no-repeat left center;
 }

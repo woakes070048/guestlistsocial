@@ -80,8 +80,18 @@ $cakeDescription = __d('cake_dev', 'tweetPROOF');
 				echo $this->Form->input('search', array('type' => 'text', 'label' => false, 'placeholder' => 'Search...')); 
 				echo $this->Form->end();?>
 
-				<div class = 'fr'> <?php echo $this->Session->read('Auth.User.email') . ' | ' . $this->Html->link('log out', array('controller' => 'users', 'action' => 'logout')) ; ?> </div>
+				<div class = 'fr'><div style='margin:0; display: inline-block'> <?php echo $this->Session->read('Auth.User.first_name') . ' ' . $this->Session->read('Auth.User.last_name') .  $this->Html->image('chevron.png'); ?></div>
+				<hr style='height: 20px; width: 1px; display: inline-block; background-color: #fff; margin: 0'>
+				<? echo $this->Html->image('notification0.png', array('style' => 'padding: 0; margin: -5px 0 0 10px'));?>
+				<div id='userlogout'>
+					<ul>
+						<a href='/users/manage'><li>Account Management</li></a>
+						<a href='/users/logout'><li>Sign Out</li></a>
+					</ul>
+				</div>
+				</div>
 			</div>
+
 
 			<?php echo $this->Session->flash(); ?>
 

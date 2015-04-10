@@ -39,7 +39,7 @@ class ScheduleShell extends AppShell {
                             $error_code = (int)$key['code'];
                             $this->out($error_code);
                             $this->log("
-                                        id:" . $toTweet[0]['Tweet']['id'] . " not sent. Error code: " . $error_code);
+                                        id:" . $toTweet[$i]['CronTweet']['id'] . " not sent. Error code: " . $error_code);
                             $this->Tweet->saveField('error', $error_code);
                         }
                     } else {

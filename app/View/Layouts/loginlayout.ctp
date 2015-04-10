@@ -18,6 +18,7 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
+	<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
 </li>
 </head>
 
@@ -27,6 +28,17 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 
 <body>
 	<div id="container">
+		<div id='signinwrapper'>
+		<span class='haveanaccount'>Have an account?</span>
+		<? echo $this->Form->button('Sign In', array('type' => 'button', 'class' => 'loginButton'));?>
+		<? echo $this->Form->create('User');
+        echo $this->Form->input('email', array('placeholder' => 'Email Address', 'label' => false));
+        echo $this->Form->input('password', array('placeholder' => 'Password', 'label' => false));?>
+		<h1><?echo $this->Html->link('Forgotten password?', array('action' => 'forgotpw'));?></h1>
+        <?echo $this->Form->end('Sign In');?>
+        </div>
+		<span class='title'>tweet<b>PROOF</b></span>
+		<span class='title1'>Social Media Management.</span>
 		<div id="content">
 	
 			<?php echo $this->Session->flash(); ?>

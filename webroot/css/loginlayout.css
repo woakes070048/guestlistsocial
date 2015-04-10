@@ -2,6 +2,7 @@
 * {
 	margin:0;
 	padding:0;
+	font-family: 'Lato'
 }
 
 @font-face {
@@ -9,17 +10,32 @@
     src: url(../files/nevis.ttf);
 }
 
+html {
+	height: 100%;
+}
+
 body {
 	margin: 0;
-	background: #efefef
+	background: url(/img/background.jpg) no-repeat fixed;
+}
+
+#container {
+	margin-top: 10%;
 }
 
 #content {
-	background-color: #773d8d;
-	height: 60%;
-	margin-top: 10%;
-	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, .75);
+	background-color: rgba(36, 49, 53, 0.4);
+	height: 250px;
 	padding-top: 10px;
+	margin-top: 30px;
+}
+
+.title1 {
+	display: block;
+	margin: 0 auto;
+	color: #fff;
+	width: 285px;
+	font-size: 18pt;
 }
 
 #loginlogo {
@@ -28,47 +44,51 @@ body {
 }
 
 .title {
-	font-family: nevis;
-	font-style: bold;
-	font-size: 28pt;
+	font-family: 'Lato';
+	font-size: 48pt;
 	color: #fff;
 	display: block;
 	margin: 0 auto;
-	width: 465px;
+	width: 380px;
 }
 
-#UserLoginForm,
+.title b {
+	color: #4ec3ff;
+}
+
+#RegisterLoginForm,
 #UserForgotpwForm,
 #UserResetpwForm {
-	width: 424px;
+	width: 620px;
 	margin: 0 auto;
 }
 
 input {
-	font-family: nevis;
-	width: 400px;
-	font-size: 12pt;
-	padding: 8px 8px 8px 44px;
-	margin: 7% 12px;
-	text-align: right;
+	width: 300px;
+	font-size: 14pt;
+	padding: 8px 8px 8px 8px;
+	margin: 0;
 	border: 2px solid #fff;
+	border-radius: 4px;
+	display: inline;
 }
 
 #UserEmail {
-	background: #fff url(../img/user_grey23px.png) no-repeat 5px center;
+	background: #fff;
+	float: left;
 }
 
 #UserPassword,
 #UserPassword2 {
-	background: #fff url(../img/pass_grey23px.png) no-repeat 5px center;
+	background: #fff;
+	margin-left: 20px;
 }
 
 #buttons,
 #buttons1 {
-	width: 400px;
-	display: block;
-	margin: 7% auto;
-	overflow: auto;
+	width: 170px;
+	margin-left: 15px;
+	float: left;
 }
 
 .submit {
@@ -102,22 +122,19 @@ button {
 }
 
 input[type="submit"], button {
-	background-color: #fff;
-	color: #773d8d;
-	height: 50px;
+	background-color: #4ec3ff;
+	color: #fff;
+	height: 42px;
 	font-family: nevis;
 	font-size: 14pt;
 	text-align: center;
-	border: 2px solid #fff;
+	border: 2px solid #4ec3ff;
 	border-radius: 5px;
 	
 }
 
-@media only screen and (max-width: 1400px) {
-	#content {
-		height: 80%;
-		margin-top: 5%;
-	}
+input[type="submit"]:hover, button:hover {
+	background-color: #75D1FF
 }
 
 #authMessage {
@@ -138,4 +155,105 @@ h1 a {
 	float: right;
 	color: #fff;
 	width: 195px;
+}
+
+.input.email {
+	float: left
+}
+
+.form {
+	width: 485px;
+	margin: 0 auto;
+}
+
+.form span {
+	color: #fff;
+	font-size: 12,5pt;
+	text-align: center;
+	display: block;
+	margin-bottom: 20px;
+	margin-top: 10px;
+}
+
+.form span b {
+	font-size: 14pt;
+}
+
+.haveanaccount {
+	color: #fff;
+	font-size: 10pt;
+	display: block;
+}
+
+.loginButton {
+	background: rgba(0, 0, 0, 0);
+	border: 2px #fff solid;
+	border-radius: 5px;
+	width: auto;
+	padding: 5px 15px;
+	font-size: 11pt;
+	opacity: 0.7;
+	margin-left: 10px;
+	margin-top: 5px;
+}
+
+.loginButton:hover {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0);
+}
+
+#signinwrapper {
+	position: absolute;
+	right: 50%;
+	margin-right: -500px;
+	top: 10px;
+	width: 216px;
+}
+
+#UserEmail,
+#UserPassword {
+	width: 200px;
+	display: block;
+	border: 1px #999 solid;
+	font-size: 11pt;
+	margin: 10px auto;
+	float: none;
+}
+
+#UserLoginForm input[type='submit'] {
+	float: none;
+	width: 100px;
+	font-size: 11pt;
+	height: 30px;
+	margin: 10px auto;
+	display: block;
+}
+
+#UserLoginForm {
+	background: #fff;
+	float: left;
+	border-radius: 5px;
+	padding: 10px 20px;
+	display: none;
+	margin-left: 10px;
+	margin-top: 5px;
+}
+
+#UserLoginForm .input.email {
+	float: none;
+	display: block;
+}
+
+#UserLoginForm h1 {
+	width: auto;
+}
+
+#UserLoginForm h1 a {
+	color: #243135;
+	margin: -5px 5px 5px 25px;
+	float: none;
+}
+
+#UserLoginForm .submit {
+	float: none;
 }

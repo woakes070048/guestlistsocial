@@ -19,7 +19,7 @@ class TwitterController extends AppController {
             $permissions = array_merge($permissionsx, $permissions);
             $myteam[$key['id']] = $key['name'];
         }
-        $conditions = array('account_id' => $permissions);
+        $conditions = array('TwitterAccount.account_id' => $permissions);
         $this->set('myteam', $myteam);
 
         $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('screen_name'), 'conditions' => $conditions, 'order' => array('screen_name' => 'ASC')));
@@ -120,7 +120,13 @@ class TwitterController extends AppController {
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
         $this->set('team', $this->Session->read('filter.team'));
-        $this->set('params', '');
+        if (!empty($this->passedArgs['h'])) {
+            if ($this->passedArgs['h'] == 'daybyday') {
+                $this->set('params', 'h:daybyday');
+            }
+        } else {
+            $this->set('params', '');
+        }
 
         $filter = $this->Session->read('filter');
 
@@ -197,9 +203,9 @@ class TwitterController extends AppController {
         }
 
         if (!empty($user_id)) {
-            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
         } else {
-            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         }
         
         $this->Paginator->settings = array(
@@ -208,9 +214,9 @@ class TwitterController extends AppController {
         'order' => array('timestamp' => $order)
         );
 
-        $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
-        $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
-        $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
+        $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
+        $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
+        $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         //setting the counts on the write tweets page
         if (!empty($filter['user'])) {
             $id = $filter['user'];
@@ -219,9 +225,9 @@ class TwitterController extends AppController {
             $countConditions2['user_id'] = $id;
         } elseif (!empty($filter['account'])) {
             $id = $twitter_account_id['TwitterAccount']['account_id'];
-            $countConditions0['account_id'] = $id;
-            $countConditions1['account_id'] = $id;
-            $countConditions2['account_id'] = $id;
+            $countConditions0['Tweet.account_id'] = $id;
+            $countConditions1['Tweet.account_id'] = $id;
+            $countConditions2['Tweet.account_id'] = $id;
         }
         $awaitingProofCount = $this->Tweet->find('count', array('conditions' => $countConditions0));
         $queuedCount = $this->Tweet->find('count', array('conditions' => $countConditions1));
@@ -235,8 +241,9 @@ class TwitterController extends AppController {
 
             $i = 0;
         foreach ($toCheck as $key) {
-            $array = $this->TwitterAccount->find('first', array('fields' => 'screen_name', 'conditions' => array('account_id' => $key['Tweet']['account_id'])));
-            $toCheck[$i]['Tweet']['screen_name'] = $array['TwitterAccount']['screen_name'];
+            //$array = $this->TwitterAccount->find('first', array('fields' => 'screen_name', 'conditions' => array('TwitterAccount.account_id' => $key['Tweet']['account_id'])));
+            $screen_name = $key['TwitterAccount']['screen_name'];
+            $toCheck[$i]['Tweet']['screen_name'] = $screen_name;
             $i++;
         }
         $this->set('tweets', $toCheck);
@@ -518,16 +525,20 @@ class TwitterController extends AppController {
             }
 
             //Handling images
-            if ($key['img_url1']['error'] == 0) {
-                $z = explode(".", $key['img_url1']['name']);
-                $extension = end($z);
-                $allowed_extensions = array("gif", "jpeg", "jpg", "png");
-
-                if (in_array($extension, $allowed_extensions)) {
-                    $newFileName = $this->Session->read('Auth.User.id') . md5(time()) . "." . $extension;
-                    move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
-                    $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
-                }            
+            if (!empty($key['img_url1']['name'])) {
+                if ($key['img_url1']['error'] == 0) {
+                    $z = explode(".", $key['img_url1']['name']);
+                    $extension = end($z);
+                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");
+    
+                    if (in_array($extension, $allowed_extensions)) {
+                        $newFileName = $this->Session->read('Auth.User.id') . md5(time()) . "." . $extension;
+                        move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
+                        $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
+                    }            
+                }
+            } else {
+                $key['img_url'] = $tweet['Tweet']['img_url'];
             }
 
             if ($this->Tweet->saveField('verified', $key['verified'])) {
@@ -632,7 +643,14 @@ class TwitterController extends AppController {
         $this->set('user', '');
         $this->set('account', '');
         $this->set('team', '');
-        $this->set('params', '');
+        if (!empty($this->passedArgs['h'])) {
+            if ($this->passedArgs['h'] == 'daybyday') {
+                $this->set('params', 'h:daybyday');
+            }
+        } else {
+            $this->set('params', '');
+        }
+        
             $filter = $this->Session->read('filter');
         if (!empty($filter)) {
             if ($filter['status'] == 'queued') {
@@ -676,9 +694,9 @@ class TwitterController extends AppController {
         }
 
         if (!empty($user_id)) {
-            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
         } else {
-            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'account_id' => $twitter_account_id['TwitterAccount']['account_id']);
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         }
 
         $this->Paginator->settings = array(
@@ -692,8 +710,8 @@ class TwitterController extends AppController {
 
             $i = 0;
         foreach ($toCheck as $key) {
-            $array = $this->TwitterAccount->find('first', array('fields' => 'screen_name', 'conditions' => array('account_id' => $key['Tweet']['account_id'])));
-            $toCheck[$i]['Tweet']['screen_name'] = $array['TwitterAccount']['screen_name'];
+            $screen_name = $key['TwitterAccount']['screen_name'];
+            $toCheck[$i]['Tweet']['screen_name'] = $screen_name;
             $i++;
         }
         $this->set('tweets', $toCheck);
@@ -749,9 +767,9 @@ class TwitterController extends AppController {
         }
 
 
-        $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
-        $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
-        $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'account_id' => $permissions);
+        $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
+        $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
+        $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         //setting the counts on the write tweets page
         if ($this->Session->read('filterUser')) {
             $id = $this->Session->read('filterUser');
@@ -760,9 +778,9 @@ class TwitterController extends AppController {
             $countConditions2['user_id'] = $id;
         } elseif ($this->Session->read('filterAccount')) {
             $id = $this->Session->read('access_token.account_id');
-            $countConditions0['account_id'] = $id;
-            $countConditions1['account_id'] = $id;
-            $countConditions2['account_id'] = $id;
+            $countConditions0['Tweet.account_id'] = $id;
+            $countConditions1['Tweet.account_id'] = $id;
+            $countConditions2['Tweet.account_id'] = $id;
         }
         $awaitingProofCount = $this->Tweet->find('count', array('conditions' => $countConditions0));
         $queuedCount = $this->Tweet->find('count', array('conditions' => $countConditions1));

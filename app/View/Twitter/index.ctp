@@ -151,11 +151,26 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
     </table>
 </div>
 
+<? if ($params == 'h:daybyday') {
+    $text = 'ACTIVE';
+    $link = '/';
+} else {
+    $text = 'NOT ACTIVE';
+    $link = '/twitter/index/h:daybyday';
+} ?>
+<a href=<?echo $link;?>>
+<div id='dbdbox'>
+Day By Day <br /> View: <br />
+<div class='calendarlarge'><b>
+<?
+echo $text;
+?>
+</b></div>
+</div>
+</a>
+
 </div>
 
-<? if ($params == 'h:daybyday') {
-        echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
-    } ?>
 <div id="table">
 <?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
     <?php foreach ($tweets as $key) { ?>
@@ -261,7 +276,7 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
             </div>
       </div>
       <?php echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['Tweet']['id'], 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][id]'));
-            echo $this->Form->input('verfied_by', array(
+            echo $this->Form->input('verified_by', array(
             'type' => 'hidden', 
             'value' => $this->Session->read('Auth.User.first_name'), 
             'name' => 'data[Tweet]['.$key['Tweet']['id'].'][verified_by]', 
@@ -278,6 +293,10 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
 <?echo $this->Paginator->numbers();?>
 </div>
 </div>
+
+<div id='noaccount'>
+Please select an account from above to see the day-by-day view
+</div>
 <?php //echo $this->Html->link('Add Twitter Account', '/twitter/connect');?> <br />
 <?php //echo $this->Html->link('Logout', '/users/logout');?>
 <?php //echo $this->Paginator->next();?>
@@ -291,7 +310,10 @@ $(document).ready(function() {
             $('#table').css('opacity', '1');
             $('#loading').hide();
         });
-        <? } ?>
+        <? } elseif ($params == 'h:daybyday' && !$this->Session->read('access_token.account_id')) {?>
+        $('#table').hide();
+        $('#noaccount').show();
+        <?}?>
 
         $('.editing').charCount({css: 'counter counter1'});
 
@@ -481,7 +503,19 @@ $(document).ready(function() {
         });
         //})
 
-        $('select').selectric();
+        $('select').selectric({
+            optionsItemBuilder: function(itemData, element, index) {
+                return element.val().length ? '<span class="ico ico-' + element.val() +  '"></span>' + itemData.text : itemData.text;
+            }
+        });
+
+        $('.selectric .label:contains("AWAITING APPROVAL")').css({'background': 'url("../img/radioamber.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+        $('.selectric .label:contains("APPROVED")').css({'background': 'url("../img/radiogreen.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+        $('.selectric .label:contains("IMPROVE")').css({'background': 'url("../img/radiored.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+
+        $('.fr div').hover(function() {
+            $('#userlogout').toggle();
+        });
 
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation

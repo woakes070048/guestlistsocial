@@ -20,6 +20,7 @@ for ($i=$day; $i<=$daysinmonth; $i++) {
     $days[date('d-m-Y',mktime(0,0,0,$month,$i,$year))] = date('l',mktime(0,0,0,$month,$i,$year));
 }
 ?>
+<div id='calendarbuttons'>
 <?
 echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => 'index/h:daybyday'), 'id' => 'monthForm'));
 echo $this->Form->input('Select Month', array(
@@ -39,6 +40,10 @@ echo $this->Form->end();
 
 ?>
 <? echo $this->Form->button('Shorten all URLs', array('id' => 'shortIt1', 'class' => 'urlSubmit1', 'type' => 'button'));
+echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
+?>
+</div>
+<?
 echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet1', 'id' => 'submitTweets', 'type' => 'file'));
 ?>
 
@@ -55,10 +60,9 @@ $testid = 1;
 foreach ($days as $key => $value) { ?>
 <tr class='divider'><td style="border:none"></td></tr>
 <thead>
-    <th class='day first'><b> <? echo $value; ?></b></th>
+    <th class='day first'></th>
     <th class='day'></th>
-    <th class='day'></th>
-    <th class='day'></th>
+    <th class='day'><b> <? echo strtoupper($value); ?></b></th>
     <th class='day last'></th>
 </thead>
 <?php
@@ -72,20 +76,22 @@ foreach ($calendar as $key1) {
             $value1 = $testid;
             $id = $key2['id'];
             $img = $key2['img_url'];
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'editing'));
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing'));
             $firstName = $key2['first_name'];
             $verified = $key2['verified'];
             $verified_by = $key2['verified_by'];
+            $published = $key2['published'];
             break;
         } else {
             $value2 = '';
             $value1 = $testid;
             $id = '';
             $img = '';
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'editing')); 
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
             $firstName = '';
-            $verified = 3;
+            $verified = 0;
             $verified_by = "";
+            $published = false;
         }
     }
 
@@ -94,10 +100,11 @@ foreach ($calendar as $key1) {
         $value1 = $testid;
         $id = '';
         $img = '';
-        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'editing')); 
+        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
         $firstName = '';
-        $verified = 3;
-            $verified_by = "";
+        $verified = 0;
+        $verified_by = "";
+        $published = false;
     }
 
 
@@ -106,14 +113,22 @@ foreach ($calendar as $key1) {
         } else {
             $disabled = '';
         }?>
-    <td class="scheduled"><? echo date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']));?> </td>
+    <td class="calendar scheduled">
+            <? if($published == 1) {
+                echo date('d.m.Y', strtotime($key . $key1['EditorialCalendar']['time'])) . '<small>[Published]</small>' . '<br />';
+            } else {
+                echo date('d.m.Y', strtotime($key . $key1['EditorialCalendar']['time'])) . '<br />';
+            }
+            echo '<b class="' .date('l', strtotime($key . $key1['EditorialCalendar']['time'])) . '">' . strtoupper(date('l', strtotime($key . $key1['EditorialCalendar']['time']))) . '</b>' . '<br />';
+
+            echo date('H:i', strtotime($key . $key1['EditorialCalendar']['time']));?></td>
     <td class="topic">
     <div class='calendar_topic'><? echo $key1['EditorialCalendar'][strtolower($value) . '_topic']; ?></div>
 
     <div class='calendar_content_type'><? echo $key1['EditorialCalendar'][strtolower($value) . '_content_type']; ?></div>
 
     <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div></td>
-    <td class="nopadding">
+    <td class="calendar nopadding">
     <?echo $body;?>
     <span style='float: left'>Written by: <? echo $firstName; ?></span>
         <div class="tweetButtons">
@@ -128,7 +143,7 @@ foreach ($calendar as $key1) {
             <?  }  ?>
         </div>
     </td>
-    <td class="verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
+    <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'select', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'label' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
         <? if ($verified == 1) {?>
         <i><small>-<? echo $verified_by;?></small></i>
         <?}?></td>
@@ -234,7 +249,9 @@ foreach ($calendar as $key1) {
                 $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
             });
 
-            /*$(".smallSaveButton").click(function () {
+            $('select').selectric();
+
+            $(".smallSaveButton").click(function () {
                 $("#table").css('opacity', '.4');
                 $('#loading').show();
                         $('#submitTweets').ajaxSubmit({success: function() {
@@ -250,7 +267,7 @@ foreach ($calendar as $key1) {
                 };
 
                 $('#progress table').load('/twitter/progressrefresh');
-            });*/
+            });
 
             /*$(".approveAll").click(function () {
             $(".verified").each(function () {

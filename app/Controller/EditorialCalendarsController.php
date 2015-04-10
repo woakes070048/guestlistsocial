@@ -162,6 +162,10 @@ class EditorialCalendarsController extends AppController {
                     $key['verified_by'] = $this->Session->read('Auth.User.first_name');
                 }
 
+                if (!isset($key['verified'])) {
+                    $key['verified'] = $original['Tweet']['verified'];
+                }
+
                 //Image Handling
                 if (!empty($key['img_url1']['name'])) {
                     if ($x = $this->imageHandling($key)) {
@@ -169,6 +173,8 @@ class EditorialCalendarsController extends AppController {
                     } else {
                         //$this->Session->setFlash('There was an error processing your image, please try again.');
                     }
+                } else {
+                    $key['img_url'] = $original['Tweet']['img_url'];
                 }
 
                 $toSave = array();

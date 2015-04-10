@@ -3,7 +3,7 @@
         <legend><?php echo __('Add User'); ?></legend>
         <?php echo $this->Form->input('first_name', array('label' => 'First name'));
         echo $this->Form->input('last_name', array('label' => 'Last name'));
-        echo $this->Form->input('email');
+        echo $this->Form->input('email', array('value' => $email));
         echo $this->Form->input('password', array('type' => 'password'));
         echo $this->Form->input('password2', array('type' => 'password', 'label' => 'Confirm Password'));
         echo $this->Form->input('GMT_offset', array(

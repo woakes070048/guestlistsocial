@@ -58,6 +58,13 @@ class UsersController extends AppController {
 	            }
 
 	        }
+
+            if (!empty($this->passedArgs['e']) && !empty($this->passedArgs['d'])) {
+                $email = $this->passedArgs['e'] . '@' . $this->passedArgs['d'];
+            } else {
+                $email = false;
+            };
+            $this->set('email', $email);
 	}
 
     public function verify() {
@@ -91,23 +98,32 @@ class UsersController extends AppController {
     } 
 
 	public function login() {
+        if ($this->request->is('post')) {
+            if (isset($this->request->data['Register'])) {
+                $split = explode('@', $this->request->data['Register']['email']);
+                $this->redirect(array('controller' => 'Users', 'action' => 'register', 'e' => $split[0], 'd' => $split[1]));
+            }
+        }
+
     	if ($this->request->is('post')) {
-        	if ($this->Auth->login()) {
-        	 $this->User->id = $this->Session->read('Auth.User.id');
-	         $this->User->saveField('session_id', $this->Session->id());
+            if (isset($this->request->data['User'])) {
+        	    if ($this->Auth->login()) {
+        	        $this->User->id = $this->Session->read('Auth.User.id');
+	                $this->User->saveField('session_id', $this->Session->id());
 
-             if ($this->Session->read('Auth.User.group_id') == 6) {//do not allow access if email not verified
-                $this->Session->destroy();
-                $this->Session->setFlash('You have not verified your e-mail address, please follow the link in the email sent to you when you registered.');
-                $this->redirect($this->Auth->logout());
-             }
+                    if ($this->Session->read('Auth.User.group_id') == 6) {//do not allow access if email not verified
+                        $this->Session->destroy();
+                        $this->Session->setFlash('You have not verified your e-mail address, please follow the link in the email sent to you when you registered.');
+                        $this->redirect($this->Auth->logout());
+                    }
 
-             $user = $this->User->find('all', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
-             $this->Session->write('Auth.User.Team', $user[0]['Team']);
-           	 $this->redirect($this->Session->read('Auth.redirect'));
-      	  } else {
-           	 $this->Session->setFlash(__('Invalid username or password, try again'));
-        	}
+                    $user = $this->User->find('all', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
+                    $this->Session->write('Auth.User.Team', $user[0]['Team']);
+           	        $this->redirect($this->Session->read('Auth.redirect'));
+      	        } else {
+           	        $this->Session->setFlash(__('Invalid username or password, try again'));
+        	    }
+            }
     	} else {
             
         }

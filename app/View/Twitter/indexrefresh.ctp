@@ -1,4 +1,5 @@
 <?echo $this->Form->create('Tweet', array('url'=>$this->Html->url(array('controller'=>'twitter', 'action'=>'emptySave')), 'id' => 'edit', 'type' => 'file'));?>
+<?php foreach ($tweets as $key) { ?>
 <div id="refresh">
       <div style="display: inline">
         <span class='screenName'><? echo '@' . $key['Tweet']['screen_name']; ?></span>
@@ -86,7 +87,7 @@
             } else {
                 $val = 'Comments(0)';
             }?>
-            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment1.png')">COMMENTS</div>
+            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment1.png')">COMMENTSx</div>
             <span class='savetweet'>SAVE</span>
             <span class='deletetweet' id="<? echo $key['Tweet']['id'];?>">DELETE</span>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
@@ -121,4 +122,29 @@
 
 <script>
 $('.editing').charCount({css: 'counter counter1'});
+
+$('select').selectric({
+    optionsItemBuilder: function(itemData, element, index) {
+        return element.val().length ? '<span class="ico ico-' + element.val() +  '"></span>' + itemData.text : itemData.text;
+    }
+});
+
+$('.selectric .label:contains("AWAITING APPROVAL")').css({'background': 'url("img/radioamber.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+$('.selectric .label:contains("APPROVED")').css({'background': 'url("img/radiogreen.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+$('.selectric .label:contains("IMPROVE")').css({'background': 'url("img/radiored.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+
+
+$(".TwitterVerified1").each( function() {
+    if ($(this).val() == 0) {
+        color = '#ffcc00';
+    } else if ($(this).val() == 1) {
+        color = '#21a750';
+    } else if ($(this).val() == 2) {
+        color = '#ff0000';
+    }
+    $(this).closest("#refresh").find('#TweetBody').css("border", "1px solid" + color);
+    $(this).closest("#refresh").find('#TweetBody').css("border-bottom", "none");
+    $(this).closest("#refresh").find('.counter1').css("border", "1px solid" + color);
+    $(this).closest("#refresh").find('.counter1').css("border-top", "none");
+});
 </script>
