@@ -106,6 +106,7 @@ foreach ($calendar as $key1) {
             $verified = $key2['Tweet']['verified'];
             $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
+            unset($tweets[$key1['EditorialCalendar']['id']][$item]);
             break;
         } else {
             $value2 = '';
@@ -118,7 +119,6 @@ foreach ($calendar as $key1) {
             $verified_by = "";
             $published = false;
         }
-        unset($tweets[$key1['EditorialCalendar']['id']][$item]);
     }
 
     if ($tweets[$key1['EditorialCalendar']['id']] == false) {
