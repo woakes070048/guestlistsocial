@@ -654,26 +654,28 @@ class TwitterController extends AppController {
         
             $filter = $this->Session->read('filter');
         if (!empty($filter)) {
-            if ($filter['status'] == 'queued') {
-                $v = 1;
-                $this->set('status', 'queued');
-            } elseif ($filter['status'] == 'awaitingproof') {
-                $v = 0;
-                $this->set('status', 'awaitingproof');
-            } elseif ($filter['status'] == 'improving') {
-                $v = 2;
-                $this->set('status', 'improving');
-            } elseif ($filter['status'] == 'published') {
-                $p = 1;
-                $t = -1;
-                $order = 'desc';
-                $this->set('status', 'published');
-            } elseif ($filter['status'] == 'notpublished') {
-                $v = array(0, 2);
-                $p = 0;
-                $timestamp = 'timestamp <';
-                $order = 'desc';
-                $this->set('status', 'notpublished');
+            if (!empty($filter['status'])) {
+                if ($filter['status'] == 'queued') {
+                    $v = 1;
+                    $this->set('status', 'queued');
+                } elseif ($filter['status'] == 'awaitingproof') {
+                    $v = 0;
+                    $this->set('status', 'awaitingproof');
+                } elseif ($filter['status'] == 'improving') {
+                    $v = 2;
+                    $this->set('status', 'improving');
+                } elseif ($filter['status'] == 'published') {
+                    $p = 1;
+                    $t = -1;
+                    $order = 'desc';
+                    $this->set('status', 'published');
+                } elseif ($filter['status'] == 'notpublished') {
+                    $v = array(0, 2);
+                    $p = 0;
+                    $timestamp = 'timestamp <';
+                    $order = 'desc';
+                    $this->set('status', 'notpublished');
+                }
             }
 
             if (!empty($filter['user'])) {

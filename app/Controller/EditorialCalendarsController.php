@@ -327,8 +327,14 @@ class EditorialCalendarsController extends AppController {
     }
 
     public function calendarRefresh ($months) {
-        $calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
+        $calendar = $this->EditorialCalendar->find('all', array('recursive' => -1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
         
+        $tweets = array();
+        foreach ($calendar as $key) {
+            $tweets[$key['EditorialCalendar']['id']] = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $key['EditorialCalendar']['id'], 'timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC')));
+        }
+
+        $this->set('tweets', $tweets);
         $this->set('calendar', $calendar);
         
         if (isset($months)) {
