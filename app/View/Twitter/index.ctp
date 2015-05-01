@@ -56,12 +56,12 @@ echo $this->Form->end();
 </div>
 
 <div id="filterLinks">
-<? echo $this->Html->link('Awaiting Proof', '/twitter/index/', array('class' => (empty($this->params['named']['h']))?'awaitingProof active' :'awaitingProof inactive'));
-echo $this->Html->link('Queued', '/twitter/index/h:queued', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='queued') )?'queued active' :'queued inactive'));
-echo $this->Html->link('Published', '/twitter/index/h:published', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='published') )?'published active' :'published inactive'));
-echo $this->Html->link('Need Improving', '/twitter/index/h:improving', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='improving') )?'needImproving active' :'needImproving inactive'));
-echo $this->Html->link('Day-by-Day', '/twitter/index/h:daybyday', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='daybyday') )?'daybyday active' :'daybyday inactive'));
-echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
+<? echo $this->Html->link('Awaiting Proof', array('controller'=>'twitter','action'=>'index'), array('class' => (empty($this->params['named']['h']))?'awaitingProof active' :'awaitingProof inactive'));
+echo $this->Html->link('Queued', array('controller'=>'twitter','action'=>'index','?'=>array('h'=>'queued')), array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='queued') )?'queued active' :'queued inactive'));
+echo $this->Html->link('Published', array('controller'=>'twitter','action'=>'index','?'=>array('h'=>'published')), array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='published') )?'published active' :'published inactive'));
+echo $this->Html->link('Need Improving', array('controller'=>'twitter','action'=>'index','?'=>array('h'=>'improving')), array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='improving') )?'needImproving active' :'needImproving inactive'));
+echo $this->Html->link('Day-by-Day', array('controller'=>'twitter','action'=>'index','?'=>array('h'=>'daybyday')), array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='daybyday') )?'daybyday active' :'daybyday inactive'));
+echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>'index','?'=>array('h'=>'notpublished')), array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
 ?>
 </div>
 -->

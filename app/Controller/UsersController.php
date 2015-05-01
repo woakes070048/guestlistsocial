@@ -47,7 +47,7 @@ class UsersController extends AppController {
 
                     " . Router::url(array('action' => 'verify', 'id' => $id, 'h' => $hash), true);
                     $Email = new CakeEmail('default');
-                    $Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
+                    //$Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
                     $Email->to($this->request->data['User']['email']);
                     $Email->subject('Confirm Registration for Guestlist Social');
                     $Email->send($msg);

@@ -1670,9 +1670,13 @@ textarea.editing {
 
 .fr {
 
+<<<<<<< Updated upstream
 	float: right;
 	
 	position: absolute;
+=======
+	float: left;
+>>>>>>> Stashed changes
 
 	font-size: 115%;
 

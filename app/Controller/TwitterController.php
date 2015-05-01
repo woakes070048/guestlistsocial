@@ -50,28 +50,28 @@ class TwitterController extends AppController {
         $timestamp = 'timestamp >';
         $order = 'asc';
         $this->set('params', '');
-        if (isset($this->passedArgs['h'])) {
-            if ($this->passedArgs['h'] == 'queued') {
+        if (isset($this->request->query['h'])) {
+            if ($this->request->query['h'] == 'queued') {
                 $v = 1;
                 $p = 0;
                 $this->set('params', 'h:queued');
-            } elseif ($this->passedArgs['h'] == 'published') {
+            } elseif ($this->request->query['h'] == 'published') {
                 $v = 1;
                 $p = 1;
                 $t = -1;
                 $order = 'desc';
                 $this->set('params', 'h:published');
-            } elseif ($this->passedArgs['h'] == 'improving') {
+            } elseif ($this->request->query['h'] == 'improving') {
                 $v = 2;
                 $p = 0;
                 $this->set('params', 'h:improving');
-            } elseif ($this->passedArgs['h'] == 'notpublished') {
+            } elseif ($this->request->query['h'] == 'notpublished') {
                 $v = array(0, 2);
                 $p = 0;
                 $timestamp = 'timestamp <';
                 $order = 'desc';
                 $this->set('params', 'h:published');
-            } elseif ($this->passedArgs['h'] == 'daybyday') {
+            } elseif ($this->request->query['h'] == 'daybyday') {
                 $this->set('params', 'h:daybyday');
             }
         }
@@ -211,7 +211,8 @@ class TwitterController extends AppController {
         $this->Paginator->settings = array(
         'conditions' => $c,
         'limit' => 10,
-        'order' => array('timestamp' => $order)
+        'order' => array('timestamp' => $order),
+        'paramType' => 'querystring'
         );
 
         $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
@@ -592,28 +593,28 @@ class TwitterController extends AppController {
         $t = time();
         $order = 'asc';
         $this->set('params', '');
-        if (isset($this->passedArgs['h'])) {
-            if ($this->passedArgs['h'] == 'queued') {
+        if (isset($this->request->query['h'])) {
+            if ($this->request->query['h'] == 'queued') {
                 $v = 1;
                 $p = 0;
                 $this->set('params', 'h:queued');
-            } elseif ($this->passedArgs['h'] == 'published') {
+            } elseif ($this->request->query['h'] == 'published') {
                 $v = 1;
                 $p = 1;
                 $t = -1;
                 $order = 'desc';
                 $this->set('params', 'h:published');
-            } elseif ($this->passedArgs['h'] == 'improving') {
+            } elseif ($this->request->query['h'] == 'improving') {
                 $v = 2;
                 $p = 0;
                 $this->set('params', 'h:improving');
-            } elseif ($this->passedArgs['h'] == 'notpublished') {
+            } elseif ($this->request->query['h'] == 'notpublished') {
                 $v = array(0, 2);
                 $p = 0;
                 $timestamp = 'timestamp <';
                 $order = 'desc';
                 $this->set('params', 'h:published');
-            } elseif ($this->passedArgs['h'] == 'daybyday') {
+            } elseif ($this->request->query['h'] == 'daybyday') {
                 $this->set('params', 'h:daybyday');
             }
         }
