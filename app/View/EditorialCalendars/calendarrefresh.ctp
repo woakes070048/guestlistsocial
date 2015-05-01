@@ -70,7 +70,7 @@ foreach ($calendar as $key1) {
     $testid = $testid + 1;
     echo '<tr>';
 
-    foreach ($key1['Tweet'] as $key2) {
+    /*foreach ($key1['Tweet'] as $key2) {
         if ($key2['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
             $value2 = $key2['body'];
             $value1 = $testid;
@@ -93,9 +93,35 @@ foreach ($calendar as $key1) {
             $verified_by = "";
             $published = false;
         }
+    }*/
+
+    foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
+        if ($key2['Tweet']['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
+            $value2 = $key2['Tweet']['body'];
+            $value1 = $testid;
+            $id = $key2['Tweet']['id'];
+            $img = $key2['Tweet']['img_url'];
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing'));
+            $firstName = $key2['Tweet']['first_name'];
+            $verified = $key2['Tweet']['verified'];
+            $verified_by = $key2['Tweet']['verified_by'];
+            $published = $key2['Tweet']['published'];
+            break;
+        } else {
+            $value2 = '';
+            $value1 = $testid;
+            $id = '';
+            $img = '';
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
+            $firstName = '';
+            $verified = 0;
+            $verified_by = "";
+            $published = false;
+        }
+        unset($tweets[$key1['EditorialCalendar']['id']][$item]);
     }
 
-    if ($key1['Tweet'] == false) {
+    if ($tweets[$key1['EditorialCalendar']['id']] == false) {
         $value2 = '';
         $value1 = $testid;
         $id = '';
@@ -171,15 +197,18 @@ foreach ($calendar as $key1) {
 <script> 
         // wait for the DOM to be loaded 
         $(document).ready(function () {
-            $(".TwitterVerified1:checked").each( function() {
-                if ($(this).attr('value') == 0) {
+            $(".TwitterVerified1").each( function() {
+                if ($(this).val() == 0) {
                     color = '#ffcc00';
-                } else if ($(this).attr('value') == 1) {
+                } else if ($(this).val() == 1) {
                     color = '#21a750';
-                } else if ($(this).attr('value') == 2) {
+                } else if ($(this).val() == 2) {
                     color = '#ff0000';
                 }
-                $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
+                $(this).closest("#refresh").find('#TweetBody').css("border", "1px solid" + color);
+                $(this).closest("#refresh").find('#TweetBody').css("border-bottom", "none");
+                $(this).closest("#refresh").find('.counter').css("border", "1px solid" + color);
+                $(this).closest("#refresh").find('.counter').css("border-top", "none");
             });
 
             //$(".verifiedby").prop('disabled', true);
