@@ -344,46 +344,20 @@ $(document).ready(function() {
         });
 
         $("#table").on("change", ".TwitterVerified1", function() {
+            <? if ($params != 'h:daybyday') {?>
             $("#table").css('opacity', '.4');
-                /*if (this.checked == true) {
-                    id = $(this).attr('id');
-                    id = id.slice(0, -1);
-                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
-
-                    if ($(this).attr('value') == 0) {
-                        color = '#ffcc00';
-                    } else if ($(this).attr('value') == 1) {
-                        color = '#21a750';
-                    } else if ($(this).attr('value') == 2) {
-                        color = '#ff0000';
-                    }
-                    $(this).closest( "tr" ).find('#TweetBody').css("border", "1px solid" + color);
-                }*/
-
-                <? if ($params == 'h:daybyday') {  ?>
-                        $('#submitTweets').ajaxSubmit({success: function() {
-                            refresh();
-                        }});
-                <? } else {  ?>
-                        $('#edit').ajaxSubmit({success: function() {
-                            refresh();
-                        }});
-                <? }  ?>
+                $('#edit').ajaxSubmit({success: function() {
+                    refresh();
+                }});
                 //setTimeout(refresh, 500);//delaying the table refresh so that the form can successfully submit into the databases
                 function refresh() {
-                    <? if ($params == 'h:daybyday') {  ?>
-                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
-                                $("#table").css('opacity', '1');
-                            });
-                    <? } else {  ?>
-                            $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function() {
-                                $("#table").css('opacity', '1');
-                            });
-                    <? }  ?>
-                    
+                    $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function() {
+                        $("#table").css('opacity', '1');
+                    });
                 };
 
                 $('#progress table').load('/twitter/progressrefresh');
+                <? } ?>
         });
 
         warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
