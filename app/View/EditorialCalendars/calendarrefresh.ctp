@@ -158,8 +158,8 @@ foreach ($calendar as $key1) {
     <?echo $body;?>
     <span style='float: left'>Written by: <? echo $firstName; ?></span>
         <div class="tweetButtons">
-            <? echo $this->Form->button('Save', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
-            <? echo $this->Form->button('Shorten URLs', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <? echo $this->Form->button('SAVE', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
+            <? echo $this->Form->button('SHORTEN URLS', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
             <? if ($img) { ?>
                     <div class='imagecontainer'>
@@ -169,7 +169,7 @@ foreach ($calendar as $key1) {
             <?  }  ?>
         </div>
     </td>
-    <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'select', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'label' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
+    <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
         <? if ($verified == 1) {?>
         <i><small>-<? echo $verified_by;?></small></i>
         <?}?></td>
@@ -177,6 +177,7 @@ foreach ($calendar as $key1) {
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]'));
     echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
+    echo $this->Form->input('tosubmit', array('type' => 'hidden', 'value' => false, 'name' => 'tosubmit'));
     //echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
     /*echo $this->Form->input('verfied_by', array(
     'type' => 'hidden', 
@@ -197,7 +198,9 @@ foreach ($calendar as $key1) {
 <script> 
         // wait for the DOM to be loaded 
         $(document).ready(function () {
-            $(".TwitterVerified1").each( function() {
+            $('.editing').charCount({css: 'counter counter1'});
+
+            $(".TwitterVerified1:checked").each( function() {
                 if ($(this).val() == 0) {
                     color = '#ffcc00';
                 } else if ($(this).val() == 1) {
@@ -205,10 +208,10 @@ foreach ($calendar as $key1) {
                 } else if ($(this).val() == 2) {
                     color = '#ff0000';
                 }
-                $(this).closest("#refresh").find('#TweetBody').css("border", "1px solid" + color);
-                $(this).closest("#refresh").find('#TweetBody').css("border-bottom", "none");
-                $(this).closest("#refresh").find('.counter').css("border", "1px solid" + color);
-                $(this).closest("#refresh").find('.counter').css("border-top", "none");
+                $(this).closest("tr").find('#TweetBody').css("border", "1px solid" + color);
+                $(this).closest("tr").find('#TweetBody').css("border-bottom", "none");
+                $(this).closest("tr").find('.counter1').css("border", "1px solid" + color);
+                $(this).closest("tr").find('.counter1').css("border-top", "none");
             });
 
             //$(".verifiedby").prop('disabled', true);
@@ -261,13 +264,13 @@ foreach ($calendar as $key1) {
                 });
         });
 
-            $('.editing').charCount({css: 'counter counter1'});
 
             warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
             $(".editing").on('change', function () {
                 window.onbeforeunload = function () {
                     if (warnMessage != null) return warnMessage;
                 }
+                $(this).closest("tr").find('input[name=tosubmit]').val(true);
             });
 
             $('input:submit, button:submit').on('click', function() {
@@ -276,11 +279,43 @@ foreach ($calendar as $key1) {
 
             $('.input.file input').on('change', function() {
                 $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
+                $(this).closest("tr").find('input[name=tosubmit]').val(true);
             });
 
             $('select').selectric();
 
-            $(".smallSaveButton").click(function () {
+            $("#table").on("change", ".TwitterVerified1", function() {
+                $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                $("#table").css('opacity', '.4');
+                $('#loading').show();
+                var dat = new FormData();
+                $('input[name=tosubmit][value=true]').each(function () {
+                    //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
+                    $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                        if ($(this).attr('type') == 'file') {
+                            dat.append($(this).attr('name'), this.files[0]);
+                        } else {
+                            dat.append($(this).attr('name'), $(this).val());
+                        }
+                    });
+                });
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/editorial_calendars/editcalendartweet1",
+                    data: dat,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                            $("#table").css('opacity', '1');
+                            $('#loading').hide();
+                        });
+                    }
+                });
+            });
+
+            /*$(".smallSaveButton").click(function () {
                 $("#table").css('opacity', '.4');
                 $('#loading').show();
                         $('#submitTweets').ajaxSubmit({success: function() {
@@ -296,7 +331,57 @@ foreach ($calendar as $key1) {
                 };
 
                 $('#progress table').load('/twitter/progressrefresh');
+            });*/
+
+            $(".smallSaveButton").click(function () {
+                $("#table").css('opacity', '.4');
+                $('#loading').show();
+                var dat = new FormData();
+                $('input[name=tosubmit][value=true]').each(function () {
+                    //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
+                    $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                        if ($(this).attr('type') == 'file') {
+                            dat.append($(this).attr('name'), this.files[0]);
+                        } else {
+                            dat.append($(this).attr('name'), $(this).val());
+                        }
+                    });
+                });
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/editorial_calendars/editcalendartweet1",
+                    data: dat,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                            $("#table").css('opacity', '1');
+                            $('#loading').hide();
+                        });
+                    }
+                });
             });
+
+            /*$(".smallSaveButton").click(function () {
+                $("#table").css('opacity', '.4');
+                $('#loading').show();
+                var dat = "";
+                $('input[name=tosubmit][value=true]').each(function () {
+                    dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
+                });
+                alert(dat);
+                $.ajax({
+                    type: "POST",
+                    url: "/editorial_calendars/editcalendartweet1",
+                    data: dat,
+                    success: function(data) {
+                        alert('success');
+                        $("#table").css('opacity', '1');
+                        $('#loading').hide();
+                    }
+                });
+            });*/
 
             /*$(".approveAll").click(function () {
             $(".verified").each(function () {
