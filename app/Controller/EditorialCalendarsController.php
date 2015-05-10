@@ -139,9 +139,9 @@ class EditorialCalendarsController extends AppController {
             $originals[$value['Tweet']['id']] = $originals[$key];
             unset($originals[$key]);
         }
-        foreach ($this->request->data['Tweet'] as $key) {
+        foreach ($this->request->data['Tweet'] as $value => $key) {
             if (empty($key['body']) && empty($key['id'])) { //Empty Tweets
-
+                unset($this->request->data['Tweet'][$value]);
             } elseif (!empty($key['id'])) { //Edited Tweets
                 $original = $originals[$key['id']];
                 $key['account_id'] = $this->Session->read('access_token.account_id');
@@ -333,7 +333,6 @@ class EditorialCalendarsController extends AppController {
         foreach ($calendar as $key) {
             $tweets[$key['EditorialCalendar']['id']] = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $key['EditorialCalendar']['id'], 'timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC')));
         }
-
         $this->set('tweets', $tweets);
         $this->set('calendar', $calendar);
         
