@@ -95,6 +95,18 @@ foreach ($calendar as $key1) {
         }
     }*/
 
+    if ($tweets[$key1['EditorialCalendar']['id']] == false) {
+        $value2 = '';
+        $value1 = $testid;
+        $id = '';
+        $img = '';
+        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
+        $firstName = '';
+        $verified = 0;
+        $verified_by = "";
+        $published = false;
+    }
+
     foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
         if ($key2['Tweet']['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
             $value2 = $key2['Tweet']['body'];
@@ -119,18 +131,6 @@ foreach ($calendar as $key1) {
             $verified_by = "";
             $published = false;
         }
-    }
-
-    if ($tweets[$key1['EditorialCalendar']['id']] == false) {
-        $value2 = '';
-        $value1 = $testid;
-        $id = '';
-        $img = '';
-        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
-        $firstName = '';
-        $verified = 0;
-        $verified_by = "";
-        $published = false;
     }
 
 
