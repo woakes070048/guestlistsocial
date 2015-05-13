@@ -363,27 +363,33 @@ class TwitterController extends AppController {
         $this->Session->write('access_token.oauth_token_secret', $accessToken['oauth_token_secret']);
         $this->Session->write('access_token.screen_name', $accessToken['screen_name']);
 
-        $count = $this->TwitterAccount->find('count', array('conditions' => array('screen_name' => $accessToken['screen_name'])));
-        if ($count == 0) {
+        $account = $this->TwitterAccount->find('all', array('conditions' => array('screen_name' => $accessToken['screen_name'])));
+        if (empty($account)) {
             $this->TwitterAccount->create();
             $this->TwitterAccount->save($accessToken);
             $this->TwitterAccount->saveField('user_id', $this->Session->read('Auth.User.id'));
             $this->TwitterAccount->saveField('team_id', $this->Session->read('Auth.User.Team.0.id'));
-            $twitter_account_id = $this->TwitterAccount->getLastInsertId();
         } else {
-
+            $id = $account[0]['TwitterAccount']['id'];
+            $this->TwitterAccount->id = $id;
+            $this->TwitterAccount->save($accessToken);
         }
         
+            $twitter_account_id = $this->TwitterAccount->getLastInsertId();
             
-            
-            $account = $this->TwitterAccount->find('all', array('conditions' => array('screen_name' => $accessToken['screen_name'])));
             $this->Session->write('access_token.account_id', $account[0]['TwitterAccount']['account_id']);
             $twitter_account_id = $account[0]['TwitterAccount']['account_id'];
 
+            $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId')));
+
+            if ($existingPermission == 0) {
             $this->TwitterPermission->create();
             $this->TwitterPermission->saveField('user_id', $this->Session->read('Auth.User.id'));
             $this->TwitterPermission->saveField('twitter_account_id', $twitter_account_id);
             $this->TwitterPermission->saveField('team_id', $this->Session->read('Auth.User.currentTeamId'));
+            } else {
+                $this->Session->setFlash('Account already added to this team');
+            }
         //$this->redirect('/twitter/info');
         $this->redirect('/');//REMOVE WHEN REPORTING IS COMPLETE
 
