@@ -380,7 +380,7 @@ class TwitterController extends AppController {
             $this->Session->write('access_token.account_id', $account[0]['TwitterAccount']['account_id']);
             $twitter_account_id = $account[0]['TwitterAccount']['account_id'];
 
-            $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId')));
+            $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId'))));
 
             if ($existingPermission == 0) {
             $this->TwitterPermission->create();
