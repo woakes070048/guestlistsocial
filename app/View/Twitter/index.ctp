@@ -97,7 +97,8 @@ echo $this->Html->Link('Not Published', '/twitter/index/h:notpublished', array('
             'queued' => 'Queued',
             'awaitingproof' => 'Awaiting Proof',
             'improving' => 'Need Improving',
-            'published' => 'Publsihed'),
+            'published' => 'Publsihed',
+            'notpublished' => 'Not Published'),
         'selected' => $status,
         'class' => 'filterStatus'));
 
