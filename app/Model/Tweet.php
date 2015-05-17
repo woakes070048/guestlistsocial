@@ -6,4 +6,6 @@ class Tweet extends AppModel {
             'foreignKey' => 'account_id'
         )
     );
+
+    public $hasMany = 'Comment';
 }
