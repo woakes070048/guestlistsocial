@@ -284,7 +284,7 @@ foreach ($calendar as $key1) {
 
             $('select').selectric();
 
-            $("#table").on("change", ".TwitterVerified1", function() {
+            /*$("#table").on("change", ".TwitterVerified1", function() {
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
                 $("#table").css('opacity', '.4');
                 $('#loading').show();
@@ -313,7 +313,7 @@ foreach ($calendar as $key1) {
                         });
                     }
                 });
-            });
+            });*/
 
             /*$(".smallSaveButton").click(function () {
                 $("#table").css('opacity', '.4');

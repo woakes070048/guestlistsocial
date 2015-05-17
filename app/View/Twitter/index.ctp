@@ -346,7 +346,7 @@ $(document).ready(function() {
 
         $("#table").on("change", ".TwitterVerified1", function() {
             <? if ($params != 'h:daybyday') {?>
-            $("#table").css('opacity', '.4');
+                $("#table").css('opacity', '.4');
                 $('#edit').ajaxSubmit({success: function() {
                     refresh();
                 }});
@@ -358,7 +358,36 @@ $(document).ready(function() {
                 };
 
                 $('#progress table').load('/twitter/progressrefresh');
-                <? } ?>
+                <? } else {?>
+                    $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                    $("#table").css('opacity', '.4');
+                    $('#loading').show();
+                    var dat = new FormData();
+                    $('input[name=tosubmit][value=true]').each(function () {
+                        //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
+                        $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                            if ($(this).attr('type') == 'file') {
+                                dat.append($(this).attr('name'), this.files[0]);
+                            } else {
+                                dat.append($(this).attr('name'), $(this).val());
+                            }
+                        });
+                    });
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/editorial_calendars/editcalendartweet1",
+                        data: dat,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                $("#table").css('opacity', '1');
+                                $('#loading').hide();
+                            });
+                        }
+                    });
+                <?} ?>
         });
 
         warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
