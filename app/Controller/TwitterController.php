@@ -371,7 +371,7 @@ class TwitterController extends AppController {
             $this->TwitterAccount->saveField('user_id', $this->Session->read('Auth.User.id'));
             $this->TwitterAccount->saveField('team_id', $this->Session->read('Auth.User.Team.0.id'));
         } else {
-            $id = $account[0]['TwitterAccount']['id'];
+            $id = $account[0]['TwitterAccount']['account_id'];
             $this->TwitterAccount->id = $id;
             $this->TwitterAccount->save($accessToken);
         }
