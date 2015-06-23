@@ -257,12 +257,11 @@ echo $text;
             'maxlength' => '140')); ?> 
             
             <div class="tweetButtons">
-            <? if ($key['Tweet']['comments']) {
-                $val = 'Comments(1)';
-            } else {
-                $val = 'Comments(0)';
+            <? $val = count($key['Comment']);
+            if ($val > 9) {
+                $val = '9plus';
             }?>
-            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment1.png')">COMMENTS</div>
+            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment<?echo $val;?>.png')">COMMENTS</div>
             <span class='savetweet'>SAVE</span>
             <span class='deletetweet' id="<? echo $key['Tweet']['id'];?>">DELETE</span>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
@@ -490,9 +489,21 @@ $(document).ready(function() {
             //id = $(this).attr('id');
             $('.comments').qtip({ 
             content: {
-                text: function() {
+                text: function(event, api) {
                     id = $(this).attr('id'); 
-                    return $('#' + id + '-comments').clone();
+                    //return $('#' + id + '-comments').clone();
+                    $.ajax({
+                        url: '/comments/commentrefresh/' + id
+                    })
+                    .then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                    }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to the status and error value
+                    api.set('content.text', status + ': ' + error);
+                    });
+
+                    return 'Loading...'; // Set some initial text
                 }, 
                 button: true
             },
@@ -502,7 +513,7 @@ $(document).ready(function() {
             position: {
                 my: 'bottom center',
                 at: 'top center', 
-                target: $('.comments')
+                target: 'event'
             }
         });
         //})
@@ -520,6 +531,7 @@ $(document).ready(function() {
         $('.fr div').hover(function() {
             $('#userlogout').toggle();
         });
+
 
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation

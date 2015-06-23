@@ -105,6 +105,8 @@ foreach ($calendar as $key1) {
         $verified = 0;
         $verified_by = "";
         $published = false;
+        $commentCount = 0;
+        $present = '';
     }
 
     foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
@@ -118,6 +120,8 @@ foreach ($calendar as $key1) {
             $verified = $key2['Tweet']['verified'];
             $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
+            $commentCount = count($key2['Comment']);
+            $present = 'present';
             unset($tweets[$key1['EditorialCalendar']['id']][$item]);
             break;
         } else {
@@ -130,6 +134,8 @@ foreach ($calendar as $key1) {
             $verified = 0;
             $verified_by = "";
             $published = false;
+            $commentCount = 0;
+            $present = '';
         }
     }
 
@@ -158,6 +164,10 @@ foreach ($calendar as $key1) {
     <?echo $body;?>
     <span style='float: left'>Written by: <? echo $firstName; ?></span>
         <div class="tweetButtons">
+        <?if ($commentCount > 9) {
+            $commentCount = '9plus';
+        }?>
+            <div class="empty comments <?echo $present;?>" id="<? echo $id; ?>" style="background-image: url('/img/comment<?echo $commentCount;?>.png')">COMMENTS</div>
             <? echo $this->Form->button('SAVE', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
             <? echo $this->Form->button('SHORTEN URLS', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
@@ -361,6 +371,36 @@ foreach ($calendar as $key1) {
                         });
                     }
                 });
+            });
+
+            $('.comments.present').qtip({ 
+                content: {
+                    text: function(event, api) {
+                        id = $(this).attr('id'); 
+                        //return $('#' + id + '-comments').clone();
+                        $.ajax({
+                            url: '/comments/commentrefresh/' + id
+                        })
+                        .then(function(content) {
+                        // Set the tooltip content upon successful retrieval
+                        api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                        // Upon failure... set the tooltip content to the status and error value
+                        api.set('content.text', status + ': ' + error);
+                        });
+
+                        return 'Loading...'; // Set some initial text
+                    }, 
+                    button: true
+                },
+                hide: {
+                    event: false
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center', 
+                    target: 'event'
+                }
             });
 
             /*$(".smallSaveButton").click(function () {
