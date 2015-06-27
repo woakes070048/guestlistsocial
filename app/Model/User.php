@@ -64,6 +64,16 @@ class User extends AppModel {
         )
     );
 
+    public $hasMany = array(
+        'Notification' => array(
+            'className' => 'Notification',
+            'foreignKey' => 'user_id',
+            'conditions' => '',
+            'fields' => '',
+            'order' => ''
+        )
+    );
+
     public function bindNode() {
         $data = AuthComponent::user();
         return array('model' => 'Group', 'foreign_key' => $data['Group']['id']);

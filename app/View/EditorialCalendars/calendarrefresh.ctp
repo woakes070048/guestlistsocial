@@ -1,5 +1,8 @@
 <div></div>
 <? 
+        $this->Pusher->subscribe('comment_channel');
+        //The third argument receive string will be parsed as javascript.
+        $this->Pusher->bindEvent('comment_channel', 'new_comment', "alert('Hello');");
 $base = strtotime(date('Y-m',time()) . '-01 00:00:01');
 if (!isset($months)) {
     $months = 0;
@@ -434,6 +437,14 @@ foreach ($calendar as $key1) {
                     
             });
             });*/
+
+        var pusher = new Pusher('67904c5b4e0608620f41');
+        var channel = pusher.subscribe('comment_channel');
+        channel.bind('new_comment',
+            function(data) {
+            alert(data.Comment.body);
+            }
+        );
         });
 
 </script>

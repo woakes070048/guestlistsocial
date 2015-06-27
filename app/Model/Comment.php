@@ -15,4 +15,5 @@ class Comment extends AppModel {
             'className' => 'User'
         )
     );
+    public $actsAs = array('Pusher.Pusher');
 }

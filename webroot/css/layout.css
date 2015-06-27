@@ -1683,6 +1683,8 @@ textarea.editing {
 	margin-right: 50px;
 	
 	cursor: pointer;
+	
+	height: 30px;
 
 }
 
@@ -3669,4 +3671,81 @@ form .submit #commentSaveButton {
 	padding: 6px 10px;
 	margin: 0;
 	float: left;
+}
+
+#notificationbox {
+	background-color: #fff;
+	
+	position: absolute;
+	
+	width: 300px;
+	
+	top: 45px;
+	
+	right: 40px;
+	
+	z-index: 100;
+	
+	border-radius: 4px;
+	
+	padding: 0;
+	
+	font-size: 90%;
+	
+	overflow: hidden;
+	
+	display: none;
+}
+
+.arrowup {
+	height: 0;
+	width: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid #fff;
+}
+
+.notificationarrow {
+	position: absolute;
+	top: 35px;
+	right: 50px;
+	display: none;
+}
+
+.notificationImage {
+	width: 42px;
+}
+
+.notificationBody div {
+	height: 50px;
+	width: 246px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#notificationTable {
+	border-spacing: 0;
+	margin-bottom: 0;
+}
+
+#notificationTable tr {
+	background: transparent;
+	border: none;
+}
+
+#notificationTable td {
+	border: none;
+	text-align: left;
+	padding: 6px;
+}
+
+#notificationTable .notification0 {
+	background: #efefef;
+	font-weight: bold;
+}
+
+#notificationTable .morenotifications {
+	text-align: center;
+	border-top: 1px solid #efefef;
+	padding: 10px
 }

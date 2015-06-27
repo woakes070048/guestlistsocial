@@ -41,4 +41,6 @@ class EditorialCalendar extends AppModel {
 			'order' => 'Tweet.timestamp ASC'
 		)
 	);
+
+    public $actsAs = array('Pusher.Pusher');
 }

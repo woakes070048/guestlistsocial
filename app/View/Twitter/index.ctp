@@ -1,5 +1,6 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 <script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script> 
+<script src="//js.pusher.com/2.2/pusher.min.js"></script>
 <? 
 echo $this->Html->script('jquery-ui-1.10.3.custom');
 echo $this->Html->script('jquery-ui-timepicker-addon');
@@ -8,6 +9,7 @@ echo $this->Html->script('jquery.urlshortener');
 echo $this->Html->script('jquery.infinitescroll');
 echo $this->Html->script('jquery.qtip.min');
 echo $this->Html->script('jquery.selectric.min');
+echo $this->Html->script('jquery.timeago');
 echo $this->Html->css('jquery.qtip.min');
 echo $this->Html->css('calendar'); ?>
 <?php
@@ -288,7 +290,7 @@ echo $text;
     </div>
     <?php } ?>
 
-<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
+<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save', 'style' => 'margin-top:10px;')); ?>
 <div id='paginatorcontainer'>
 <?echo $this->Paginator->numbers();?>
 </div>
@@ -532,7 +534,17 @@ $(document).ready(function() {
             $('#userlogout').toggle();
         });
 
+        $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
 
+        $('.fr img').click(function () {
+            $('#notificationbox, .notificationarrow').toggle();
+        });
+
+        $(document).click(function(e) {   
+            if(e.target.id != 'notificationbox' && e.target.id != 'notificationFrontImage') {
+                $("#notificationbox, .notificationarrow").hide();
+            } 
+        });
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
             nextSelector : '.next a',  // selector for the NEXT link (to page 2)

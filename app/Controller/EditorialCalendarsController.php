@@ -1,7 +1,7 @@
 <?php
 class EditorialCalendarsController extends AppController {
-    public $components = array('Session', 'Auth');
-    public $helpers =  array('Html' , 'Form', 'Session');
+    public $components = array('Session', 'Auth', 'Pusher.Pusher');
+    public $helpers =  array('Html' , 'Form', 'Session', 'Pusher.Pusher');
     var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar');
 
     //saving editorial calendars
