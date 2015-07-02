@@ -456,8 +456,11 @@ class TwitterController extends AppController {
                     $toSave['time'] = $this->request->data['Tweet']['timestamp'];
                     $toSave['timestamp'] = strtotime($this->request->data['Tweet']['timestamp']);
 
-                    $this->Tweet->create();
-                    $this->Tweet->save($toSave);
+                    if ($this->Tweet->save($toSave)) {
+                        
+                    } else {
+                        $this->Session->setFlash('There was a problem saving your tweet. Please try again.');
+                    }
                     $this->redirect(array('action' => 'index'));
         }
 
@@ -548,8 +551,8 @@ class TwitterController extends AppController {
                 $key['img_url'] = $tweet['Tweet']['img_url'];
             }
 
-            if ($this->Tweet->saveField('verified', $key['verified'])) {
-                $this->Tweet->saveField('body', $key['body']);
+            if ($this->Tweet->saveField('body', $key['body'])) {
+                $this->Tweet->saveField('verified', $key['verified']);
                 $this->Tweet->saveField('comments', $key['comments']);
                 if ($key['verified']) {
                     $this->Tweet->saveField('verified_by', $key['verified_by']);

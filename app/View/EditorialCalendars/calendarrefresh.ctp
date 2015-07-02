@@ -442,7 +442,15 @@ foreach ($calendar as $key1) {
         var channel = pusher.subscribe('comment_channel');
         channel.bind('new_comment',
             function(data) {
-            alert(data.Comment.body);
+                str = $("#notificationFrontImage").attr('src');
+                str1 = str.substr(17);
+                if (str1 != "9plus.png") {
+                    str1 =  Number(str1.split('.')[0]) + 1;
+                }
+                $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
+
+                $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
+                $('#notificationbox').hide();
             }
         );
         });
