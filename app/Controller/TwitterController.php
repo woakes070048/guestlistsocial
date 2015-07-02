@@ -120,8 +120,8 @@ class TwitterController extends AppController {
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
         $this->set('team', $this->Session->read('filter.team'));
-        if (!empty($this->passedArgs['h'])) {
-            if ($this->passedArgs['h'] == 'daybyday') {
+        if (!empty($this->request->query['h'])) {
+            if ($this->request->query['h'] == 'daybyday') {
                 $this->set('params', 'h:daybyday');
             }
         } else {
@@ -203,7 +203,7 @@ class TwitterController extends AppController {
         }
 
         if (!empty($user_id)) {
-            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'Tweet.user_id' => $user_id);
         } else {
             $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         }
@@ -211,9 +211,8 @@ class TwitterController extends AppController {
         $this->Paginator->settings = array(
         'conditions' => $c,
         'limit' => 10,
-        'order' => array('timestamp' => $order),
-        'paramType' => 'querystring'
-        );
+        'order' => array('timestamp' => $order,
+        'paramType' => 'queryString');
 
         $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
@@ -221,9 +220,9 @@ class TwitterController extends AppController {
         //setting the counts on the write tweets page
         if (!empty($filter['user'])) {
             $id = $filter['user'];
-            $countConditions0['user_id'] = $id;
-            $countConditions1['user_id'] = $id;
-            $countConditions2['user_id'] = $id;
+            $countConditions0['Tweet.user_id'] = $id;
+            $countConditions1['Tweet.user_id'] = $id;
+            $countConditions2['Tweet.user_id'] = $id;
         } elseif (!empty($filter['account'])) {
             $id = $twitter_account_id['TwitterAccount']['account_id'];
             $countConditions0['Tweet.account_id'] = $id;
@@ -316,10 +315,10 @@ class TwitterController extends AppController {
         }
 
         if ($this->Session->read('Auth.User.Team.0.id') !== 0) {
-            $permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'))));
+            $permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('TwitterAccount.user_id' => $this->Session->read('Auth.User.id'))));
             $conditions = array('team_id' => $this->Session->read('Auth.User.Team.0.id'));
         } else {
-            $conditions = array('user_id' => $this->Session->read('Auth.User.id'));
+            $conditions = array('TwitterAccount.user_id' => $this->Session->read('Auth.User.id'));
         }
         $calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
         $this->set('calendar', $calendar);
@@ -654,8 +653,8 @@ class TwitterController extends AppController {
         $this->set('user', '');
         $this->set('account', '');
         $this->set('team', '');
-        if (!empty($this->passedArgs['h'])) {
-            if ($this->passedArgs['h'] == 'daybyday') {
+        if (!empty($this->request->query['h'])) {
+            if ($this->request->query['h'] == 'daybyday') {
                 $this->set('params', 'h:daybyday');
             }
         } else {
@@ -707,7 +706,7 @@ class TwitterController extends AppController {
         }
 
         if (!empty($user_id)) {
-            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'user_id' => $user_id);
+            $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id'], 'Tweet.user_id' => $user_id);
         } else {
             $c = array('verified' => $v, 'published' => $p, $timestamp => $t, 'Tweet.account_id' => $twitter_account_id['TwitterAccount']['account_id']);
         }
@@ -786,9 +785,9 @@ class TwitterController extends AppController {
         //setting the counts on the write tweets page
         if ($this->Session->read('filterUser')) {
             $id = $this->Session->read('filterUser');
-            $countConditions0['user_id'] = $id;
-            $countConditions1['user_id'] = $id;
-            $countConditions2['user_id'] = $id;
+            $countConditions0['Tweet.user_id'] = $id;
+            $countConditions1['Tweet.user_id'] = $id;
+            $countConditions2['Tweet.user_id'] = $id;
         } elseif ($this->Session->read('filterAccount')) {
             $id = $this->Session->read('access_token.account_id');
             $countConditions0['Tweet.account_id'] = $id;

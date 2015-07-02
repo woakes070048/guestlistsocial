@@ -18,7 +18,7 @@ class Notification extends AppModel {
         if ($icon) {
             $data['Notification']['icon'] = $icon;
         }
-        $this->create();
+        
         if ($this->save($data)) {
             return true;
         } else {
@@ -28,6 +28,7 @@ class Notification extends AppModel {
 
     public function markAsRead($notifications) {
         if (is_array($notifications)) {
+            $array = array();
             foreach ($notifications as $key) {
                 $array[] = array('id' => $key['Notification']['id'], 'read' => 1);
             }
