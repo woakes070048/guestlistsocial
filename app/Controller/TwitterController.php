@@ -211,9 +211,9 @@ class TwitterController extends AppController {
         $this->Paginator->settings = array(
         'conditions' => $c,
         'limit' => 10,
-        'order' => array('timestamp' => $order),
-        'paramType' => 'queryString'
- request->query
+        'order' => array('timestamp' => $order,
+        'paramType' => 'queryString');
+
         $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
@@ -785,9 +785,9 @@ class TwitterController extends AppController {
         //setting the counts on the write tweets page
         if ($this->Session->read('filterUser')) {
             $id = $this->Session->read('filterUser');
-            $countConditions0['user_id'] = $id;
-            $countConditions1['user_id'] = $id;
-            $countConditions2['user_id'] = $id;
+            $countConditions0['Tweet.user_id'] = $id;
+            $countConditions1['Tweet.user_id'] = $id;
+            $countConditions2['Tweet.user_id'] = $id;
         } elseif ($this->Session->read('filterAccount')) {
             $id = $this->Session->read('access_token.account_id');
             $countConditions0['Tweet.account_id'] = $id;
