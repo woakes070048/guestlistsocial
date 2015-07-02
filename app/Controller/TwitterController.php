@@ -71,7 +71,7 @@ class TwitterController extends AppController {
                 $timestamp = 'timestamp <';
                 $order = 'desc';
                 $this->set('params', 'h:published');
-            } elseif ($this->passedArgs['h'] == 'daybyday') {
+            } elseif ($this->request->query['h'] == 'daybyday') {
                 $this->set('params', 'h:daybyday');
             }
         }
