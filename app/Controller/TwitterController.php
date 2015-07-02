@@ -212,7 +212,8 @@ class TwitterController extends AppController {
         'conditions' => $c,
         'limit' => 10,
         'order' => array('timestamp' => $order,
-        'paramType' => 'queryString');
+        'paramType' => 'queryString')
+        );
 
         $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
