@@ -285,6 +285,7 @@ class EditorialCalendarsController extends AppController {
             } else {
                 $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
             }
+        }
         
         $this->redirect(Controller::referer());
     }
