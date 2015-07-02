@@ -159,7 +159,7 @@ echo $this->Form->create('Tweet', array('url' => array('controller' => 'twitter'
     $link = '/';
 } else {
     $text = 'NOT ACTIVE';
-    $link = '/twitter/index/h:daybyday';
+    $link = '/tweets?h=daybyday';
 } ?>
 <a href=<?echo $link;?>>
 <div id='dbdbox'>
