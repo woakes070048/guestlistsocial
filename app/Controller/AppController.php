@@ -50,6 +50,9 @@ class AppController extends Controller {
 
     public function beforeFilter() {
         $this->Auth->allow('login', 'register', 'logout', 'forgotpw', 'resetpw');
+        $this->loadModel('Notification');
+        $notificationCount = $this->Notification->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'read' => 0)));
+        $this->set('notificationCount', $notificationCount);
     }
 
     

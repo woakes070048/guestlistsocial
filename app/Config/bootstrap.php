@@ -74,6 +74,9 @@ Cache::config('default', array('engine' => 'File'));
 CakePlugin::load('DebugKit');
 CakePlugin::load('AclExtras');
 CakePlugin::load('Upload');
+CakePlugin::load('Pusher', array(
+    'bootstrap' => true
+));
 /**
  * You can attach event listeners to the request lifecycle as Dispatcher Filter . By Default CakePHP bundles two filters:
  *

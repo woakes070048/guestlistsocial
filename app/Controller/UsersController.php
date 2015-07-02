@@ -2,7 +2,7 @@
 class UsersController extends AppController {
     public $helpers = array('Html','Form');
     public $components = array('Tickets');
-    var $uses = array('Team', 'User', 'Ticket', 'TeamsUser');
+    var $uses = array('Team', 'User', 'Ticket', 'TeamsUser', 'Group');
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -38,6 +38,7 @@ class UsersController extends AppController {
                             $calendar_activated = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->Tickets->get($teamHash))));
                             $this->User->saveField('calendar_activated', $calendar_activated[0]['User'][0]['calendar_activated']);
                             $this->User->saveField('group_id', $group);
+                            $this->User->saveField('profile_pic', '/img/profile/defualt'. rand(0,5) . '.jpg');
                             $this->Session->setFlash('You have successfully been registered and added to team ' . $team[0]['Team']['name'] . '. Please log in. Note: You will not have access to any of your team\'s twitter accounts until the team admin gives you permissions');
                             $this->Tickets->del($this->passedArgs['h']);
                             $this->Tickets->del($this->passedArgs['g']);
@@ -223,17 +224,19 @@ class UsersController extends AppController {
 
     // allow basic users to log out
     //$this->Acl->allow($group, 'controllers/users/logout');
-
+    debug($group);
     $group->id = 1;
-    $this->Acl->allow($group, 'controllers/users/manage');
+    $this->Acl->allow($group, 'controllers');
+    //$group->id = 1;
+    //$this->Acl->allow($group, 'controllers/comments/commentSave');
     //$this->Acl->allow($group, 'controllers/teams/removeFromTeam');
-    $group->id = 2;
-    $this->Acl->allow($group, 'controllers/users/manage');
-    $group->id = 5;
-    $this->Acl->allow($group, 'controllers/users/manage');
+    //$group->id = 2;
+    //$this->Acl->allow($group, 'controllers/comments/commentSave');
+    //$group->id = 5;
+    //$this->Acl->allow($group, 'controllers/comments/commentSave'); 
     //$this->Acl->allow($group, 'controllers/teams/removeFromTeam');
-    $group->id = 7;
-    $this->Acl->allow($group, 'controllers/users/manage');
+    //$group->id = 7;
+    //$this->Acl->allow($group, 'controllers/comments/commentSave');
     // we add an exit to avoid an ugly "missing views" error message
     echo "all done";
     exit;

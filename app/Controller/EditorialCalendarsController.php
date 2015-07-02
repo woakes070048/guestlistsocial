@@ -1,7 +1,7 @@
 <?php
 class EditorialCalendarsController extends AppController {
-    public $components = array('Session', 'Auth');
-    public $helpers =  array('Html' , 'Form', 'Session');
+    public $components = array('Session', 'Auth', 'Pusher.Pusher');
+    public $helpers =  array('Html' , 'Form', 'Session', 'Pusher.Pusher');
     var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar');
 
     //saving editorial calendars
@@ -272,12 +272,19 @@ class EditorialCalendarsController extends AppController {
             unset($key);
         }
         if (!empty($test)) {
-            $this->Tweet->saveAll($test);
+            if ($this->Tweet->saveAll($test)) {
+
+            } else {
+                $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
+            }
         }
 
         if (!empty($verified)) {
-            $this->CronTweet->saveAll($verified);
-        }
+            if ($this->CronTweet->saveAll($verified)) {
+            
+            } else {
+                $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
+            }
         
         $this->redirect(Controller::referer());
     }

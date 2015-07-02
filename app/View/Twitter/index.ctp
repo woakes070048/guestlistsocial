@@ -1,5 +1,6 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 <script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script> 
+<script src="//js.pusher.com/2.2/pusher.min.js"></script>
 <? 
 echo $this->Html->script('jquery-ui-1.10.3.custom');
 echo $this->Html->script('jquery-ui-timepicker-addon');
@@ -8,6 +9,7 @@ echo $this->Html->script('jquery.urlshortener');
 echo $this->Html->script('jquery.infinitescroll');
 echo $this->Html->script('jquery.qtip.min');
 echo $this->Html->script('jquery.selectric.min');
+echo $this->Html->script('jquery.timeago');
 echo $this->Html->css('jquery.qtip.min');
 echo $this->Html->css('calendar'); ?>
 <?php
@@ -257,12 +259,11 @@ echo $text;
             'maxlength' => '140')); ?> 
             
             <div class="tweetButtons">
-            <? if ($key['Tweet']['comments']) {
-                $val = 'Comments(1)';
-            } else {
-                $val = 'Comments(0)';
+            <? $val = count($key['Comment']);
+            if ($val > 9) {
+                $val = '9plus';
             }?>
-            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment1.png')">COMMENTS</div>
+            <div class="empty comments" id="<? echo $key['Tweet']['id']; ?>" style="background-image: url('../img/comment<?echo $val;?>.png')">COMMENTS</div>
             <span class='savetweet'>SAVE</span>
             <span class='deletetweet' id="<? echo $key['Tweet']['id'];?>">DELETE</span>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$key['Tweet']['id'].'][img_url1]', 'label' => false)); ?>
@@ -289,7 +290,7 @@ echo $text;
     </div>
     <?php } ?>
 
-<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
+<?php echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save', 'style' => 'margin-top:10px;')); ?>
 <div id='paginatorcontainer'>
 <?echo $this->Paginator->numbers();?>
 </div>
@@ -490,9 +491,21 @@ $(document).ready(function() {
             //id = $(this).attr('id');
             $('.comments').qtip({ 
             content: {
-                text: function() {
+                text: function(event, api) {
                     id = $(this).attr('id'); 
-                    return $('#' + id + '-comments').clone();
+                    //return $('#' + id + '-comments').clone();
+                    $.ajax({
+                        url: '/comments/commentrefresh/' + id
+                    })
+                    .then(function(content) {
+                    // Set the tooltip content upon successful retrieval
+                    api.set('content.text', content);
+                    }, function(xhr, status, error) {
+                    // Upon failure... set the tooltip content to the status and error value
+                    api.set('content.text', status + ': ' + error);
+                    });
+
+                    return 'Loading...'; // Set some initial text
                 }, 
                 button: true
             },
@@ -502,7 +515,7 @@ $(document).ready(function() {
             position: {
                 my: 'bottom center',
                 at: 'top center', 
-                target: $('.comments')
+                target: 'event'
             }
         });
         //})
@@ -521,6 +534,17 @@ $(document).ready(function() {
             $('#userlogout').toggle();
         });
 
+        $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
+
+        $('.fr img').click(function () {
+            $('#notificationbox, .notificationarrow').toggle();
+        });
+
+        $(document).click(function(e) {   
+            if(e.target.id != 'notificationbox' && e.target.id != 'notificationFrontImage') {
+                $("#notificationbox, .notificationarrow").hide();
+            } 
+        });
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
             nextSelector : '.next a',  // selector for the NEXT link (to page 2)

@@ -4,7 +4,7 @@ App::import('Vendor', 'OAuth/OAuthClient');
 class TwitterController extends AppController {
     public $components = array('Session', 'Auth', 'Paginator', 'Tickets');
     public $helpers =  array('Html' , 'Form');
-    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team');
+    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification');
 
     public function index() {
         if (isset($this->request->data['currentmonth'])) {
@@ -457,8 +457,11 @@ class TwitterController extends AppController {
                     $toSave['time'] = $this->request->data['Tweet']['timestamp'];
                     $toSave['timestamp'] = strtotime($this->request->data['Tweet']['timestamp']);
 
-                    $this->Tweet->create();
-                    $this->Tweet->save($toSave);
+                    if ($this->Tweet->save($toSave)) {
+                        
+                    } else {
+                        $this->Session->setFlash('There was a problem saving your tweet. Please try again.');
+                    }
                     $this->redirect(array('action' => 'index'));
         }
 
@@ -549,8 +552,8 @@ class TwitterController extends AppController {
                 $key['img_url'] = $tweet['Tweet']['img_url'];
             }
 
-            if ($this->Tweet->saveField('verified', $key['verified'])) {
-                $this->Tweet->saveField('body', $key['body']);
+            if ($this->Tweet->saveField('body', $key['body'])) {
+                $this->Tweet->saveField('verified', $key['verified']);
                 $this->Tweet->saveField('comments', $key['comments']);
                 if ($key['verified']) {
                     $this->Tweet->saveField('verified_by', $key['verified_by']);
@@ -808,28 +811,9 @@ class TwitterController extends AppController {
         $Email->to("sharif9876@hotmail.com");
         $Email->subject('TEST');
         debug($Email->send('THIS IS A TEST'));*/
-        $test = array(
-            (int) 0 => array(
-                'id' => '38349',
-                'body' => 'helloooooofgfg000',
-                'verified' => '1',
-                'verified_by' => 'SharifsTest',
-                'img_url' => '',
-                'first_name' => 'SharifsTest'
-            ),
-            (int) 1 => array(
-                'body' => 'hellooooo',
-                'verified' => (int) 0,
-                'user_id' => '64',
-                'verified_by' => 'SharifsTest',
-                'calendar_id' => '1',
-                'timestamp' => (int) 1422349200,
-                'time' => '27-01-2015 09:00',
-                'account_id' => '1',
-                'first_name' => 'SharifsTest'
-            )
-        );
-
-        $this->Tweet->saveAll($test);
+        $this->Notification->add(1, 'A comment was added to your tweet', 0);
+        $this->Notification->add(1, 'A comment was added to your tweet1', 1);
+        $this->Notification->add(1, 'A comment was added to your tweet2', 0);
+        //$this->Notification->markAsRead(1);
     }
 }

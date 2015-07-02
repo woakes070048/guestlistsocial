@@ -694,12 +694,8 @@ form div.submit {
 	border: 0;
 
 	clear: both;
-
-	margin-top: 10px;
-
-	float: left;
-
-	width: 100%;
+	
+	display: inline;
 
 }
 
@@ -1678,11 +1674,7 @@ textarea.editing {
 	float: left;
 >>>>>>> Stashed changes
 
-	font-size: 115%;
-
-	background: url(../img/user_white.png) no-repeat;
-
-	padding-left: 25px;
+	font-size: 105%;
 	
 	padding-bottom: 30px;
 	
@@ -1693,6 +1685,10 @@ textarea.editing {
 	color: #fff;
 	
 	margin-right: 50px;
+	
+	cursor: pointer;
+	
+	height: 30px;
 
 }
 
@@ -1728,8 +1724,6 @@ textarea.editing {
 	position: absolute;
 	
 	width: 170px;
-	
-	margin-left: -30px;
 	
 	margin-top: 30px;
 	
@@ -3613,4 +3607,149 @@ input[type=file] {
 }
 .selectric-TwitterVerified1 .ico-2 {
 	background: url(../img/radiored.png) no-repeat left center;
+}
+
+#comment {
+	width: 296px;
+}
+
+form .submit #commentSaveButton {
+	background-color: #6ed3fd;
+	float: none;
+	margin: 0 0 0 -1px;
+	width: auto;
+	border: 1px solid #6ed3fd;
+	border-radius: 5px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	padding: 0 8px;
+	height: 26px;
+}
+
+#CommentBody {
+	width: 250px;
+	font-size: 11pt;
+	float: left;
+	border: 1px solid #aaa;
+	padding: 4px;
+	border-right: none;
+}
+
+.commentTable {
+	width: 296px;
+	font-size: 10pt;
+}
+
+.commentTable td {
+	border: 0;
+	text-align: left;
+	table-layout: fixed;
+}
+
+.commentTable .commentName {
+	width: 100px;
+	font-weight: bold;
+	background-color: #fff;
+}
+
+.commentTable .commentName span {
+	margin-top: 3px;
+	vertical-align: super;
+	padding-left: 5px;
+}
+
+.commentTable .commentName div {
+	width: 100px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.commentTable .commentBody {
+	background-color: #fff;
+}
+
+.commentTable .commentBody div {
+	background-color: #dcdcdc;
+	border-radius: 4px;
+	padding: 6px 10px;
+	margin: 0;
+	float: left;
+}
+
+#notificationbox {
+	background-color: #fff;
+	
+	position: absolute;
+	
+	width: 300px;
+	
+	top: 45px;
+	
+	right: 40px;
+	
+	z-index: 100;
+	
+	border-radius: 4px;
+	
+	padding: 0;
+	
+	font-size: 90%;
+	
+	overflow: hidden;
+	
+	display: none;
+}
+
+.arrowup {
+	height: 0;
+	width: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid #fff;
+}
+
+.notificationarrow {
+	position: absolute;
+	top: 35px;
+	right: 50px;
+	display: none;
+}
+
+.notificationImage {
+	width: 42px;
+}
+
+.notificationBody div {
+	height: 50px;
+	width: 246px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+#notificationTable {
+	border-spacing: 0;
+	margin-bottom: 0;
+}
+
+#notificationTable tr {
+	background: transparent;
+	border: none;
+}
+
+#notificationTable td {
+	border: none;
+	text-align: left;
+	padding: 6px;
+}
+
+#notificationTable .notification0 {
+	background: #efefef;
+	font-weight: bold;
+}
+
+#notificationTable .morenotifications {
+	text-align: center;
+	border-top: 1px solid #efefef;
+	padding: 10px
 }

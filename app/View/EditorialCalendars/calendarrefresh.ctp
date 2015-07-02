@@ -1,5 +1,8 @@
 <div></div>
 <? 
+        $this->Pusher->subscribe('comment_channel');
+        //The third argument receive string will be parsed as javascript.
+        $this->Pusher->bindEvent('comment_channel', 'new_comment', "alert('Hello');");
 $base = strtotime(date('Y-m',time()) . '-01 00:00:01');
 if (!isset($months)) {
     $months = 0;
@@ -105,6 +108,8 @@ foreach ($calendar as $key1) {
         $verified = 0;
         $verified_by = "";
         $published = false;
+        $commentCount = 0;
+        $present = '';
     }
 
     foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
@@ -118,6 +123,8 @@ foreach ($calendar as $key1) {
             $verified = $key2['Tweet']['verified'];
             $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
+            $commentCount = count($key2['Comment']);
+            $present = 'present';
             unset($tweets[$key1['EditorialCalendar']['id']][$item]);
             break;
         } else {
@@ -130,6 +137,8 @@ foreach ($calendar as $key1) {
             $verified = 0;
             $verified_by = "";
             $published = false;
+            $commentCount = 0;
+            $present = '';
         }
     }
 
@@ -158,6 +167,10 @@ foreach ($calendar as $key1) {
     <?echo $body;?>
     <span style='float: left'>Written by: <? echo $firstName; ?></span>
         <div class="tweetButtons">
+        <?if ($commentCount > 9) {
+            $commentCount = '9plus';
+        }?>
+            <div class="empty comments <?echo $present;?>" id="<? echo $id; ?>" style="background-image: url('/img/comment<?echo $commentCount;?>.png')">COMMENTS</div>
             <? echo $this->Form->button('SAVE', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
             <? echo $this->Form->button('SHORTEN URLS', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
@@ -363,6 +376,36 @@ foreach ($calendar as $key1) {
                 });
             });
 
+            $('.comments.present').qtip({ 
+                content: {
+                    text: function(event, api) {
+                        id = $(this).attr('id'); 
+                        //return $('#' + id + '-comments').clone();
+                        $.ajax({
+                            url: '/comments/commentrefresh/' + id
+                        })
+                        .then(function(content) {
+                        // Set the tooltip content upon successful retrieval
+                        api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                        // Upon failure... set the tooltip content to the status and error value
+                        api.set('content.text', status + ': ' + error);
+                        });
+
+                        return 'Loading...'; // Set some initial text
+                    }, 
+                    button: true
+                },
+                hide: {
+                    event: false
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center', 
+                    target: 'event'
+                }
+            });
+
             /*$(".smallSaveButton").click(function () {
                 $("#table").css('opacity', '.4');
                 $('#loading').show();
@@ -394,6 +437,22 @@ foreach ($calendar as $key1) {
                     
             });
             });*/
+
+        var pusher = new Pusher('67904c5b4e0608620f41');
+        var channel = pusher.subscribe('comment_channel');
+        channel.bind('new_comment',
+            function(data) {
+                str = $("#notificationFrontImage").attr('src');
+                str1 = str.substr(17);
+                if (str1 != "9plus.png") {
+                    str1 =  Number(str1.split('.')[0]) + 1;
+                }
+                $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
+
+                $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
+                $('#notificationbox').hide();
+            }
+        );
         });
 
 </script>
