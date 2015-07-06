@@ -2170,6 +2170,8 @@ input[type='radio'][value='2']:checked + label {
 .input.radio {
 
 	padding: 10px;
+	
+	margin: 0
 
 }
 
@@ -2355,6 +2357,13 @@ input[type='radio'][value='2']:checked + label {
 .topic {
 
     width: 15%;
+
+}
+
+
+.topic div {
+	
+	border-radius: 6px;
 
 }
 

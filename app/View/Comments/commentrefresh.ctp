@@ -34,6 +34,17 @@ $(document).ready(function() {
             $(this).ajaxSubmit({context: this, success: function() {
                 id = $(this).find('#CommentTweetId').val();
                 $(this).closest('.qtip-content').load('/comments/commentrefresh/' + id);
+
+                idx = $(this).closest('.qtip-default').attr('id');
+	            idx = idx.split('-')[1];
+	            image = $('.comments[data-hasqtip=' + idx + ']').css('background-image');
+	            image = image.substr(-6);
+	            if (image != "s.png)") {
+	                    image =  Number(image.split('.')[0]) + 1;
+	                } else {
+	                	image = '9plus';
+	                }
+	            $('.comments[data-hasqtip=' + idx + ']').css('background-image', 'url(/img/comment' + String(image) + '.png)');
             }});
         });
 });

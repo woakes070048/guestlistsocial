@@ -110,6 +110,7 @@ foreach ($calendar as $key1) {
         $published = false;
         $commentCount = 0;
         $present = '';
+        $editors = false;
     }
 
     foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
@@ -125,6 +126,11 @@ foreach ($calendar as $key1) {
             $published = $key2['Tweet']['published'];
             $commentCount = count($key2['Comment']);
             $present = 'present';
+            if (!empty($key2['Editor'])) {
+                $editors = $key2['Editor'];
+            } else {
+                $editors = false;
+            }
             unset($tweets[$key1['EditorialCalendar']['id']][$item]);
             break;
         } else {
@@ -139,6 +145,7 @@ foreach ($calendar as $key1) {
             $published = false;
             $commentCount = 0;
             $present = '';
+            $editors = false;
         }
     }
 
@@ -165,7 +172,6 @@ foreach ($calendar as $key1) {
     <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div></td>
     <td class="calendar nopadding">
     <?echo $body;?>
-    <span style='float: left'>Written by: <? echo $firstName; ?></span>
         <div class="tweetButtons">
         <?if ($commentCount > 9) {
             $commentCount = '9plus';
@@ -182,10 +188,24 @@ foreach ($calendar as $key1) {
             <?  }  ?>
         </div>
     </td>
-    <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?> 
-        <? if ($verified == 1) {?>
-        <i><small>-<? echo $verified_by;?></small></i>
-        <?}?></td>
+    <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?>
+
+        <ul style='list-style: none; font-size: 8pt; margin: 0; text-align: right'>
+        <?if (!empty($editors)) {
+            foreach ($editors as $keyx) {
+                if ($keyx['type'] == 'written') {
+                    $x = 'Written By';
+                } elseif ($keyx['type'] == 'edited') {
+                    $x = 'Edited By';
+                } elseif ($keyx['type'] == 'proofed') {
+                    $x = 'Approved By';
+                } elseif ($keyx['type'] == 'improve') {
+                    $x = 'Set to Improve';
+                }?>
+            <li style='margin: 0;'><b style='float: left'><? echo $x . ': ' ?></b><? echo $keyx['User']['first_name'];?></li>
+            <?}
+        }?>
+        </ul></td>
     <?
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]'));
@@ -448,9 +468,6 @@ foreach ($calendar as $key1) {
                     str1 =  Number(str1.split('.')[0]) + 1;
                 }
                 $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
-
-                $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
-                $('#notificationbox').hide();
             }
         );
         });
