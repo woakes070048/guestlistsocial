@@ -7,5 +7,13 @@ class Tweet extends AppModel {
         )
     );
 
-    public $hasMany = 'Comment';
+    public $hasMany = array(
+   		'Comment' => array(
+    		'className' => 'Comment'
+    	),
+    	'Editor' => array(
+    		'className' => 'Editor',
+    		'order' => 'Editor.created ASC'
+    	)
+    );
 }

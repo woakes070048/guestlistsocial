@@ -4,7 +4,7 @@ App::import('Vendor', 'OAuth/OAuthClient');
 class TwitterController extends AppController {
     public $components = array('Session', 'Auth', 'Paginator', 'Tickets');
     public $helpers =  array('Html' , 'Form');
-    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification');
+    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification', 'Editor');
 
     public function index() {
         if (isset($this->request->data['currentmonth'])) {
@@ -805,15 +805,31 @@ class TwitterController extends AppController {
         $this->layout = '';
     }
 
-    public function test() {
+    public function test($id) {
         /*$Email = new CakeEmail();
         $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
         $Email->to("sharif9876@hotmail.com");
         $Email->subject('TEST');
         debug($Email->send('THIS IS A TEST'));*/
-        $this->Notification->add(1, 'A comment was added to your tweet', 0);
-        $this->Notification->add(1, 'A comment was added to your tweet1', 1);
-        $this->Notification->add(1, 'A comment was added to your tweet2', 0);
+        //$this->Notification->add(1, 'A comment was added to your tweet', 0);
+        //$this->Notification->add(1, 'A comment was added to your tweet1', 1);
+        //$this->Notification->add(1, 'A comment was added to your tweet2', 0);
         //$this->Notification->markAsRead(1);
+        //debug($this->Tweet->find('first', array('conditions' => array('Tweet.id' => 52826), 'recursive' => 2)));
+        $tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $id)));
+        $calendarID = $tweet['Tweet']['calendar_id'];
+        $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('id' => $calendarID)));
+        //debug($calendar);
+        foreach ($calendar['Tweet'] as $key) {
+            $date = date('F Y', $key['timestamp']);
+            $test[$date][] = $key;
+        }
+
+        foreach ($test as $key => $value) {
+            echo '<br />' . $key . ': <br />';
+            foreach ($value as $key1) {
+                echo $key1['body'] . '<br />';
+            }
+        }
     }
 }
