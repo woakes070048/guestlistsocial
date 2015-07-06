@@ -316,7 +316,7 @@ class TwitterController extends AppController {
         }
 
         if ($this->Session->read('Auth.User.Team.0.id') !== 0) {
-            $permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('TwitterAccount.user_id' => $this->Session->read('Auth.User.id'))));
+            $permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'))));
             $conditions = array('team_id' => $this->Session->read('Auth.User.Team.0.id'));
         } else {
             $conditions = array('TwitterAccount.user_id' => $this->Session->read('Auth.User.id'));

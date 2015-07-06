@@ -27,16 +27,17 @@ class Notification extends AppModel {
     }
 
     public function markAsRead($notifications) {
-        if (is_array($notifications)) {
-            $array = array();
-            foreach ($notifications as $key) {
-                $array[] = array('id' => $key['Notification']['id'], 'read' => 1);
+        if ($notifications) {
+            if (is_array($notifications)) {
+                $array = array();
+                foreach ($notifications as $key) {
+                    $array[] = array('id' => $key['Notification']['id'], 'read' => 1);
+                }
+                $this->saveAll($array);
+            } else {
+                $this->id = $notifications;
+                $this->saveField('read', 1);
             }
-    
-            $this->saveAll($array);
-        } else {
-            $this->id = $notifications;
-            $this->saveField('read', 1);
         }
     }
 }
