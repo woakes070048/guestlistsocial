@@ -261,7 +261,7 @@ class EditorialCalendarsController extends AppController {
                 $key['user_id'] = $this->Session->read('Auth.User.id');
                 $key['account_id'] = $this->Session->read('access_token.account_id');
 
-                $key['Editor']['user_id'] = $this->Session->read('access_token.account_id');
+                $key['Editor']['user_id'] = $this->Session->read('Auth.User.id');
                 $key['Editor']['type'] = 'written';
 
                 if (empty($key['verified'])) {
