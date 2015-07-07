@@ -3778,7 +3778,7 @@ form .submit #commentSaveButton {
 
 .recycleTweets {
 	background-color: #fff;
-	width: 200px;
+	max-width: 600px;
 }
 
 .recycleHeader {
@@ -3796,14 +3796,16 @@ form .submit #commentSaveButton {
 	margin: 5px;
 }
 
-.recycleBody div span {
+.recycleBody .rr1 div {
 	padding: 4px;
 	background-color: #dcdcdc;
 	border-radius: 4px;
 	cursor: pointer;
+	margin: 0;
+	display: inline
 }
 
-.recycleBody div span:hover {
+.recycleBody .rr1 div:hover {
 	background-color: #7CB4C5;
 }
 

@@ -413,20 +413,21 @@ class EditorialCalendarsController extends AppController {
         $this->Session->write('Auth.User.show_calendar', 1);
     }
 
-    public function recycle($tweet_id) {
-        $tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $tweet_id)));
-        $calendarID = $tweet['Tweet']['calendar_id'];
-        $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('id' => $calendarID)));
-        $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $calendarID, 'verified' => 1, 'published' => 1)));
-        $topic = $calendar['EditorialCalendar'][strtolower(date('l', $tweet['Tweet']['timestamp'])) . '_topic'];
+    public function recycle($calendar_id, $day) {
+        //$tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $tweet_id)));
+        //$calendarID = $tweet['Tweet']['calendar_id'];
+        $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('id' => $calendar_id)));
+        $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $calendar_id, 'verified' => 1, 'published' => 1)));
+        //debug($tweets);
+        $topic = $calendar['EditorialCalendar'][strtolower($day) . '_topic'];
         $test = array();
         foreach ($tweets as $key) {
             $date = date('F Y', $key['Tweet']['timestamp']);
-            if (date('l', $key['Tweet']['timestamp']) == date('l', $tweet['Tweet']['timestamp'])) {
+            if (date('l', $key['Tweet']['timestamp']) == $day) {
                 $test[$date][] = $key['Tweet'];
             }
         }
-        $this->set('tweet', $tweet);
+        //$this->set('tweet', $tweet);
         $this->set('test', $test);
         $this->set('topic', $topic);
         $this->layout = '';

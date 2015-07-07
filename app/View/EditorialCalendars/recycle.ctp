@@ -8,7 +8,7 @@
 	</div>
 		<div class='recycleBody'>
 			<? foreach ($value as $value1) {?>
-				<div><span><?echo $value1['body'];?></span><? echo ($value1['img_url']) ? $this->Html->image('/img/imageicon.png', array('class' => 'recycleBodyImage', 'data' => $value1['img_url'])) : '' ;?></div>
+				<div class='rr1'><div><?echo $value1['body'];?></div><? echo ($value1['img_url']) ? $this->Html->image('/img/imageicon.png', array('class' => 'recycleBodyImage', 'data' => $value1['img_url'])) : '' ;?></div>
 			<?} ?>
 		</div>
 <?}?>
@@ -29,8 +29,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$('.recycleBody div span').click(function (e) {
-		e.preventDefault();
+	$('.recycleBody .rr1 div').click(function (e) {
 		text = $(this).text();
 		image_url = $(this).closest('div').find('img').attr('data');
 		id = $(this).closest('.qtip-default').attr('id');

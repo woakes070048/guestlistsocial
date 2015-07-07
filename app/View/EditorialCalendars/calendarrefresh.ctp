@@ -488,10 +488,11 @@ foreach ($calendar as $key1) {
         $('.calendar_topic').qtip({
             content: {
                     text: function(event, api) {
-                        id = $(this).closest('tr').find('#TweetId').attr('value'); 
+                        id = $(this).closest('tr').find('#TweetCalendarId').attr('value');
+                        day = $(this).closest('tr').find('.calendar.scheduled b').attr('class');
                         //return $('#' + id + '-comments').clone();
                         $.ajax({
-                            url: '/editorial_calendars/recycle/' + id
+                            url: '/editorial_calendars/recycle/' + id + '/' + day
                         })
                         .then(function(content) {
                         // Set the tooltip content upon successful retrieval
@@ -512,7 +513,8 @@ foreach ($calendar as $key1) {
                     my: 'bottom center',
                     at: 'top center', 
                     target: 'event'
-                }
+                },
+                show: 'click'
         });
 
         $(document).scroll(function() {
