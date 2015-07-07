@@ -328,7 +328,7 @@ class EditorialCalendarsController extends AppController {
             }
         }
         
-        //$this->redirect(Controller::referer());
+        $this->redirect(Controller::referer());
     }
 
     private function imageHandling($key) {
