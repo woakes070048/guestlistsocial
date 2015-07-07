@@ -183,6 +183,10 @@ class EditorialCalendarsController extends AppController {
                     $key['verified'] = $original['Tweet']['verified'];
                 }
 
+                if (empty($key['img_url'])) {
+                    unset($key['img_url']);
+                }
+
                 //Image Handling
                 if (!empty($key['img_url1']['name'])) {
                     if ($x = $this->imageHandling($key)) {
@@ -192,7 +196,7 @@ class EditorialCalendarsController extends AppController {
                     }
                     $edited = true;
                 } else {
-                    $key['img_url'] = $original['Tweet']['img_url'];
+                    //$key['img_url'] = $original['Tweet']['img_url'];
                 }
 
                 $toSave = array();
@@ -272,6 +276,10 @@ class EditorialCalendarsController extends AppController {
 
                 if ($key['verified'] == 1) {
                     $key['verified_by'] = $this->Session->read('Auth.User.first_name');
+                }
+
+                if (empty($key['img_url'])) {
+                    unset($key['img_url']);
                 }
 
                 //Image Handling
@@ -403,5 +411,24 @@ class EditorialCalendarsController extends AppController {
 
     public function showCalendar() {
         $this->Session->write('Auth.User.show_calendar', 1);
+    }
+
+    public function recycle($tweet_id) {
+        $tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $tweet_id)));
+        $calendarID = $tweet['Tweet']['calendar_id'];
+        $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('id' => $calendarID)));
+        $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $calendarID, 'verified' => 1, 'published' => 1)));
+        $topic = $calendar['EditorialCalendar'][strtolower(date('l', $tweet['Tweet']['timestamp'])) . '_topic'];
+        $test = array();
+        foreach ($tweets as $key) {
+            $date = date('F Y', $key['Tweet']['timestamp']);
+            if (date('l', $key['Tweet']['timestamp']) == date('l', $tweet['Tweet']['timestamp'])) {
+                $test[$date][] = $key['Tweet'];
+            }
+        }
+        $this->set('tweet', $tweet);
+        $this->set('test', $test);
+        $this->set('topic', $topic);
+        $this->layout = '';
     }
 }
