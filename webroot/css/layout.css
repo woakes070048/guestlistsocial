@@ -3715,6 +3715,18 @@ form .submit #commentSaveButton {
 	border-bottom: 10px solid #fff;
 }
 
+.arrowdown {
+	height: 0;
+	width: 0;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 5px solid #000;
+	display: inline;
+	position: relative;
+	top: 8px;
+	margin: 0 5px;
+}
+
 .notificationarrow {
 	position: absolute;
 	top: 35px;
@@ -3758,4 +3770,87 @@ form .submit #commentSaveButton {
 	text-align: center;
 	border-top: 1px solid #efefef;
 	padding: 10px
+}
+
+.recycleTweets {
+	background-color: #fff;
+	width: 200px;
+}
+
+.recycleHeader {
+	padding: 5px;
+	margin: 5px;
+}
+
+.recycleBody {
+	margin-top: 5px;
+	margin-left: 30px;
+	display: none;
+}
+
+.recycleBody div {
+	margin: 5px;
+}
+
+.recycleBody div span {
+	padding: 4px;
+	background-color: #dcdcdc;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.recycleBody div span:hover {
+	background-color: #7CB4C5;
+}
+
+
+.recycleBodyImage {
+	vertical-align: middle;
+	margin: 0 20px;
+}
+
+.recycleHead {
+	font-size: 10pt;
+}
+
+.recycleHead b {
+	color: #21a750;
+}
+
+.recycleHead b2 {
+	font-weight: bold;
+	color: #7CB4C5;
+}
+
+.fixedTwitterAccount {
+	position: fixed;
+	top: 0;
+	left: 250px;
+	background-color: #fff;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	padding: 5px;
+	border: 1px solid #999;
+	border-top: none;
+}
+
+.fixedScroller {
+	position: fixed;
+	right: 0;
+	top: 0;
+	background-color: #fff;
+	border-radius: 6px 0 0 6px;
+	overflow: hidden;
+	display: none;
+}
+
+.fixedScroller table {
+	border-spacing: 0;
+	margin: 0;
+}
+
+.fixedScroller table td {
+	background: #fff;
+	font-size: 8pt;
+	padding: 3px;
 }

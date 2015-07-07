@@ -25,7 +25,7 @@ for ($i=$day; $i<=$daysinmonth; $i++) {
 ?>
 <div id='calendarbuttons'>
 <?
-echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => 'index/h:daybyday'), 'id' => 'monthForm'));
+echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => '../tweets?h=daybyday'), 'id' => 'monthForm'));
 echo $this->Form->input('Select Month', array(
     'options' => array(
         0 => date('F Y', strtotime('+0 month', $base)),
@@ -155,7 +155,7 @@ foreach ($calendar as $key1) {
         } else {
             $disabled = '';
         }?>
-    <td class="calendar scheduled">
+    <td class="calendar scheduled <?echo date('jS', strtotime($key . $key1['EditorialCalendar']['time']));?>">
             <? if($published == 1) {
                 echo date('d.m.Y', strtotime($key . $key1['EditorialCalendar']['time'])) . '<small>[Published]</small>' . '<br />';
             } else {
@@ -210,6 +210,7 @@ foreach ($calendar as $key1) {
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]'));
     echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
+    echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
     echo $this->Form->input('tosubmit', array('type' => 'hidden', 'value' => false, 'name' => 'tosubmit'));
     //echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
     /*echo $this->Form->input('verfied_by', array(
@@ -226,6 +227,19 @@ foreach ($calendar as $key1) {
 </table>
 <? echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); }?>
 
+<div class='fixedTwitterAccount' style='display: none;'><span class='screenName'>@<?echo $this->Session->read('access_token.screen_name');?></span></div>
+<div class='fixedScroller'>
+    <table>
+            <tr>
+                <td><img src='/img/arrow-up-down.png'></td>
+            </tr>
+        <?foreach ($days as $key => $value) {?>
+            <tr>
+            <td><?echo date('jS', strtotime($key));?></td>
+            </tr>
+        <?}?>
+    </table>
+</div>
 
 
 <script> 
@@ -470,6 +484,54 @@ foreach ($calendar as $key1) {
                 $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
             }
         );
+
+        $('.calendar_topic').qtip({
+            content: {
+                    text: function(event, api) {
+                        id = $(this).closest('tr').find('#TweetId').attr('value'); 
+                        //return $('#' + id + '-comments').clone();
+                        $.ajax({
+                            url: '/editorial_calendars/recycle/' + id
+                        })
+                        .then(function(content) {
+                        // Set the tooltip content upon successful retrieval
+                        api.set('content.text', content);
+                        }, function(xhr, status, error) {
+                        // Upon failure... set the tooltip content to the status and error value
+                        api.set('content.text', status + ': ' + error);
+                        });
+
+                        return 'Loading...'; // Set some initial text
+                    }, 
+                    button: true
+                },
+                hide: {
+                    event: false
+                },
+                position: {
+                    my: 'bottom center',
+                    at: 'top center', 
+                    target: 'event'
+                }
+        });
+
+        $(document).scroll(function() {
+          var y = $(this).scrollTop();
+          if (y > 500) {
+            $('.fixedTwitterAccount').slideDown();
+            $('.fixedScroller').show("slide", { direction: "right" }, 500);
+          } else {
+            $('.fixedTwitterAccount').slideUp();
+            $('.fixedScroller').hide("slide", { direction: "right" }, 500);
+          }
+        });
+
+        $(".fixedScroller td").click(function() {
+            var text = $(this).text();
+            $('html, body').animate({
+                scrollTop: $("." + text).offset().top - 30
+            }, 2000);
+        });
         });
 
 </script>
