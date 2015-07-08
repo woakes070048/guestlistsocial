@@ -60,11 +60,13 @@ echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalen
 </thead>
 <?
 $testid = 1;
-foreach ($days as $key => $value) { ?>
+foreach ($days as $key => $value) {
+$allApproved[] = array();
+$allApproved[date('jS', strtotime($key))] = 0; ?>
 <tr class='divider'><td style="border:none"></td></tr>
 <thead>
     <th class='day first'></th>
-    <th class='day'></th>
+    <th class='day' style='text-align: center'>tweet<b style='color:#4ec3ff; margin: 0;'>PROOF</b> TweetBank</th>
     <th class='day'><b> <? echo strtoupper($value); ?></b></th>
     <th class='day last'></th>
 </thead>
@@ -103,7 +105,7 @@ foreach ($calendar as $key1) {
         $value1 = $testid;
         $id = '';
         $img = '';
-        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
+        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
         $firstName = '';
         $verified = 0;
         $verified_by = "";
@@ -119,9 +121,19 @@ foreach ($calendar as $key1) {
             $value1 = $testid;
             $id = $key2['Tweet']['id'];
             $img = $key2['Tweet']['img_url'];
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing'));
+            if (!empty($img)) {
+                $txtareaClass = 'withImage';
+            } else {
+                $txtareaClass = 'withoutImage';
+            }
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing ' . $txtareaClass));
             $firstName = $key2['Tweet']['first_name'];
             $verified = $key2['Tweet']['verified'];
+            if ($verified == 1) {
+                $allApproved[date('jS', strtotime($key))] += 1;
+            } else {
+                $allApproved[date('jS', strtotime($key))] -= 1000;
+            }
             $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
             $commentCount = count($key2['Comment']);
@@ -138,7 +150,7 @@ foreach ($calendar as $key1) {
             $value1 = $testid;
             $id = '';
             $img = '';
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
             $verified = 0;
             $verified_by = "";
@@ -231,11 +243,20 @@ foreach ($calendar as $key1) {
 <div class='fixedScroller'>
     <table>
             <tr>
-                <td><img src='/img/arrow-up-down.png'></td>
+                <td class='gototop'><img src='/img/arrow-up-down.png'></td>
             </tr>
-        <?foreach ($days as $key => $value) {?>
+        <?foreach ($days as $key => $value) {
+            if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
+                $class = 'allApproved';
+            } elseif ($allApproved[date('jS', strtotime($key))] > 0 && $allApproved[date('jS', strtotime($key))] < count($calendar)) {
+                $class = 'notAllApproved';
+            } elseif ($allApproved[date('jS', strtotime($key))] < 0) {
+                $class = 'notAllApproved';
+            } else {
+                $class = '';
+            }?>
             <tr>
-            <td><?echo date('jS', strtotime($key));?></td>
+            <td class='<? echo $class;?>'><?echo date('jS', strtotime($key));?></td>
             </tr>
         <?}?>
     </table>
@@ -245,7 +266,8 @@ foreach ($calendar as $key1) {
 <script> 
         // wait for the DOM to be loaded 
         $(document).ready(function () {
-            $('.editing').charCount({css: 'counter counter1'});
+            $('.editing.withoutImage').charCount({css: 'counter counter1', allowed: 140});
+            $('.editing.withImage').charCount({css: 'counter counter2', allowed: 117});
 
             $(".TwitterVerified1:checked").each( function() {
                 if ($(this).val() == 0) {
@@ -327,6 +349,10 @@ foreach ($calendar as $key1) {
             $('.input.file input').on('change', function() {
                 $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                $(this).closest("tr").find('.editing').addClass('withImage').removeClass('withoutImage');
+                $(this).closest("tr").find('.counter1').hide();
+                //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
+                $(this).closest("tr").find('.editing').charCount({css: 'counter counter2', allowed: 117});
             });
 
             $('select').selectric();
@@ -507,7 +533,7 @@ foreach ($calendar as $key1) {
                     button: true
                 },
                 hide: {
-                    event: false
+                    event: 'unfocus'
                 },
                 position: {
                     my: 'bottom center',
@@ -519,7 +545,7 @@ foreach ($calendar as $key1) {
 
         $(document).scroll(function() {
           var y = $(this).scrollTop();
-          if (y > 500) {
+          if (y > 350) {
             $('.fixedTwitterAccount').slideDown();
             $('.fixedScroller').show("slide", { direction: "right" }, 500);
           } else {
@@ -529,10 +555,16 @@ foreach ($calendar as $key1) {
         });
 
         $(".fixedScroller td").click(function() {
-            var text = $(this).text();
-            $('html, body').animate({
-                scrollTop: $("." + text).offset().top - 30
-            }, 2000);
+            if ($(this).attr('class') == 'gototop') {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 2000);
+            } else {
+                var text = $(this).text();
+                $('html, body').animate({
+                    scrollTop: $("." + text).offset().top - 30
+                }, 2000);
+            }
         });
         });
 

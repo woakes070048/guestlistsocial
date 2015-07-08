@@ -217,13 +217,21 @@ class EditorialCalendarsController extends AppController {
                 if (!empty($key['first_name'])) {
                     $toSave['Tweet']['first_name'] = $key['first_name'];
                 }
+
+                foreach ($original['Editor'] as $editor) {
+                    if ($editor['type'] == 'written') {
+                        $written_by = $editor['user_id'];
+                    }
+                }
                 
                 if ($improve) {
                     $toSave['Editor'][] = array('type' => 'improve', 'user_id' => $this->Session->read('Auth.User.id'));
                 }
 
                 if ($edited) {
-                    $toSave['Editor'][] = array('type' => 'edited', 'user_id' => $this->Session->read('Auth.User.id'));
+                    if ($written_by != $this->Session->read('Auth.User.id')) {
+                        $toSave['Editor'][] = array('type' => 'edited', 'user_id' => $this->Session->read('Auth.User.id'));
+                    }
                 } 
 
                 if ($proofed) {
