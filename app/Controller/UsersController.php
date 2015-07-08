@@ -120,7 +120,11 @@ class UsersController extends AppController {
 
                     $user = $this->User->find('all', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
                     $this->Session->write('Auth.User.Team', $user[0]['Team']);
-           	        $this->redirect($this->Session->read('Auth.redirect'));
+                    if (!empty($this->Session->read('Auth.redirect'))) {
+                        $this->redirect($this->Session->read('Auth.redirect'));
+                    } else {
+                        $this->redirect('/');
+                    }
       	        } else {
            	        $this->Session->setFlash(__('Invalid username or password, try again'));
         	    }

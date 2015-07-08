@@ -199,6 +199,16 @@ class EditorialCalendarsController extends AppController {
                     //$key['img_url'] = $original['Tweet']['img_url'];
                 }
 
+                if (!empty($key['img_url'])) {
+                    if (strlen($key['body']) > 117 && $key['verified'] == 1) {
+                        $key['verified'] = 0;
+                    }
+                } else {
+                    if (strlen($key['body']) > 140 && $key['verified'] == 1) {
+                        $key['verified'] = 0;
+                    }
+                }
+
                 $toSave = array();
                 $toSave['Tweet']['id'] = $key['id'];
                 $toSave['Tweet']['body'] = $key['body'];
