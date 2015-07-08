@@ -156,7 +156,7 @@ foreach ($calendar as $key1) {
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
             $verified = 0;
-            $allApproved[date('jS', strtotime($key))] -= 1000;
+            //$allApproved[date('jS', strtotime($key))] -= 1000;
             $verified_by = "";
             $published = false;
             $commentCount = 0;
