@@ -141,6 +141,7 @@ foreach ($calendar as $key1) {
             $published = $key2['Tweet']['published'];
             $commentCount = count($key2['Comment']);
             $present = 'present';
+            $empty = false;
             if (!empty($key2['Editor'])) {
                 $editors = $key2['Editor'];
             } else {
@@ -162,7 +163,11 @@ foreach ($calendar as $key1) {
             $commentCount = 0;
             $present = '';
             $editors = false;
+            $empty = true;
         }
+    }
+    if ($empty) {
+        $allApproved[date('jS', strtotime($key))] -= 1000;
     }
 
         if ($this->Session->read('Auth.User.group_id') == 2) {
@@ -249,7 +254,6 @@ foreach ($calendar as $key1) {
                 <td class='gototop'><img src='/img/arrow-up-down.png'></td>
             </tr>
         <?foreach ($days as $key => $value) {
-            debug($allApproved);
             if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
                 $class = 'allApproved';
             } elseif ($allApproved[date('jS', strtotime($key))] > -1000 && is_float($allApproved[date('jS', strtotime($key))])) {
