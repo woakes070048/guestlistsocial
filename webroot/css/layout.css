@@ -3901,6 +3901,11 @@ form .submit #commentSaveButton {
 	background-color: #fbeeb8;
 }
 
+.fixedScroller table td.improveApproved {
+	background-color: #fc8181;
+}
+
+
 .fixedScroller table td:hover {
 	background: #dcdcdc;
 }
@@ -3911,4 +3916,8 @@ form .submit #commentSaveButton {
 
 .fixedScroller table td.notAllApproved:hover {
 	background-color: #efd35d;
+}
+
+.fixedScroller table td.improveApproved:hover {
+	background-color: #e73b3b;
 }

@@ -108,6 +108,7 @@ foreach ($calendar as $key1) {
         $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
         $firstName = '';
         $verified = 0;
+        $allApproved[date('jS', strtotime($key))] -= 1000;
         $verified_by = "";
         $published = false;
         $commentCount = 0;
@@ -131,8 +132,10 @@ foreach ($calendar as $key1) {
             $verified = $key2['Tweet']['verified'];
             if ($verified == 1) {
                 $allApproved[date('jS', strtotime($key))] += 1;
-            } else {
-                $allApproved[date('jS', strtotime($key))] -= 1000;
+            } elseif ($verified == 0) {
+                $allApproved[date('jS', strtotime($key))] -= 0.01;
+            } elseif ($verified == 2) {
+                $allApproved[date('jS', strtotime($key))] -= 1000000;
             }
             $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
@@ -153,6 +156,7 @@ foreach ($calendar as $key1) {
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
             $verified = 0;
+            $allApproved[date('jS', strtotime($key))] -= 1000;
             $verified_by = "";
             $published = false;
             $commentCount = 0;
@@ -160,7 +164,6 @@ foreach ($calendar as $key1) {
             $editors = false;
         }
     }
-
 
         if ($this->Session->read('Auth.User.group_id') == 2) {
             $disabled = 'disabled';
@@ -248,10 +251,12 @@ foreach ($calendar as $key1) {
         <?foreach ($days as $key => $value) {
             if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
                 $class = 'allApproved';
-            } elseif ($allApproved[date('jS', strtotime($key))] > 0 && $allApproved[date('jS', strtotime($key))] < count($calendar)) {
+            } elseif ($allApproved[date('jS', strtotime($key))] > -1000 && is_float($allApproved[date('jS', strtotime($key))])) {
                 $class = 'notAllApproved';
+            } elseif ($allApproved[date('jS', strtotime($key))] < -900000) {
+                $class = 'improveApproved';
             } elseif ($allApproved[date('jS', strtotime($key))] < 0) {
-                $class = 'notAllApproved';
+                $class = '';
             } else {
                 $class = '';
             }?>
@@ -351,6 +356,19 @@ foreach ($calendar as $key1) {
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
                 $(this).closest("tr").find('.editing').addClass('withImage').removeClass('withoutImage');
                 $(this).closest("tr").find('.counter1').hide();
+                val = $(this).closest("tr").find('.TwitterVerified1:checked').val();
+                if (val == 0) {
+                    color = '#ffcc00';
+                } else if (val == 1) {
+                    color = '#21a750';
+                } else if (val == 2) {
+                    color = '#ff0000';
+                }
+                $(this).closest("tr").find('#TweetBody').css("border", "1px solid" + color);
+                $(this).closest("tr").find('#TweetBody').css("border-bottom", "none");
+                $(this).closest("tr").find('.counter2').css("border", "1px solid" + color);
+                $(this).closest("tr").find('.counter2').css("border-top", "none");
+
                 //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
                 $(this).closest("tr").find('.editing').charCount({css: 'counter counter2', allowed: 117});
             });
