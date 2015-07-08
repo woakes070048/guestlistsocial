@@ -284,8 +284,8 @@ foreach ($calendar as $key1) {
                 }
                 $(this).closest("tr").find('#TweetBody').css("border", "1px solid" + color);
                 $(this).closest("tr").find('#TweetBody').css("border-bottom", "none");
-                $(this).closest("tr").find('.counter1').css("border", "1px solid" + color);
-                $(this).closest("tr").find('.counter1').css("border-top", "none");
+                $(this).closest("tr").find('.counter1, .counter2').css("border", "1px solid" + color);
+                $(this).closest("tr").find('.counter1, .counter2').css("border-top", "none");
             });
 
             //$(".verifiedby").prop('disabled', true);
