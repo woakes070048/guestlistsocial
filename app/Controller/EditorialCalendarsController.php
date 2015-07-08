@@ -305,7 +305,7 @@ class EditorialCalendarsController extends AppController {
                 $toSave['Tweet']['user_id'] = $key['user_id'];
                 $toSave['Tweet']['verified_by'] = $key['verified_by'];
                 if (!empty($key['img_url'])) {
-                    $toSave['img_url'] = $key['img_url'];
+                    $toSave['Tweet']['img_url'] = $key['img_url'];
                 }
                 $toSave['Tweet']['calendar_id'] = $key['calendar_id'];
                 $toSave['Tweet']['timestamp'] = $key['timestamp'];
