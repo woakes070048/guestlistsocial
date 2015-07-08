@@ -61,7 +61,7 @@ echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalen
 <?
 $testid = 1;
 foreach ($days as $key => $value) {
-$allApproved = array();
+$allApproved[] = array();
 $allApproved[date('jS', strtotime($key))] = 0; ?>
 <tr class='divider'><td style="border:none"></td></tr>
 <thead>
@@ -249,6 +249,7 @@ foreach ($calendar as $key1) {
                 <td class='gototop'><img src='/img/arrow-up-down.png'></td>
             </tr>
         <?foreach ($days as $key => $value) {
+            debug($allApproved);
             if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
                 $class = 'allApproved';
             } elseif ($allApproved[date('jS', strtotime($key))] > -1000 && is_float($allApproved[date('jS', strtotime($key))])) {
