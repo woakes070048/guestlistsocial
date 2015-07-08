@@ -3132,8 +3132,18 @@ input[type=file] {
 	overflow: hidden;
 
 	font-size: 90%;
+	
+	cursor: pointer;
 
 }
+
+
+.calendar_topic:hover {
+
+	background-color: #7CB4C5;
+
+}
+
 
 .calendar_content_type {
 
@@ -3681,6 +3691,7 @@ form .submit #commentSaveButton {
 	padding: 6px 10px;
 	margin: 0;
 	float: left;
+	width: 150px;
 }
 
 #notificationbox {
@@ -3775,17 +3786,16 @@ form .submit #commentSaveButton {
 .recycleTweets {
 	background-color: #fff;
 	max-width: 600px;
+	padding-top: 5px;
 }
 
 .recycleHeader {
-	padding: 5px;
-	margin: 5px;
+	margin: 10px 5px 0 5px;
 }
 
 .recycleBody {
-	margin-top: 5px;
 	margin-left: 30px;
-	display: none;
+	display: inline-block;
 }
 
 .recycleBody div {
@@ -3797,8 +3807,9 @@ form .submit #commentSaveButton {
 	background-color: #dcdcdc;
 	border-radius: 4px;
 	cursor: pointer;
-	margin: 0;
-	display: inline
+	margin: 2px;
+	float: left;
+	max-width: 500px;
 }
 
 .recycleBody .rr1 div:hover {
@@ -3808,20 +3819,33 @@ form .submit #commentSaveButton {
 
 .recycleBodyImage {
 	vertical-align: middle;
-	margin: 0 20px;
+	margin: 4px 0 0 20px;
+	float: left;
 }
 
 .recycleHead {
 	font-size: 10pt;
+	background-color: #243135;
+	color: #fff;
+	display: block;
+	padding: 7px;
+	border-radius: 5px;
+	font-weight: bold;
+	text-align: center;
+	min-width: 200px;
 }
 
 .recycleHead b {
 	color: #21a750;
 }
 
-.recycleHead b2 {
+.recycleTweets b2 {
 	font-weight: bold;
 	color: #7CB4C5;
+}
+
+.recycleTweets span {
+	font-size: 10pt;
 }
 
 .fixedTwitterAccount {
@@ -3843,7 +3867,14 @@ form .submit #commentSaveButton {
 	background-color: #fff;
 	border-radius: 6px 0 0 6px;
 	overflow: hidden;
+	opacity: 0.5;
 	display: none;
+	cursor: pointer;
+	transition: opacity 0.5s ease-in-out;
+}
+
+.fixedScroller:hover {
+	opacity: 1;
 }
 
 .fixedScroller table {
@@ -3855,4 +3886,24 @@ form .submit #commentSaveButton {
 	background: #fff;
 	font-size: 8pt;
 	padding: 3px;
+}
+
+.fixedScroller table td.allApproved {
+	background-color: #c5fbd8;
+}
+
+.fixedScroller table td.notAllApproved {
+	background-color: #fbeeb8;
+}
+
+.fixedScroller table td:hover {
+	background: #dcdcdc;
+}
+
+.fixedScroller table td.allApproved:hover {
+	background-color: #5ee18c;
+}
+
+.fixedScroller table td.notAllApproved:hover {
+	background-color: #efd35d;
 }

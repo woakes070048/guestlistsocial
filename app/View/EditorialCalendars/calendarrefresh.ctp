@@ -60,11 +60,13 @@ echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalen
 </thead>
 <?
 $testid = 1;
-foreach ($days as $key => $value) { ?>
+foreach ($days as $key => $value) {
+$allApproved[] = array();
+$allApproved[date('jS', strtotime($key))] = 0; ?>
 <tr class='divider'><td style="border:none"></td></tr>
 <thead>
     <th class='day first'></th>
-    <th class='day'></th>
+    <th class='day' style='text-align: center'>tweet<b style='color:#4ec3ff; margin: 0;'>PROOF</b> TweetBank</th>
     <th class='day'><b> <? echo strtoupper($value); ?></b></th>
     <th class='day last'></th>
 </thead>
@@ -122,6 +124,11 @@ foreach ($calendar as $key1) {
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing'));
             $firstName = $key2['Tweet']['first_name'];
             $verified = $key2['Tweet']['verified'];
+            if ($verified == 1) {
+                $allApproved[date('jS', strtotime($key))] += 1;
+            } else {
+                $allApproved[date('jS', strtotime($key))] -= 1000;
+            }
             $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
             $commentCount = count($key2['Comment']);
@@ -231,11 +238,20 @@ foreach ($calendar as $key1) {
 <div class='fixedScroller'>
     <table>
             <tr>
-                <td><img src='/img/arrow-up-down.png'></td>
+                <td class='gototop'><img src='/img/arrow-up-down.png'></td>
             </tr>
-        <?foreach ($days as $key => $value) {?>
+        <?foreach ($days as $key => $value) {
+            if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
+                $class = 'allApproved';
+            } elseif ($allApproved[date('jS', strtotime($key))] > 0 && $allApproved[date('jS', strtotime($key))] < count($calendar)) {
+                $class = 'notAllApproved';
+            } elseif ($allApproved[date('jS', strtotime($key))] < 0) {
+                $class = 'notAllApproved';
+            } else {
+                $class = '';
+            }?>
             <tr>
-            <td><?echo date('jS', strtotime($key));?></td>
+            <td class='<? echo $class;?>'><?echo date('jS', strtotime($key));?></td>
             </tr>
         <?}?>
     </table>
@@ -507,7 +523,7 @@ foreach ($calendar as $key1) {
                     button: true
                 },
                 hide: {
-                    event: false
+                    event: 'unfocus'
                 },
                 position: {
                     my: 'bottom center',
@@ -519,7 +535,7 @@ foreach ($calendar as $key1) {
 
         $(document).scroll(function() {
           var y = $(this).scrollTop();
-          if (y > 500) {
+          if (y > 350) {
             $('.fixedTwitterAccount').slideDown();
             $('.fixedScroller').show("slide", { direction: "right" }, 500);
           } else {
@@ -529,10 +545,16 @@ foreach ($calendar as $key1) {
         });
 
         $(".fixedScroller td").click(function() {
-            var text = $(this).text();
-            $('html, body').animate({
-                scrollTop: $("." + text).offset().top - 30
-            }, 2000);
+            if ($(this).attr('class') == 'gototop') {
+                $('html, body').animate({
+                    scrollTop: 0
+                }, 2000);
+            } else {
+                var text = $(this).text();
+                $('html, body').animate({
+                    scrollTop: $("." + text).offset().top - 30
+                }, 2000);
+            }
         });
         });
 
