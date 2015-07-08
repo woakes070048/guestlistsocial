@@ -105,7 +105,7 @@ foreach ($calendar as $key1) {
         $value1 = $testid;
         $id = '';
         $img = '';
-        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
+        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
         $firstName = '';
         $verified = 0;
         $verified_by = "";
@@ -121,7 +121,12 @@ foreach ($calendar as $key1) {
             $value1 = $testid;
             $id = $key2['Tweet']['id'];
             $img = $key2['Tweet']['img_url'];
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing'));
+            if (!empty($img)) {
+                $txtareaClass = 'withImage';
+            } else {
+                $txtareaClass = 'withoutImage';
+            }
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing ' . $txtareaClass));
             $firstName = $key2['Tweet']['first_name'];
             $verified = $key2['Tweet']['verified'];
             if ($verified == 1) {
@@ -145,7 +150,7 @@ foreach ($calendar as $key1) {
             $value1 = $testid;
             $id = '';
             $img = '';
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
+            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
             $verified = 0;
             $verified_by = "";
@@ -261,7 +266,8 @@ foreach ($calendar as $key1) {
 <script> 
         // wait for the DOM to be loaded 
         $(document).ready(function () {
-            $('.editing').charCount({css: 'counter counter1'});
+            $('.editing.withoutImage').charCount({css: 'counter counter1', allowed: 140});
+            $('.editing.withImage').charCount({css: 'counter counter2', allowed: 117});
 
             $(".TwitterVerified1:checked").each( function() {
                 if ($(this).val() == 0) {
@@ -343,6 +349,10 @@ foreach ($calendar as $key1) {
             $('.input.file input').on('change', function() {
                 $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                $(this).closest("tr").find('.editing').addClass('withImage').removeClass('withoutImage');
+                $(this).closest("tr").find('.counter1').hide();
+                //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
+                $(this).closest("tr").find('.editing').charCount({css: 'counter counter2', allowed: 117});
             });
 
             $('select').selectric();

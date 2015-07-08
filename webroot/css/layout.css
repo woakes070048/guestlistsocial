@@ -1535,7 +1535,8 @@ span.counter.exceeded {
 
 
 
-.counter1 {
+.counter1,
+.counter2 {
 
 	border: 1px solid #ffcc00;
 	
