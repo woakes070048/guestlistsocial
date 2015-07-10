@@ -1,8 +1,5 @@
 <div></div>
-<? 
-        $this->Pusher->subscribe('comment_channel');
-        //The third argument receive string will be parsed as javascript.
-        $this->Pusher->bindEvent('comment_channel', 'new_comment', "alert('Hello');");
+<?
 $base = strtotime(date('Y-m',time()) . '-01 00:00:01');
 if (!isset($months)) {
     $months = 0;
@@ -350,6 +347,14 @@ foreach ($calendar as $key1) {
                     if (warnMessage != null) return warnMessage;
                 }
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                text = $(this).val();
+                var channel = pusher.subscribe('tweet_body');
+                channel.bind('tweet_body',
+                    function(data) {
+                        alert('data');
+                    }
+                );
+
             });
 
             $('input:submit, button:submit').on('click', function() {
@@ -454,6 +459,7 @@ foreach ($calendar as $key1) {
                         $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
                             $("#table").css('opacity', '1');
                             $('#loading').hide();
+                            pusher.disconnect();
                         });
                     }
                 });
