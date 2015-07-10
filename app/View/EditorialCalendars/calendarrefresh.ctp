@@ -347,13 +347,13 @@ foreach ($calendar as $key1) {
                     if (warnMessage != null) return warnMessage;
                 }
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
-                text = $(this).val();
+                /*text = $(this).val();
                 var channel = pusher.subscribe('tweet_body');
                 channel.bind('tweet_body',
                     function(data) {
                         alert('data');
                     }
-                );
+                );*/
 
             });
 
