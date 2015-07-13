@@ -424,7 +424,7 @@ foreach ($calendar as $key1) {
 
             channel1.bind('client-body_update',
                 function(data) {
-                    $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.editing').text(data['body']);
+                    $('#TweetId[value="' + data['tweet_id'] + '"]').closest('tr').find('.editing').text(data['body']);
                 }
             );
 
