@@ -163,7 +163,7 @@ foreach ($calendar as $key1) {
             $empty = true;
         }
     }
-    if ($empty) {
+    if (!empty($empty)) {
         $allApproved[date('jS', strtotime($key))] -= 1000;
     }
 
