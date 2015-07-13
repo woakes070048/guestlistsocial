@@ -27,7 +27,7 @@ class CommentsController extends AppController {
 		$icon = $this->Session->read('Auth.User.profile_pic');
 		$this->Notification->add($uid, $msg, 0, $icon);
 
-		$this->Comment->trigger('comment_channel', 'new_comment', $data);
+		$this->Comment->trigger('private-comment_channel', 'new_comment', $data);
         $this->redirect(Controller::referer());
 	}
 }

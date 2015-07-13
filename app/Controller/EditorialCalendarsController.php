@@ -150,6 +150,8 @@ class EditorialCalendarsController extends AppController {
                 if ($original['Tweet']['body'] != $key['body']) {
                     if ($original['Tweet']['verified'] == 0 && $key['verified'] == 1) {
                         $key['verified'] = 1;
+                    } elseif ($original['Tweet']['verified'] == 1 && $key['verified'] == 1) {
+                        $key['verified'] = 1;
                     } else {
                         $key['verified'] = 0;
                     }

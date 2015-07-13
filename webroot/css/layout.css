@@ -776,6 +776,8 @@ input[type=radio] {
 	padding: 0;
 
 	line-height: 26px;
+	
+	cursor: pointer;
 
 }
 
@@ -2135,6 +2137,8 @@ input[type='radio'] + label {
 	text-align: left;
 
 	font-size: 90%;
+	
+	cursor: pointer;
 
 }
 
@@ -3916,4 +3920,73 @@ form .submit #commentSaveButton {
 
 .fixedScroller table td.improveApproved:hover {
 	background-color: #e73b3b;
+}
+
+.isTyping {
+	margin: 0;
+	border: 1px solid #939393;
+	float: right;
+	border-top: none;
+	padding: 5px;
+	padding-left: 20px;
+	border-radius: 4px;
+	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+	background: url('../img/loader.gif') no-repeat 3px center;
+	display: none;
+}
+
+.teamsContainer {
+	background-color: #fff;
+	padding: 10px;
+	width: 300px;
+}
+
+.multiProgressBar {
+	width: 300px;
+	margin: 0;
+}
+
+.howManyWritten {
+	display: block;
+	text-align: right;
+	
+}
+
+.howManyWritten1 {
+	float: right;
+	text-align: right;
+}
+
+.topTweeters {
+	width: 100px;
+	height: 100px;
+	float: left;
+}
+
+.multiProgressBar hr {
+	margin: 0;
+	float:left;
+	height: 5px;
+}
+
+#howManyWrittenBlock1 {
+	height: 10px;
+	width: 10px;
+	background-color: #21a750;
+	float: right;
+}
+
+#howManyWrittenBlock0 {
+	height: 10px;
+	width: 10px;
+	background-color: #ffcc00;
+	float: right;
+}
+
+#howManyWrittenBlock2 {
+	height: 10px;
+	width: 10px;
+	background-color: #ff0000;
+	float: right;
 }
