@@ -1,11 +1,12 @@
 <?php 
 class TeamsController extends AppController {
-    var $uses = array('User', 'Team', 'TwitterAccount', 'TwitterPermission', 'TeamsUser', 'Ticket', 'Tweet');
+    var $uses = array('User', 'Team', 'TwitterAccount', 'TwitterPermission', 'TeamsUser', 'Ticket', 'Tweet', 'EditorialCalendar');
     public $helpers =  array('Html' , 'Form');
     public $components = array('Tickets');
     
     public function beforeFilter() {
         parent::beforeFilter();
+        $this->Auth->allow('test');
     }
 
 
@@ -200,6 +201,104 @@ class TeamsController extends AppController {
         //$teamMembers = debug($this->User->find('all', array('fields' => array('first_name', 'group_id', 'id'))));*/
 	}
 
+	public function test() {
+		$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
+		$myTeamIDs = array();
+		$ddTeams = array();
+		foreach ($this->Session->read('Auth.User.Team') as $key) {
+			array_push($myTeamIDs, $key['id']);
+			$ddTeams[$key['id']] = $key['name'];
+		}
+		$this->set('ddTeams', $ddTeams);
+		$teams = $this->Team->find('all', array('consitions' => array('id' => $myTeamIDs)));
+		if ($this->request->data) {
+			$team_id = $this->request->data['Team']['id'];
+			$twitter_accounts = $this->TwitterAccount->find('all', array('conditions' => array('team_id' => $team_id)));
+			$query_twitter_accounts = array();
+			$screen_names = array();
+			foreach ($twitter_accounts as $key) {
+				array_push($query_twitter_accounts, $key['TwitterAccount']['account_id']);
+				$screen_names[$key['TwitterAccount']['account_id']]['screen_name'] = $key['TwitterAccount']['screen_name'];
+			}
+			$query_twitter_accounts1 = join(',', $query_twitter_accounts);
+			//debug($query_twitter_accounts);
+			//$tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts)));
+			$firstdate = strtotime(date('M Y') . ' + ' . (0) . 'months');//need to be able to select months
+			$seconddate = strtotime(date('M Y') . ' + ' . (1) . 'months');
+			$totalCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, verified
+											FROM tweets
+											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
+											account_id IN ($query_twitter_accounts1) AND calendar_id <> ''
+											GROUP BY account_id, verified");
+
+			$tweetCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, user_id, verified
+											FROM tweets
+											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
+											account_id IN ($query_twitter_accounts1) AND calendar_id <> ''
+											GROUP BY account_id, user_id, verified");
+			$userIDs = array();
+			foreach ($tweetCount as $key) {
+				$userIDs[] = $key['tweets']['user_id'];
+			}
+
+			$userNames = $this->User->find('all', array('fields' => array('last_name', 'first_name', 'profile_pic', 'id'), 'conditions' => array('User.id' => $userIDs), 'recursive' => -1));
+			$userNames = Hash::combine($userNames, '{n}.User.id', '{n}');
+			
+			$tweetCount1 = array();
+			foreach ($tweetCount as $key) {
+				$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']]['name'] = $userNames[$key['tweets']['user_id']]['User']['first_name'] . $userNames[$key['tweets']['user_id']]['User']['last_name'];
+				$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
+				$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']]['profile_pic'] = $userNames[$key['tweets']['user_id']]['User']['profile_pic'];
+
+			}
+
+			$totalCount1 = array();
+			foreach ($totalCount as $key) {
+				$totalCount1[$key['tweets']['account_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
+				$totalCount1[$key['tweets']['account_id']]['screen_name'] = $screen_names[$key['tweets']['account_id']]['screen_name'];
+			}
+			
+			$calendarCount = $this->EditorialCalendar->query("SELECT COUNT(id), twitter_account_id, id
+															FROM editorial_calendars
+															WHERE twitter_account_id IN ($query_twitter_accounts1)
+															GROUP BY twitter_account_id");
+			foreach ($calendarCount as $key1) {
+				$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'];
+			}
+			//debug($calendarCount);
+
+			//debug($tweetCount);
+			//debug($tweetCount1);
+			//debug($userNames);
+			$this->set('query_twitter_accounts', $query_twitter_accounts);
+			$this->set('totalCount1', $totalCount1);
+			$this->set('tweetCount1', $tweetCount1);
+			$this->set('userNames', $userNames);
+			$this->set('screen_names', $screen_names);
+
+			$calendarIDs = $this->EditorialCalendar->find('list', array('fields' => 'id', 'conditions' => array('EditorialCalendar.twitter_account_id' => $query_twitter_accounts)));
+			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => 0));
+			
+			$tableTweets1 = array();
+			foreach ($tableTweets as $key) {
+				if (empty($tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']])) {
+					$tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']] = 0;
+				}
+				$tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']] += 1;
+			}
+			$this->set('tableTweets1', $tableTweets1);
+
+			$weekdate = strtotime('Monday this week');
+			$daydate = strtotime('Today');
+			$monthCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $firstdate))));
+			$weekCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $weekdate))));
+			$dayCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $daydate))));
+			$this->set('monthCount', $monthCount);
+			$this->set('weekCount', $weekCount);
+			$this->set('dayCount', $dayCount);
+		}
+	}
+
 	public function permissionSave() {
 		$data = $this->request->data;
 		//$dbComparisons = $this->TwitterPermission->find('all', array('conditions' => array('team_id' => $this->Session->read('Auth.User.Team.id'))));
@@ -344,5 +443,13 @@ class TeamsController extends AppController {
             	$this->Session->setFlash(__('Invite Sent.'));
 			}
 		}
+	}
+
+	public function twitter() {
+		$this->TwitterPermission->find('list');
+	}
+
+	public function users() {
+
 	}
 }

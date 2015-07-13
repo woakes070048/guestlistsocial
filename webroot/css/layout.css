@@ -3938,8 +3938,30 @@ form .submit #commentSaveButton {
 
 .teamsContainer {
 	background-color: #fff;
+	min-width: 400px;
+	margin: 15px;
+	float: left;
+}
+
+.teamsContainerHeader {
 	padding: 10px;
-	width: 300px;
+	border-bottom: 1px solid #e4e4e4;
+	font-weight: bold;
+}
+
+.teamsContainerSpan {
+	padding: 10px;
+	padding-left: 20px;
+}
+
+.teamsContainerSpan b {
+	font-size: 30pt;
+}
+
+.teamsContainer small {
+	display: block;
+	padding: 10px;
+	padding-left: 20px;
 }
 
 .multiProgressBar {
@@ -3954,14 +3976,22 @@ form .submit #commentSaveButton {
 }
 
 .howManyWritten1 {
-	float: right;
 	text-align: right;
+	margin-top: 15px;
 }
 
 .topTweeters {
-	width: 100px;
-	height: 100px;
 	float: left;
+	padding: 5px;
+}
+
+.topTweetersNumbers {
+	float: right;
+}
+
+.topTweetersName {
+	font-size: 12pt;
+	font-weight: bold;
 }
 
 .multiProgressBar hr {
@@ -3989,4 +4019,16 @@ form .submit #commentSaveButton {
 	width: 10px;
 	background-color: #ff0000;
 	float: right;
+}
+
+.allApproved {
+	background-color: #21a750;
+}
+
+.notAllApproved {
+	background-color: #ffcc00;
+}
+
+.improveApproved {
+	background-color: #ff0000;
 }
