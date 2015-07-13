@@ -163,7 +163,7 @@ foreach ($calendar as $key1) {
             $empty = true;
         }
     }
-    if ($empty) {
+    if (!empty($empty)) {
         $allApproved[date('jS', strtotime($key))] -= 1000;
     }
 
@@ -189,6 +189,7 @@ foreach ($calendar as $key1) {
     <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div></td>
     <td class="calendar nopadding">
     <?echo $body;?>
+        <div class='isTyping'></div>
         <div class="tweetButtons">
         <?if ($commentCount > 9) {
             $commentCount = '9plus';
@@ -228,6 +229,7 @@ foreach ($calendar as $key1) {
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]'));
     echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
     echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
+    echo $this->Form->input('forceVerified', array('type' => 'hidden', 'value' => false, 'name' => 'forceVerified'));
     echo $this->Form->input('tosubmit', array('type' => 'hidden', 'value' => false, 'name' => 'tosubmit'));
     //echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
     /*echo $this->Form->input('verfied_by', array(
@@ -276,6 +278,9 @@ foreach ($calendar as $key1) {
             $('.editing.withoutImage').charCount({css: 'counter counter1', allowed: 140});
             $('.editing.withImage').charCount({css: 'counter counter2', allowed: 117});
 
+
+            var pusher = new Pusher('4eeb1f57466bcd4cc47e', { authEndpoint: '/pusher/pusher/auth.json' });
+
             $(".TwitterVerified1:checked").each( function() {
                 if ($(this).val() == 0) {
                     color = '#ffcc00';
@@ -288,6 +293,43 @@ foreach ($calendar as $key1) {
                 $(this).closest("tr").find('#TweetBody').css("border-bottom", "none");
                 $(this).closest("tr").find('.counter1, .counter2').css("border", "1px solid" + color);
                 $(this).closest("tr").find('.counter1, .counter2').css("border-top", "none");
+            });
+
+            $(".TwitterVerified1:checked").click(function() {
+                $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                $(this).closest("tr").find('input[name=forceVerified]').val(true);
+                    $("#table").css('opacity', '.4');
+                    $('#loading').show();
+                    var dat = new FormData();
+                    $('input[name=tosubmit][value=true]').each(function () {
+                        //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
+                        $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                            if ($(this).attr('type') == 'file') {
+                                dat.append($(this).attr('name'), this.files[0]);
+                            } else {
+                                dat.append($(this).attr('name'), $(this).val());
+                            }
+                        });
+                    });
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/editorial_calendars/editcalendartweet1",
+                        data: dat,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                $("#table").css('opacity', '1');
+                                $('#loading').hide();
+                                pusher.disconnect();
+                            });
+                        }
+                    });
+            });
+
+            $("#table").on("change", ".TwitterVerified1", function() {
+                pusher.disconnect();
             });
 
             //$(".verifiedby").prop('disabled', true);
@@ -328,6 +370,7 @@ foreach ($calendar as $key1) {
             $(".shortsingle").click(function () {
             regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
             textbox = $(this).closest('.nopadding').children('.editing');
+            $(this).closest('tr').find('input[name=tosubmit]').val(true);
             var longUrlLink = textbox.val().match(regex);
                 jQuery.urlShortener({
                     longUrl: longUrlLink,
@@ -340,22 +383,63 @@ foreach ($calendar as $key1) {
                 });
         });
 
-
+            var channel1 = pusher.subscribe('private-body_channel');
             warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
             $(".editing").on('change', function () {
                 window.onbeforeunload = function () {
                     if (warnMessage != null) return warnMessage;
                 }
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
-                /*text = $(this).val();
-                var channel = pusher.subscribe('tweet_body');
-                channel.bind('tweet_body',
+                text = $(this).val();
+                id = $(this).closest("tr").find('#TweetId').val();
+                /*channel1.bind('body_update',
                     function(data) {
                         alert('data');
                     }
                 );*/
+                var triggered = channel1.trigger('client-body_update', { 'tweet_id' : id, 'body': text });
 
             });
+
+            $('.editing').keyup(userTyping);
+
+            var typingTimeout = null;
+            function userTyping() {
+                first_name =  '<?echo $this->Session->read("Auth.User.first_name");?>';
+                last_name = '<?echo $this->Session->read("Auth.User.last_name");?>';
+                tweet_id = $(this).closest("tr").find('#TweetId').val();
+                if (!typingTimeout) {
+                    channel1.trigger('client-body_typing', {'typing' : true, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name});
+                } else {
+                    window.clearTimeout(typingTimeout);
+                    typingTimeout = null;
+                }
+
+                typingTimeout = window.setTimeout(function () {
+                    channel1.trigger('client-body_typing', {'typing' : false, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name});
+                    typingTimeout = null;
+                }, 3000);
+
+            }
+
+            channel1.bind('client-body_update',
+                function(data) {
+                    $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.editing').text(data['body']);
+                }
+            );
+
+            channel1.bind('client-body_typing',
+                function(data) {
+                    if (data['typing'] == true) {  
+                        string = data['first_name'] + ' ' + data['last_name'] + ' is typing...'; 
+                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').text(string).slideDown();
+                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', 'disabled');
+                    } else {
+                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').slideUp();
+                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', false);
+                    }
+                }
+            );
 
             $('input:submit, button:submit').on('click', function() {
                 warnMessage = null;
@@ -527,8 +611,7 @@ foreach ($calendar as $key1) {
             });
             });*/
 
-        var pusher = new Pusher('67904c5b4e0608620f41');
-        var channel = pusher.subscribe('comment_channel');
+        var channel = pusher.subscribe('private-comment_channel');
         channel.bind('new_comment',
             function(data) {
                 str = $("#notificationFrontImage").attr('src');

@@ -45,6 +45,7 @@ $(document).ready(function () {
 	    $('.calendar_topic[data-hasqtip=' + id + ']').closest('tr').find('input[name=tosubmit]').val(true);
 	    if (image_url) {
 		    $('.calendar_topic[data-hasqtip=' + id + ']').closest('tr').find('.file').after(function () {
+		    	$('.calendar_topic[data-hasqtip=' + id + ']').closest('tr').find('.imagecontainer').hide();
 		    	return '<div class="imagecontainer"><img src="' + image_url + '" style="max-width:500px;"></div>';
 		    });
 	    } else {
