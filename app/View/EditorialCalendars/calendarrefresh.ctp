@@ -279,7 +279,7 @@ foreach ($calendar as $key1) {
             $('.editing.withImage').charCount({css: 'counter counter2', allowed: 117});
 
 
-            var pusher = new Pusher('4eeb1f57466bcd4cc47e', { authEndpoint: '/pusher/pusher/auth.json' });
+            var pusher = new Pusher('67904c5b4e0608620f41', { authEndpoint: '/pusher/pusher/auth.json' });
 
             $(".TwitterVerified1:checked").each( function() {
                 if ($(this).val() == 0) {
