@@ -370,6 +370,7 @@ foreach ($calendar as $key1) {
             $(".shortsingle").click(function () {
             regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
             textbox = $(this).closest('.nopadding').children('.editing');
+            $(this).closest('tr').find('input[name=tosubmit]').val(true);
             var longUrlLink = textbox.val().match(regex);
                 jQuery.urlShortener({
                     longUrl: longUrlLink,
