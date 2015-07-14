@@ -101,6 +101,7 @@ foreach ($calendar as $key1) {
         $value2 = '';
         $value1 = $testid;
         $id = '';
+        $idForPusher = md5($this->Session->read('access_token.account_id') . 'x' . $value1);
         $img = '';
         $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
         $firstName = '';
@@ -118,6 +119,7 @@ foreach ($calendar as $key1) {
             $value2 = $key2['Tweet']['body'];
             $value1 = $testid;
             $id = $key2['Tweet']['id'];
+            $idForPusher = $key2['Tweet']['id'];
             $img = $key2['Tweet']['img_url'];
             if (!empty($img)) {
                 $txtareaClass = 'withImage';
@@ -150,6 +152,7 @@ foreach ($calendar as $key1) {
             $value2 = '';
             $value1 = $testid;
             $id = '';
+            $idForPusher = md5($this->Session->read('access_token.account_id') . 'x' . $value1);
             $img = '';
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
@@ -226,7 +229,7 @@ foreach ($calendar as $key1) {
         </ul></td>
     <?
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
-    echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]'));
+    echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]', 'data-id' => $idForPusher));
     echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
     echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
     echo $this->Form->input('forceVerified', array('type' => 'hidden', 'value' => false, 'name' => 'forceVerified'));
@@ -391,7 +394,7 @@ foreach ($calendar as $key1) {
                 }
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
                 text = $(this).val();
-                id = $(this).closest("tr").find('#TweetId').val();
+                id = $(this).closest("tr").find('#TweetId').attr('data-id');
                 /*channel1.bind('body_update',
                     function(data) {
                         alert('data');
@@ -407,7 +410,7 @@ foreach ($calendar as $key1) {
             function userTyping() {
                 first_name =  '<?echo $this->Session->read("Auth.User.first_name");?>';
                 last_name = '<?echo $this->Session->read("Auth.User.last_name");?>';
-                tweet_id = $(this).closest("tr").find('#TweetId').val();
+                tweet_id = $(this).closest("tr").find('#TweetId').attr('data-id');
                 if (!typingTimeout) {
                     channel1.trigger('client-body_typing', {'typing' : true, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name});
                 } else {
@@ -424,7 +427,7 @@ foreach ($calendar as $key1) {
 
             channel1.bind('client-body_update',
                 function(data) {
-                    $('#TweetId[value="' + data['tweet_id'] + '"]').closest('tr').find('.editing').text(data['body']);
+                    $('#TweetId[data-id="' + data['tweet_id'] + '"]').closest('tr').find('.editing').text(data['body']);
                 }
             );
 
@@ -432,11 +435,11 @@ foreach ($calendar as $key1) {
                 function(data) {
                     if (data['typing'] == true) {  
                         string = data['first_name'] + ' ' + data['last_name'] + ' is typing...'; 
-                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').text(string).slideDown();
-                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', 'disabled');
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').text(string).slideDown();
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', 'disabled');
                     } else {
-                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').slideUp();
-                        $('#TweetId[value=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', false);
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').slideUp();
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', false);
                     }
                 }
             );
@@ -547,6 +550,7 @@ foreach ($calendar as $key1) {
                         });
                     }
                 });
+                $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
             });
 
             $('.comments.present').qtip({ 

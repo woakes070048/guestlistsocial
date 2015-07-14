@@ -311,6 +311,7 @@ $(document).ready(function() {
         $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function () {
             $('#table').css('opacity', '1');
             $('#loading').hide();
+            $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
         });
         <? } elseif ($params == 'h:daybyday' && !$this->Session->read('access_token.account_id')) {?>
         $('#table').hide();
@@ -388,6 +389,7 @@ $(document).ready(function() {
                             });
                         }
                     });
+                    $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
                 <?} ?>
         });
 
