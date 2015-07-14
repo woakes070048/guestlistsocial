@@ -772,7 +772,7 @@ class TwitterController extends AppController {
         $this->redirect(Controller::referer());
     }
 
-    public function progressrefresh() {
+    public function progressrefresh($daybyday = null, $months = 0) {
         $permissions = array();
         foreach ($this->Session->read('Auth.User.Team') as $key) {
             $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
@@ -784,16 +784,27 @@ class TwitterController extends AppController {
         $countConditions1 = array('verified' => 1, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         $countConditions2 = array('verified' => 2, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
         //setting the counts on the write tweets page
-        if ($this->Session->read('filterUser')) {
-            $id = $this->Session->read('filterUser');
+        if ($this->Session->read('filter.user')) {
+            $id = $this->Session->read('filter.user');
             $countConditions0['Tweet.user_id'] = $id;
             $countConditions1['Tweet.user_id'] = $id;
             $countConditions2['Tweet.user_id'] = $id;
-        } elseif ($this->Session->read('filterAccount')) {
+        } elseif ($this->Session->read('filter.account')) {
             $id = $this->Session->read('access_token.account_id');
             $countConditions0['Tweet.account_id'] = $id;
             $countConditions1['Tweet.account_id'] = $id;
             $countConditions2['Tweet.account_id'] = $id;
+        }
+
+        if ($months != 0) {
+            $countConditions0['timestamp >='] = strtotime(date('M Y') . ' + ' . ($months) . 'months');
+            $countConditions1['timestamp >='] = strtotime(date('M Y') . ' + ' . ($months) . 'months');
+            $countConditions2['timestamp >='] = strtotime(date('M Y') . ' + ' . ($months) . 'months');
+        }
+        if (!empty($daybyday)) {
+            $countConditions0['timestamp <='] = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
+            $countConditions1['timestamp <='] = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
+            $countConditions2['timestamp <='] = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
         }
         $awaitingProofCount = $this->Tweet->find('count', array('conditions' => $countConditions0));
         $queuedCount = $this->Tweet->find('count', array('conditions' => $countConditions1));
