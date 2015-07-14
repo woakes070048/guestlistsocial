@@ -278,7 +278,7 @@ class TeamsController extends AppController {
 			$this->set('screen_names', $screen_names);
 
 			$calendarIDs = $this->EditorialCalendar->find('list', array('fields' => 'id', 'conditions' => array('EditorialCalendar.twitter_account_id' => $query_twitter_accounts)));
-			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => 0, 'order' => 'Tweet.created DESC'));
+			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => 0, 'order' => 'Tweet.modified DESC'));
 			
 			$tableTweets1 = array();
 			foreach ($tableTweets as $key) {
