@@ -831,7 +831,7 @@ class TwitterController extends AppController {
         } else {
             $firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');
         }
-        $tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $twitter_account_id, 'calendar_id' => $calendarIDs, 'timestamp >=' => $firstdate, 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 14) . 'months'))));
+        $tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $twitter_account_id, 'calendar_id' => $calendarIDs, 'timestamp >=' => $firstdate, 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months'))));
         $toSave = array();
         foreach ($tweets as $key) {
             $x['verified'] = 1;
