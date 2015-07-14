@@ -100,7 +100,7 @@ foreach ($calendar as $key1) {
     if ($tweets[$key1['EditorialCalendar']['id']] == false) {
         $value2 = '';
         $value1 = $testid;
-        $id = '';
+        $id = substr(str_shuffle(MD5(microtime())), 0, 7);
         $img = '';
         $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
         $firstName = '';
@@ -149,7 +149,7 @@ foreach ($calendar as $key1) {
         } else {
             $value2 = '';
             $value1 = $testid;
-            $id = '';
+            $id = substr(str_shuffle(MD5(microtime())), 0, 7);
             $img = '';
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
@@ -383,7 +383,7 @@ foreach ($calendar as $key1) {
                 });
         });
 
-            var channel1 = pusher.subscribe('private-body_channel');
+            var channel1 = pusher.subscribe('private-body_channel_<?echo $this->Session->read("access_token.account_id");?>');
             warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
             $(".editing").on('change', function () {
                 window.onbeforeunload = function () {
@@ -611,7 +611,7 @@ foreach ($calendar as $key1) {
             });
             });*/
 
-        var channel = pusher.subscribe('private-comment_channel');
+        var channel = pusher.subscribe('private-comment_channel_<?echo $this->Session->read("access_token.account_id");?>');
         channel.bind('new_comment',
             function(data) {
                 str = $("#notificationFrontImage").attr('src');
