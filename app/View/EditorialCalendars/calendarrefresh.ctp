@@ -100,7 +100,7 @@ foreach ($calendar as $key1) {
     if ($tweets[$key1['EditorialCalendar']['id']] == false) {
         $value2 = '';
         $value1 = $testid;
-        $id = md5($this->Session->read('access_token.account_id') . 'x' . $testid);
+        $id = '';
         $img = '';
         $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
         $firstName = '';
@@ -149,7 +149,7 @@ foreach ($calendar as $key1) {
         } else {
             $value2 = '';
             $value1 = $testid;
-            $id = md5($this->Session->read('access_token.account_id') . 'x' . $testid);;
+            $id = '';
             $img = '';
             $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
             $firstName = '';
