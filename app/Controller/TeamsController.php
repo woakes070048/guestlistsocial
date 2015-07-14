@@ -213,15 +213,16 @@ class TeamsController extends AppController {
 		$teams = $this->Team->find('all', array('consitions' => array('id' => $myTeamIDs)));
 		if ($this->request->data) {
 			$team_id = $this->request->data['Team']['id'];
-			$twitter_accounts = $this->TwitterAccount->find('all', array('conditions' => array('team_id' => $team_id)));
+			$twitter_accounts = $this->TwitterPermission->find('all', array('conditions' => array('team_id' => $team_id)));
 			$query_twitter_accounts = array();
 			$screen_names = array();
 			foreach ($twitter_accounts as $key) {
-				array_push($query_twitter_accounts, $key['TwitterAccount']['account_id']);
-				$screen_names[$key['TwitterAccount']['account_id']]['screen_name'] = $key['TwitterAccount']['screen_name'];
+				array_push($query_twitter_accounts, $key['TwitterPermission']['twitter_account_id']);
 			}
+			$screen_names = $this->TwitterAccount->find('list', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('account_id' => $query_twitter_accounts)));
+				
 			$query_twitter_accounts1 = join(',', $query_twitter_accounts);
-			//debug($query_twitter_accounts);
+
 			//$tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts)));
 			$firstdate = strtotime(date('M Y') . ' + ' . (0) . 'months');//need to be able to select months
 			$seconddate = strtotime(date('M Y') . ' + ' . (1) . 'months');
@@ -255,7 +256,6 @@ class TeamsController extends AppController {
 			$totalCount1 = array();
 			foreach ($totalCount as $key) {
 				$totalCount1[$key['tweets']['account_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
-				$totalCount1[$key['tweets']['account_id']]['screen_name'] = $screen_names[$key['tweets']['account_id']]['screen_name'];
 			}
 			
 			$calendarCount = $this->EditorialCalendar->query("SELECT COUNT(id), twitter_account_id, id
@@ -264,10 +264,11 @@ class TeamsController extends AppController {
 															GROUP BY twitter_account_id");
 			foreach ($calendarCount as $key1) {
 				$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'];
+				$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key['tweets']['account_id']];
 			}
 			//debug($calendarCount);
 
-			//debug($tweetCount);
+			//debug($totalCount);
 			//debug($tweetCount1);
 			//debug($userNames);
 			$this->set('query_twitter_accounts', $query_twitter_accounts);
@@ -277,7 +278,7 @@ class TeamsController extends AppController {
 			$this->set('screen_names', $screen_names);
 
 			$calendarIDs = $this->EditorialCalendar->find('list', array('fields' => 'id', 'conditions' => array('EditorialCalendar.twitter_account_id' => $query_twitter_accounts)));
-			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => 0));
+			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => 0, 'order' => 'Tweet.created DESC'));
 			
 			$tableTweets1 = array();
 			foreach ($tableTweets as $key) {

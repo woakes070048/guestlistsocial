@@ -48,7 +48,7 @@ echo $this->Form->end('Go');?>
 			</tr>
 			<?foreach ($tableTweets1 as $key => $value) {?>
 				<tr>
-					<td class='screenName' style='display:block'><?echo $screen_names[$key]['screen_name'];?></td>
+					<td class='screenName' style='display:block'><?echo $screen_names[$key];?></td>
 					<?for ($i=1; $i <= date('t'); $i++) {?>
 							<?
 							if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) {
@@ -94,7 +94,10 @@ if (!empty($totalCount1)) {
 	}?>	
 		<div class='teamsContainer'>
 			<span class='screenName'><? echo $value['screen_name'];?></span><br />
-			<? $total = $value[0] + $value[1] + $value[2];?>
+			<? $total = $value[0] + $value[1] + $value[2];
+			if ($total == 0) {
+				$total = 1;
+			}?>
 			<span class='howManyWritten'><b><?echo $value[0] + $value[1] + $value[2];?>/<?echo $value['calendarCount'] * date('t');?></b> WRITTEN</span>
 			<div class='multiProgressBar' style='display:none;'>
 				<hr style='width: <? echo ($value[1] / $total) * 300;?>px; background-color: #21a750;' />
@@ -104,7 +107,8 @@ if (!empty($totalCount1)) {
 			<div class='lowerTeamsWrapper'>
 				<div class='topTweeters'>
 				Top Tweeters:
-					<? foreach ($tweetCount1[$key] as $key1 => $value1) {?>
+					<? if (!empty($tweetCount1[$key])) {
+						foreach ($tweetCount1[$key] as $key1 => $value1) {?>
 							<div style='width: 150px; height: 85px; margin: 5px;'>
 								<?echo $this->Html->image($value1['profile_pic'], array('style' => 'height: 25px; vertical-align: middle'));?><span class='topTweetersName'><?echo $value1['name'];?></span>
 								<div class='topTweetersNumbers'>
@@ -140,6 +144,7 @@ if (!empty($totalCount1)) {
 									</div>
 								</div>
 							</div>
+						<?}?>
 					<?}?>
 				</div>
 				<div class='howManyWritten1'>
