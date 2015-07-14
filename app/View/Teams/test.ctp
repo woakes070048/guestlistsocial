@@ -38,7 +38,7 @@ echo $this->Form->end('Go');?>
 		<div id="howManyWrittenBlock2" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some need Improving
 		<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing
 	</div>
-		<table style='border-spacing: 0; padding: 10px;'>
+		<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
 			<tr>
 				<th>
 				</th>
@@ -162,5 +162,6 @@ if (!empty($totalCount1)) {
 <script>
 $(document).ready(function() { 
 	$('.multiProgressBar').show('slide');
+	$('tr td:nth-child(n + <?echo date("d");?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
 });
 </script>
