@@ -4036,3 +4036,11 @@ form .submit #commentSaveButton {
 .improveApproved {
 	background-color: #ff0000;
 }
+
+#teamOverview tbody tr td {
+	opacity: 0.3;
+}
+
+#teamOverview .screenName {
+	opacity: 1;
+}
