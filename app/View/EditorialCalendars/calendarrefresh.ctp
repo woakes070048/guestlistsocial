@@ -603,8 +603,8 @@ foreach ($calendar as $key1) {
                 });
             });*/
 
-            /*$(".approveAll").click(function () {
-            $(".verified").each(function () {
+            $(".approveAll").click(function () {
+            /*$(".verified").each(function () {
                 $(this).find(".input.radio input:radio[value=1]").prop('checked', true);
                 //$("#table").css('opacity', '.4');
                     id = $(this).find(".input.radio input:radio[value=1]").attr('id');
@@ -612,8 +612,22 @@ foreach ($calendar as $key1) {
                     $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
 
                     
-            });
             });*/
+                $("#table").css('opacity', '.4');
+                $('#loading').show();
+                $.ajax({
+                    type: "POST",
+                    url: "/twitter/approveall",
+                    data: {'account_id': <?echo $this->Session->read('access_token.account_id');?>, 'month': <?echo $this->Session->read('Auth.User.monthSelector');?>},
+                    success: function(data) {
+                        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                $("#table").css('opacity', '1');
+                                $('#loading').hide();
+                                pusher.disconnect();
+                            });
+                        }
+                });
+            });
 
         var channel = pusher.subscribe('private-comment_channel_<?echo $this->Session->read("access_token.account_id");?>');
         channel.bind('new_comment',

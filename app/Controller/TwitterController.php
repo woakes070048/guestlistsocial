@@ -816,6 +816,37 @@ class TwitterController extends AppController {
         $this->layout = '';
     }
 
+    public function approveall() {
+        $twitter_account_id = $this->request->data['account_id'];
+        $months = $this->request->data['month'];
+
+        $calendars = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $twitter_account_id)));
+        $calendarIDs = array();
+        foreach ($calendars as $key) {
+            $calendarIDs[] = $key['EditorialCalendar']['id'];
+        }
+
+        if ($month = 0) {
+            $firstdate = time();
+        } else {
+            $firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');
+        }
+        $tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $twitter_account_id, 'calendar_id' => $calendarIDs, 'timestamp >=' => $firstdate, 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 14) . 'months'))));
+        $toSave = array();
+        foreach ($tweets as $key) {
+            $x['verified'] = 1;
+            $x['id'] = $key['Tweet']['id'];
+            $toSave[] = $x;
+        }
+        if ($this->Tweet->saveAll($toSave)) {
+            $this->Session->setFlash('yes');
+        } else {
+            $this->Session->setFlash('no');
+        }
+
+        $this->redirect(Controller::referer());
+    }
+
     public function test($id) {
         /*$Email = new CakeEmail();
         $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
