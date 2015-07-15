@@ -270,7 +270,7 @@ class TeamsController extends AppController {
 			foreach ($calendarCount as $key1) {
 				if (!empty($totalCount1[$key1['editorial_calendars']['twitter_account_id']])) {
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'];
-					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key['tweets']['account_id']];
+					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key1['editorial_calendars']['twitter_account_id']];
 				}
 			}
 			//debug($calendarCount);
@@ -296,9 +296,10 @@ class TeamsController extends AppController {
 			}
 			$this->set('tableTweets1', $tableTweets1);
 
+			$monthdate = strtotime(date('M Y'));
 			$weekdate = strtotime('Monday this week');
 			$daydate = strtotime('Today');
-			$monthCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $firstdate))));
+			$monthCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $monthdate))));
 			$weekCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $weekdate))));
 			$dayCount = $this->Tweet->find('count', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'Tweet.created >' => date('Y-m-d', $daydate))));
 			$this->set('monthCount', $monthCount);
