@@ -212,6 +212,11 @@ class TeamsController extends AppController {
 		$this->set('ddTeams', $ddTeams);
 		$teams = $this->Team->find('all', array('consitions' => array('id' => $myTeamIDs)));
 		if ($this->request->data) {
+			//monthselector
+			$months = $this->request->data['Team']['Select Month'];
+			$this->set('months', $months);
+
+
 			$team_id = $this->request->data['Team']['id'];
 			$twitter_accounts = $this->TwitterPermission->find('all', array('conditions' => array('team_id' => $team_id)));
 			$query_twitter_accounts = array();
@@ -224,8 +229,8 @@ class TeamsController extends AppController {
 			$query_twitter_accounts1 = join(',', $query_twitter_accounts);
 
 			//$tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts)));
-			$firstdate = strtotime(date('M Y') . ' + ' . (0) . 'months');//need to be able to select months
-			$seconddate = strtotime(date('M Y') . ' + ' . (1) . 'months');
+			$firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');//need to be able to select months
+			$seconddate = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
 			$totalCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, verified
 											FROM tweets
 											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
@@ -252,7 +257,7 @@ class TeamsController extends AppController {
 				$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']]['profile_pic'] = $userNames[$key['tweets']['user_id']]['User']['profile_pic'];
 
 			}
-
+			
 			$totalCount1 = array();
 			foreach ($totalCount as $key) {
 				$totalCount1[$key['tweets']['account_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
@@ -263,8 +268,10 @@ class TeamsController extends AppController {
 															WHERE twitter_account_id IN ($query_twitter_accounts1)
 															GROUP BY twitter_account_id");
 			foreach ($calendarCount as $key1) {
-				$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'];
-				$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key['tweets']['account_id']];
+				if (!empty($totalCount1[$key1['editorial_calendars']['twitter_account_id']])) {
+					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'];
+					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key['tweets']['account_id']];
+				}
 			}
 			//debug($calendarCount);
 
@@ -297,6 +304,9 @@ class TeamsController extends AppController {
 			$this->set('monthCount', $monthCount);
 			$this->set('weekCount', $weekCount);
 			$this->set('dayCount', $dayCount);
+		} else {
+			$months = 0;
+			$this->set('months', $months);
 		}
 	}
 

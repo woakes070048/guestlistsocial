@@ -332,7 +332,7 @@ class EditorialCalendarsController extends AppController {
                     if ($toSave['Tweet']['verified'] == 1 && $key['timestamp'] > time()) {
                         //$this->CronTweet->save($toSave);
                         $verified[] = $toSave;
-                        unset($toSave);
+                        //unset($toSave);
                     }
                 }
                 $test[] = $toSave;
@@ -340,7 +340,6 @@ class EditorialCalendarsController extends AppController {
             unset($key);
         }
         if (!empty($test)) {
-            debug($test);
             if ($this->Tweet->saveAll($test, array('deep' => true))) {
 
             } else {

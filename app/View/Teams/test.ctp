@@ -1,84 +1,110 @@
 <?
+$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
+?>
+
+
+<?
 echo $this->Form->create('Team');
 echo $this->Form->input('id', array('type' => 'select', 'options' => $ddTeams));
+echo $this->Form->input('Select Month', array(
+    'options' => array(
+        0 => date('F Y', strtotime('+0 month', $base)),
+        1 => date('F Y', strtotime('+1 month', $base)),
+        2 => date('F Y', strtotime('+2 month', $base)),
+        3 => date('F Y', strtotime('+3 month', $base)),
+        4 => date('F Y', strtotime('+4 month', $base)),
+        5 => date('F Y', strtotime('+5 month', $base))
+        ),
+    'selected' => $months,
+    'id' => 'monthSelector',
+    'onchange' => 'this.form.submit()'
+    ));
 echo $this->Form->end('Go');?>
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
-
 <div class='teamsRow'>
-	<div class='teamsContainer' style='min-width:0'>
-		<div class='teamsContainerHeader'>
-			Monthly Performance
+	<? if (!empty($monthCount)) {?>
+		<div class='teamsContainer' style='min-width:0'>
+			<div class='teamsContainerHeader'>
+				Monthly Performance
+			</div>
+			<span class='teamsContainerSpan'><b><?echo $monthCount;?></b>tweets</span>
+			<small> this month</small>
 		</div>
-		<span class='teamsContainerSpan'><b><?echo $monthCount;?></b>tweets</span>
-		<small> this month</small>
-	</div>
-	<div class='teamsContainer' style='min-width:0'>
-		<div class='teamsContainerHeader'>
-			Weekly Performance
+	<?}?>
+	<? if (!empty($weekCount)) {?>
+		<div class='teamsContainer' style='min-width:0'>
+			<div class='teamsContainerHeader'>
+				Weekly Performance
+			</div>
+			<span class='teamsContainerSpan'><b><?echo $weekCount;?></b>tweets</span>
+			<small> this week</small>
 		</div>
-		<span class='teamsContainerSpan'><b><?echo $weekCount;?></b>tweets</span>
-		<small> this week</small>
-	</div>
-	<div class='teamsContainer' style='min-width:0'>
-		<div class='teamsContainerHeader'>
-			Daily Performance
+	<?}?>
+	<? if (!empty($dayCount)) {?>
+		<div class='teamsContainer' style='min-width:0'>
+			<div class='teamsContainerHeader'>
+				Daily Performance
+			</div>
+			<span class='teamsContainerSpan'><b><?echo $dayCount;?></b>tweets</span>
+			<small> today</small>
 		</div>
-		<span class='teamsContainerSpan'><b><?echo $dayCount;?></b>tweets</span>
-		<small> today</small>
-	</div>
+	<?}?>
 </div>
-<div class='teamsRow'>
-	<div class='teamsContainer'>
-	<div class='teamsContainerHeader'>
-	<b>Team Overview:</b>
-	</div>
-	<div style='float: right; padding: 10px;'>
-		<div id="howManyWrittenBlock1" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>All Approved
-		<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some still to be Approved
-		<div id="howManyWrittenBlock2" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some need Improving
-		<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing
-	</div>
-		<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
-			<tr>
-				<th>
-				</th>
-				<?for ($i=1; $i <= date('t'); $i++) {?>
-					<th style='font-size: 8pt;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?></th>
-				<?}?>
-			</tr>
-			<?foreach ($tableTweets1 as $key => $value) {?>
+<? if (!empty($tableTweets1)) {?>
+	<div class='teamsRow'>
+		<div class='teamsContainer'>
+		<div class='teamsContainerHeader'>
+		<b>Team Overview:</b>
+		</div>
+		<div style='float: right; padding: 10px;'>
+			<div id="howManyWrittenBlock1" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>All Approved
+			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some still to be Approved
+			<div id="howManyWrittenBlock2" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some need Improving
+			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing
+		</div>
+			<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
 				<tr>
-					<td class='screenName' style='display:block'><?echo $screen_names[$key];?></td>
+					<th>
+					</th>
 					<?for ($i=1; $i <= date('t'); $i++) {?>
-							<?
-							if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) {
-									$class = 'notAllApproved';
-								} else {
-									$class = '';
-								}
-							} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
-								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1]) {
-									$class = 'allApproved';
-								} else {
-									$class = '';
-								}
-							} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2])) {
-								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2]) {
-									$class = 'improveApproved';
-								} else {
-									$class = '';
-								}
-							} else {
-									$class = '';
-							}?>
-						<td class='<?echo $class;?>'>
-						</td>
+						<th style='font-size: 8pt;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?></th>
 					<?}?>
 				</tr>
-			<?}?>
-		</table>
+				<?foreach ($tableTweets1 as $key => $value) {?>
+					<tr>
+						<td class='screenName' style='display:block'><?echo $screen_names[$key];?></td>
+						<?for ($i=1; $i <= date('t'); $i++) {?>
+								<?
+								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) {
+										$class = 'notAllApproved';
+									} else {
+										$class = '';
+									}
+								} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
+									if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1]) {
+										$class = 'allApproved';
+									} else {
+										$class = '';
+									}
+								} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2])) {
+									if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2]) {
+										$class = 'improveApproved';
+									} else {
+										$class = '';
+									}
+								} else {
+										$class = '';
+								}?>
+							<td class='<?echo $class;?>'>
+							</td>
+						<?}?>
+					</tr>
+				<?}?>
+			</table>
+		</div>
 	</div>
-</div>
+<?}?>
+
 <div class='teamsRow'>
 <?
 if (!empty($totalCount1)) {
@@ -162,6 +188,8 @@ if (!empty($totalCount1)) {
 <script>
 $(document).ready(function() { 
 	$('.multiProgressBar').show('slide');
-	$('tr td:nth-child(n + <?echo date("d");?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
+	<? if ($months == 0) {?>
+		$('tr td:nth-child(n + <?echo date("d");?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
+	<?}?>
 });
 </script>
