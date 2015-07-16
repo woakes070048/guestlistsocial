@@ -248,7 +248,7 @@ echo $text;
 
             <hr style="margin: 5px 0;">
 
-            <span class='writer' style='float: left'>WRITER <br /> <b><? echo $key['Editor'][0]['User']['first_name']; ?></b></span>
+            <span class='writer' style='float: left'>WRITER <br /> <b><? if (!empty($key['Editor'][0]['User']['first_name'])) {echo $key['Editor'][0]['User']['first_name'];}else{echo $key['Tweet']['first_name'];}?></b></span>
       </div>
       <div class='nopadding' id=<?php echo $key['Tweet']['id'];?>>
         <?php echo $this->Form->textarea('body', array(
