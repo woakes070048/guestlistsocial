@@ -156,7 +156,6 @@ class EditorialCalendarsController extends AppController {
                         $key['verified'] = 0;
                     }
                     $key['first_name'] = $this->Session->read('Auth.User.first_name');
-                    $key['user_id'] = $this->Session->read('Auth.User.id');
                     $edited = true;
                 } else {
                     if ($original['Tweet']['verified'] == $key['verified'] && empty($key['img_url1']['name'])) {
@@ -215,9 +214,7 @@ class EditorialCalendarsController extends AppController {
                 $toSave['Tweet']['id'] = $key['id'];
                 $toSave['Tweet']['body'] = $key['body'];
                 $toSave['Tweet']['verified'] = $key['verified'];
-                if (!empty($key['user_id'])) {
-                    $toSave['Tweet']['user_id'] = $key['user_id'];
-                }
+                $toSave['Tweet']['account_id'] = $key['account_id'];
                 if (!empty($key['verified_by'])) {
                     $toSave['Tweet']['verified_by'] = $key['verified_by'];
                 }

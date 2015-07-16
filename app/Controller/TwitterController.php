@@ -13,6 +13,18 @@ class TwitterController extends AppController {
             $this->Session->write('Auth.User.monthSelector', 0);
         }
 
+        if (!empty($this->request->query['s'])) {
+            $m = date('F', strtotime('+ ' . $this->request->query['m'] . ' months'));
+            $d = date('jS', strtotime($this->request->query['s'] . ' ' . $m));
+            $this->set('scroll', $d);
+            $this->Session->write('Auth.User.monthSelector', $this->request->query['m']);
+            $acc = $this->TwitterAccount->find('first', array('conditions' => array('TwitterAccount.account_id' => $this->request->query['accid'])));
+            $this->Session->write('access_token.account_id', $this->request->query['accid']);
+            $this->Session->write('access_token.screen_name', $acc['TwitterAccount']['screen_name']);
+        } else {
+            $this->set('scroll', 0);
+        }
+
         $permissions = array();
         foreach ($this->Session->read('Auth.User.Team') as $key) {
             $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
@@ -185,15 +197,17 @@ class TwitterController extends AppController {
         }
 
         if (!empty($filter['account'])) {
-            $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
-            if ($filter['account'] == 'All Accounts') {
-                $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
-            } else {
-                $this->Session->write('access_token.account_id', $twitter_account_id['TwitterAccount']['account_id']);
-                $this->Session->write('access_token.screen_name', $twitter_account_id['TwitterAccount']['screen_name']);
+            if (empty($this->request->query['s'])) {
+                $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
+                if ($filter['account'] == 'All Accounts') {
+                    $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
+                } else {
+                    $this->Session->write('access_token.account_id', $twitter_account_id['TwitterAccount']['account_id']);
+                    $this->Session->write('access_token.screen_name', $twitter_account_id['TwitterAccount']['screen_name']);
+                }
+                $this->set('account', $filter['account']);
+                $this->Session->write('filter.account', $filter['account']);
             }
-            $this->set('account', $filter['account']);
-            $this->Session->write('filter.account', $filter['account']);
         }
 
         if (!empty($filter['team'])) {
@@ -212,7 +226,8 @@ class TwitterController extends AppController {
         'conditions' => $c,
         'limit' => 10,
         'order' => array('timestamp' => $order,
-        'paramType' => 'queryString')
+        'paramType' => 'queryString'),
+        'recursive' => 2
         );
 
         $countConditions0 = array('verified' => 0, 'published' => 0, 'timestamp >' => time(), 'Tweet.account_id' => $permissions);
@@ -555,9 +570,6 @@ class TwitterController extends AppController {
             if ($this->Tweet->saveField('body', $key['body'])) {
                 $this->Tweet->saveField('verified', $key['verified']);
                 $this->Tweet->saveField('comments', $key['comments']);
-                if ($key['verified']) {
-                    $this->Tweet->saveField('verified_by', $key['verified_by']);
-                }
                 if (isset($key['img_url'])) {
                     $this->Tweet->saveField('img_url', $key['img_url']);
                 }

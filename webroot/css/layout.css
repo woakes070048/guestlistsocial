@@ -2832,7 +2832,8 @@ input[type=file] {
 
 
 
-#TeamsTwitterPermissions {
+#TeamsTwitterPermissions,
+#AccountsTwitterPermissions {
 
 	opacity: 0;
 
@@ -2844,7 +2845,8 @@ input[type=file] {
 
 
 
-#TeamsTwitterPermissions + label {
+#TeamsTwitterPermissions + label,
+#AccountsTwitterPermissions + label {
 
 	background: url(../img/false1.png) right center no-repeat;
 
@@ -2860,7 +2862,8 @@ input[type=file] {
 
 
 
-#TeamsTwitterPermissions:checked + label {
+#TeamsTwitterPermissions:checked + label,
+#AccountsTwitterPermissions:checked + label {
 
 	background: url(../img/true.png) right center no-repeat;
 
@@ -4039,6 +4042,10 @@ form .submit #commentSaveButton {
 
 #teamOverview tbody tr td {
 	opacity: 0.3;
+}
+
+#teamOverview tbody tr td:hover {
+	cursor: pointer;
 }
 
 #teamOverview .screenName {
