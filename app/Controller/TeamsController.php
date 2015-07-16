@@ -480,6 +480,7 @@ class TeamsController extends AppController {
 
 		if ($this->Session->read('Auth.User.Team')) {
 			$permissions = array();
+			$teamIDs = array();
 			foreach ($this->Session->read('Auth.User.Team') as $key) {
 				if ($key['TeamsUser']['group_id'] == 1) {
             	$permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
@@ -507,29 +508,36 @@ class TeamsController extends AppController {
 			$accounts = $this->TwitterAccount->find('all', array('fields' => array('screen_name', 'account_id'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
 			$this->set('accounts', $accounts);
 			$this->set('currentTeam', $this->request->data['filterTeam']['team']);
+			$usersPermissions = $this->TeamsUser->find('list', array('fields' => 'user_id', 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
+			$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions)));
 		}
+
 	}
 
 	public function permissionSave1() {
-		if (!empty($this->request->data['Teams'])) {
-			foreach ($this->request->data['Teams'] as $key => $value) {
-				if (!empty($value['permissions'][$key])) {//if changed
-
-							debug('hey');
-					if ($this->TwitterPermission->hasAny(array('team_id' => $key['team_id'], 'twitter_account_id' => $value))) {//if exists in db
+		if (!empty($this->request->data['Accounts'])) {
+			foreach ($this->request->data['Accounts'] as $key => $value) {
+				if ($value['permissions'][$key] !== '') {//if changed
+					if ($this->TwitterPermission->hasAny(array('team_id' => $value['team_id'], 'twitter_account_id' => $key))) {//if exists in db
 						if ($value['permissions'][$key] == 0) {//if 0
-							$permission = $this->TwitterPermission->find('first', array('fields' => 'id', array('conditions' => array('team_id' => $key['team_id'], 'twitter_account_id' => $value))));
+							$permission = $this->TwitterPermission->find('first', array('fields' => 'id', 'conditions' => array('team_id' => $value['team_id'], 'twitter_account_id' => $key)));
 							$this->TwitterPermission->delete($permission['TwitterPermission']['id']);
 						}
 					} else {
 						if ($value['permissions'][$key] == 1) {//if 1
-							$toSave['TwitterPermission']['twitter_account_id'] = $value;
+							$toSave['TwitterPermission']['twitter_account_id'] = $key;
 							$toSave['TwitterPermission']['team_id'] = $key['team_id'];
 							$this->TwitterPermission->save($toSave);
 						}
 					}
+				} else {
+
 				}
 			}		
+		}
+
+		if (!empty($this->request->data['Users'])) {
+
 		}
 	}
 }

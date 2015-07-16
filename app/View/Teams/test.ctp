@@ -78,11 +78,13 @@ echo $this->Form->end('Go');?>
 		<div class='teamsContainerHeader'>
 		<b>Team Overview:</b>
 		</div>
+
+		<small style='float:left'>(Click a box to be redirected to the day-by-day view for that day)</small>
 		<div style='float: right; padding: 10px;'>
 			<div id="howManyWrittenBlock1" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>All Approved
 			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some still to be Approved
 			<div id="howManyWrittenBlock2" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some need Improving
-			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing
+			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing<br />
 		</div>
 			<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
 				<tr>
@@ -117,7 +119,7 @@ echo $this->Form->end('Go');?>
 								} else {
 										$class = '';
 								}?>
-							<td class='<?echo $class;?>'>
+							<td class='<?echo $class;?>' data-scroll='<?echo $i;?>' data-account-id='<?echo $key;?>'>
 							</td>
 						<?}?>
 					</tr>
@@ -224,6 +226,17 @@ $(document).ready(function() {
 	<?} else {?>
 		$('tr td').css('opacity', '1');
 	<?}?>
+	$('tr td:nth-child(n + <?echo date("d") + 1;?>)').hover(function () {
+		$(this).css('opacity', '0.5');
+	}, function () {
+		$(this).css('opacity', '1');
+	});
+
+	$('tr td:nth-child(n + 1)').click(function () {
+		scroll = $(this).attr('data-scroll');
+		account_id = $(this).attr('data-account-id');
+		window.location.replace("/tweets?h=daybyday&s=" + scroll + "&m=" + <?echo $months;?> + "&accid=" + account_id);
+	});
 	$(".myChart").each(function () {
 		var ctx = $(this).get(0).getContext("2d");
 		var doughnutData = [
@@ -271,20 +284,6 @@ $(document).ready(function() {
 		}
 		barOptions = {};
 		var myBarChart = new Chart(ctx1).Bar(barData, barOptions);
-	});
-
-	$('.screenName').each(function () {
-		$(this).qtip({ 
-	        content: {
-	            text: 
-	            	$(this).find('canvas')
-	        },
-	        position: {
-	            my: 'bottom center',
-	            at: 'top center', 
-	            target: 'event'
-	        }
-	    });
 	});
 });
 </script>

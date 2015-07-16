@@ -248,7 +248,7 @@ echo $text;
 
             <hr style="margin: 5px 0;">
 
-            <span class='writer' style='float: left'>WRITER <br /> <b><? echo $key['Tweet']['first_name']; ?></b></span>
+            <span class='writer' style='float: left'>WRITER <br /> <b><? echo $key['Editor'][0]['User']['first_name']; ?></b></span>
       </div>
       <div class='nopadding' id=<?php echo $key['Tweet']['id'];?>>
         <?php echo $this->Form->textarea('body', array(
@@ -312,6 +312,9 @@ $(document).ready(function() {
             $('#table').css('opacity', '1');
             $('#loading').hide();
             $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
+            $('html, body').animate({
+                    scrollTop: $("." + "<?echo $scroll;?>").offset().top - 30
+                }, 2000);
         });
         <? } elseif ($params == 'h:daybyday' && !$this->Session->read('access_token.account_id')) {?>
         $('#table').hide();
