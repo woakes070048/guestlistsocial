@@ -18,6 +18,7 @@ class UsersController extends AppController {
                     debug($this->request->data);
 	            	$this->User->saveField('session_id', $this->Session->id());
 	            	$this->User->saveField('group_id', 6);
+                    $this->User->saveField('profile_pic', '/img/profile/default'. rand(0,5) . '.jpg');
                     $id = $this->User->getLastInsertId();
                         if (isset($this->passedArgs['h'])) {//adding to team if invited
                             $teamHash = $this->passedArgs['h'];
@@ -38,7 +39,6 @@ class UsersController extends AppController {
                             $calendar_activated = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->Tickets->get($teamHash))));
                             $this->User->saveField('calendar_activated', $calendar_activated[0]['User'][0]['calendar_activated']);
                             $this->User->saveField('group_id', $group);
-                            $this->User->saveField('profile_pic', '/img/profile/defualt'. rand(0,5) . '.jpg');
                             $this->Session->setFlash('You have successfully been registered and added to team ' . $team[0]['Team']['name'] . '. Please log in. Note: You will not have access to any of your team\'s twitter accounts until the team admin gives you permissions');
                             $this->Tickets->del($this->passedArgs['h']);
                             $this->Tickets->del($this->passedArgs['g']);
