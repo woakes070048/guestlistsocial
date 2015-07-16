@@ -125,15 +125,16 @@ echo $this->Form->end('Go');?>
 			</table>
 		</div>
 	</div>
-<?}?>
-<div class='teamsRow'>
-	<div class='teamsContainer' style='min-width: 0'>
-		<div class='teamsContainerHeader'>
-		<b>User's Performance</b>
+
+	<div class='teamsRow'>
+		<div class='teamsContainer' style='min-width: 0'>
+			<div class='teamsContainerHeader'>
+			<b>User's Performance</b>
+			</div>
+			<canvas id="barChart" width="940" height="300"></canvas>
 		</div>
-		<canvas id="barChart" width="900" height="300"></canvas>
 	</div>
-</div>
+<?}?>
 <!--<div class='teamsRow'>
 <?
 if (!empty($totalCount1)) {
@@ -219,7 +220,7 @@ if (!empty($totalCount1)) {
 $(document).ready(function() { 
 	$('.multiProgressBar').show('slide');
 	<? if ($months == 0) {?>
-		$('tr td:nth-child(n + <?echo date("d");?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
+		$('tr td:nth-child(n + <?echo date("d") + 1;?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
 	<?} else {?>
 		$('tr td').css('opacity', '1');
 	<?}?>
