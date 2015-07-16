@@ -131,7 +131,7 @@ echo $this->Form->end('Go');?>
 		<div class='teamsContainerHeader'>
 		<b>User's Performance</b>
 		</div>
-		<canvas id="barChart" max-width="900" height="300"></canvas>
+		<canvas id="barChart" width="900" height="300"></canvas>
 	</div>
 </div>
 <!--<div class='teamsRow'>
