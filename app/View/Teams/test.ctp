@@ -1,9 +1,12 @@
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 <?
-$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
+echo $this->Html->script('Chart.min');
+echo $this->Html->script('jquery.qtip.min');
+echo $this->Html->css('jquery.qtip.min');
 ?>
 
-
 <?
+$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
 echo $this->Form->create('Team');
 echo $this->Form->input('id', array('type' => 'select', 'options' => $ddTeams));
 echo $this->Form->input('Select Month', array(
@@ -20,7 +23,26 @@ echo $this->Form->input('Select Month', array(
     'onchange' => 'this.form.submit()'
     ));
 echo $this->Form->end('Go');?>
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
+<?if (!empty($totalCount1)) {
+	foreach ($totalCount1 as $key => $value) {
+		if (empty($value[0])) {
+			$value[0] = 0;
+		}
+		if (empty($value[1])) {
+			$value[1] = 0;
+		}
+		if (empty($value[2])) {
+			$value[2] = 0;
+		}
+
+		$total = $value[0] + $value[1] + $value[2];
+		if ($total == 0) {
+			$total = 1;
+		}
+		$value['total'] = $total;
+		$totalCount1[$key] = $value;
+	}
+}?>
 <div class='teamsRow'>
 	<? if (!empty($monthCount)) {?>
 		<div class='teamsContainer' style='min-width:0'>
@@ -72,7 +94,7 @@ echo $this->Form->end('Go');?>
 				</tr>
 				<?foreach ($tableTweets1 as $key => $value) {?>
 					<tr>
-						<td class='screenName' style='display:block'><?echo $screen_names[$key];?></td>
+						<td class='screenName' style='display:block'><?echo $totalCount1[$key]['screen_name'];?></td>
 						<?for ($i=1; $i <= date('t'); $i++) {?>
 								<?
 								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) {
@@ -104,8 +126,15 @@ echo $this->Form->end('Go');?>
 		</div>
 	</div>
 <?}?>
-
 <div class='teamsRow'>
+	<div class='teamsContainer' style='min-width: 0'>
+		<div class='teamsContainerHeader'>
+		<b>User's Performance</b>
+		</div>
+		<canvas id="barChart" max-width="900" height="300"></canvas>
+	</div>
+</div>
+<!--<div class='teamsRow'>
 <?
 if (!empty($totalCount1)) {
 	foreach ($totalCount1 as $key => $value) {
@@ -118,7 +147,7 @@ if (!empty($totalCount1)) {
 	if (empty($value[2])) {
 		$value[2] = 0;
 	}?>	
-		<div class='teamsContainer'>
+		<div class='teamsContainer byAccount'>
 			<span class='screenName'><? echo $value['screen_name'];?></span><br />
 			<? $total = $value[0] + $value[1] + $value[2];
 			if ($total == 0) {
@@ -130,6 +159,7 @@ if (!empty($totalCount1)) {
 				<hr style='width: <? echo ($value[0] / $total) * 300;?>px; background-color: #ffcc00;' />
 				<hr style='width: <? echo ($value[2] / $total) * 300;?>px; background-color: #ff0000;' />
 			</div>
+			<canvas class="myChart" width="120" height="120" data-approved= "<? echo $value[1]?>" data-not-approved= "<? echo $value[0]?>" data-improve= "<? echo $value[2]?>" data-empty="<?echo$total - $value['calendarCount'];?>"></canvas>
 			<div class='lowerTeamsWrapper'>
 				<div class='topTweeters'>
 				Top Tweeters:
@@ -183,13 +213,77 @@ if (!empty($totalCount1)) {
 		</div>
 	<?}?>
 <?}?>
-</div>
+</div>-->
 
 <script>
 $(document).ready(function() { 
 	$('.multiProgressBar').show('slide');
 	<? if ($months == 0) {?>
 		$('tr td:nth-child(n + <?echo date("d");?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
+	<?} else {?>
+		$('tr td').css('opacity', '1');
 	<?}?>
+	$(".myChart").each(function () {
+		var ctx = $(this).get(0).getContext("2d");
+		var doughnutData = [
+					    {
+					        value: $(this).attr('data-approved'),
+					        color:"#21a750",
+					        highlight: "#5ee18c",
+					        label: "Approved"
+					    },
+					    {
+					        value: $(this).attr('data-not-approved'),
+					        color: "#ffcc00",
+					        highlight: "#efd35d",
+					        label: "Awaiting Approval"
+					    },
+					    {
+					        value: $(this).attr('data-improve'),
+					        color: "#ff0000",
+					        highlight: "#e73b3b",
+					        label: "Need Improving"
+					    },
+					    {
+					        value: $(this).attr('data-empty'),
+					        color: "#fff",
+					        highlight: "#dcdcdc",
+					        label: "Not written"
+					    }
+					]
+		var doughnutOptions = {segmentShowStroke : true, animationEasing : "easeOutCubic"}
+
+		var myDoughnutChart = new Chart(ctx).Doughnut(doughnutData, doughnutOptions);
+	});
+	$("#barChart").each(function () {
+		var ctx1 = $(this).get(0).getContext("2d");
+		var barData = {
+			labels: <?echo $barChartLabels;?>,
+			datasets: [{
+				label: "Tweets",
+				fillColor: "rgba(151,187,205,0.5)",
+	            strokeColor: "rgba(151,187,205,0.8)",
+	            highlightFill: "rgba(151,187,205,0.75)",
+	            highlightStroke: "rgba(151,187,205,1)",
+	            data: <?echo $barChartData;?>
+			}]
+		}
+		barOptions = {};
+		var myBarChart = new Chart(ctx1).Bar(barData, barOptions);
+	});
+
+	$('.screenName').each(function () {
+		$(this).qtip({ 
+	        content: {
+	            text: 
+	            	$(this).find('canvas')
+	        },
+	        position: {
+	            my: 'bottom center',
+	            at: 'top center', 
+	            target: 'event'
+	        }
+	    });
+	});
 });
 </script>

@@ -4040,3 +4040,30 @@ form .submit #commentSaveButton {
 #teamOverview .screenName {
 	opacity: 1;
 }
+
+.myChart {
+	display: block;
+	margin: 0 auto;
+}
+
+.byAccount {
+	min-width: 380px;
+	padding:10px;
+}
+
+#editTeam {
+	list-style: none;
+	background-color: #fff;
+	padding: 10px;
+	margin-left: 5%;
+	float: left;
+}
+
+.teamsRow {
+	width: 940px;
+	float: left;
+}
+
+#barChart {
+	padding: 15px;
+}
