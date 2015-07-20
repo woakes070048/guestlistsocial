@@ -22,7 +22,7 @@ for ($i=$day; $i<=$daysinmonth; $i++) {
 ?>
 <div id='calendarbuttons'>
 <?
-echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => '../tweets?h=daybyday'), 'id' => 'monthForm'));
+echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => '../tweets'), 'id' => 'monthForm'));
 echo $this->Form->input('Select Month', array(
     'options' => array(
         0 => date('F Y', strtotime('+0 month', $base)),
@@ -107,7 +107,6 @@ foreach ($calendar as $key1) {
         $firstName = '';
         $verified = 0;
         $allApproved[date('jS', strtotime($key))] -= 1000;
-        $verified_by = "";
         $published = false;
         $commentCount = 0;
         $present = '';
@@ -136,7 +135,6 @@ foreach ($calendar as $key1) {
             } elseif ($verified == 2) {
                 $allApproved[date('jS', strtotime($key))] -= 1000000;
             }
-            $verified_by = $key2['Tweet']['verified_by'];
             $published = $key2['Tweet']['published'];
             $commentCount = count($key2['Comment']);
             $present = 'present';
@@ -158,7 +156,6 @@ foreach ($calendar as $key1) {
             $firstName = '';
             $verified = 0;
             //$allApproved[date('jS', strtotime($key))] -= 1000;
-            $verified_by = "";
             $published = false;
             $commentCount = 0;
             $present = '';
@@ -200,14 +197,18 @@ foreach ($calendar as $key1) {
             <div class="empty comments <?echo $present;?>" id="<? echo $id; ?>" style="background-image: url('/img/comment<?echo $commentCount;?>.png')">COMMENTS</div>
             <? echo $this->Form->button('SAVE', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
             <? echo $this->Form->button('SHORTEN URLS', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
-            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false)); ?>
+            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false, 'class' => 'imgupload')); ?>
             <? if ($img) { ?>
                     <div class='imagecontainer'>
                         <? echo $this->Html->image($img, array('style' => 'max-width:500px')); ?>
                         <? echo $this->Html->link("<div class='deleteimage'>Delete image</div>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
                     </div>
+            <?  } else {?>
+                <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
+                    <img src=''>
+                </div>
+            </div>
             <?  }  ?>
-        </div>
     </td>
     <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?>
 
@@ -323,6 +324,7 @@ foreach ($calendar as $key1) {
                         contentType: false,
                         success: function(data) {
                             $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                warnMessage = null;
                                 $("#table").css('opacity', '1');
                                 $('#loading').hide();
                                 pusher.disconnect();
@@ -387,11 +389,13 @@ foreach ($calendar as $key1) {
         });
 
             var channel1 = pusher.subscribe('private-body_channel_<?echo $this->Session->read("access_token.account_id");?>');
-            warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";
+            warnMessage = null;
+            window.onbeforeunload = function () {
+                if (warnMessage != null) return warnMessage;
+            }
+
             $(".editing").on('change', function () {
-                window.onbeforeunload = function () {
-                    if (warnMessage != null) return warnMessage;
-                }
+                warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost."
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
                 text = $(this).val();
                 id = $(this).closest("tr").find('#TweetId').attr('data-id');
@@ -444,6 +448,13 @@ foreach ($calendar as $key1) {
                 }
             );
 
+            /*channel1.bind('client-body_file',
+                function(data) {
+                    $('#TweetId[data-id="' + data['tweet_id'] + '"]').closest('tr').find('.input.file').after("<div class='imagecontainer'>
+                        <img src='" + data['img_url'] +"' style='max-width:500px'></div>");
+                }
+            );*/
+
             $('input:submit, button:submit').on('click', function() {
                 warnMessage = null;
             });
@@ -468,6 +479,18 @@ foreach ($calendar as $key1) {
 
                 //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
                 $(this).closest("tr").find('.editing').charCount({css: 'counter counter2', allowed: 117});
+
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+         
+                if (/^image/.test( files[0].type)){ // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+                    var id = $(this).closest("tr").find('#TweetId').attr('data-id');
+                    reader.onloadend = function(){ // set image data as background of div
+                        $("#imagePreview" + id + " img").attr('src', this.result);
+                    }
+                }
             });
 
             $('select').selectric();
@@ -544,6 +567,7 @@ foreach ($calendar as $key1) {
                     contentType: false,
                     success: function(data) {
                         $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                            warnMessage = null;
                             $("#table").css('opacity', '1');
                             $('#loading').hide();
                             pusher.disconnect();
@@ -613,20 +637,23 @@ foreach ($calendar as $key1) {
 
                     
             });*/
-                $("#table").css('opacity', '.4');
-                $('#loading').show();
-                $.ajax({
-                    type: "POST",
-                    url: "/twitter/approveall",
-                    data: {'account_id': <?echo $this->Session->read('access_token.account_id');?>, 'month': <?echo $this->Session->read('Auth.User.monthSelector');?>},
-                    success: function(data) {
-                        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
-                                $("#table").css('opacity', '1');
-                                $('#loading').hide();
-                                pusher.disconnect();
-                            });
-                        }
-                });
+                r = confirm('Clicking this button will delete any unsaved changes that you have made. Please save your changes before you continue.');
+                if (r == true) {
+                    $("#table").css('opacity', '.4');
+                    $('#loading').show();
+                    $.ajax({
+                        type: "POST",
+                        url: "/twitter/approveall",
+                        data: {'account_id': <?echo $this->Session->read('access_token.account_id');?>, 'month': <?echo $this->Session->read('Auth.User.monthSelector');?>},
+                        success: function(data) {
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                    $("#table").css('opacity', '1');
+                                    $('#loading').hide();
+                                    pusher.disconnect();
+                                });
+                            }
+                    });
+                }
             });
 
         var channel = pusher.subscribe('private-comment_channel_<?echo $this->Session->read("access_token.account_id");?>');

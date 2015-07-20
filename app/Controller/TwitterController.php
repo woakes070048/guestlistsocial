@@ -7,12 +7,6 @@ class TwitterController extends AppController {
     var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification', 'Editor');
 
     public function index() {
-        if (isset($this->request->data['currentmonth'])) {
-            $this->Session->write('Auth.User.monthSelector', $this->request->data['currentmonth']['Select Month']);
-        } elseif ($this->Session->read('Auth.User.monthSelector') == false) {
-            $this->Session->write('Auth.User.monthSelector', 0);
-        }
-
         if (!empty($this->request->query['s'])) {
             $m = date('F', strtotime('+ ' . $this->request->query['m'] . ' months'));
             $d = date('jS', strtotime($this->request->query['s'] . ' ' . $m));
@@ -21,8 +15,17 @@ class TwitterController extends AppController {
             $acc = $this->TwitterAccount->find('first', array('conditions' => array('TwitterAccount.account_id' => $this->request->query['accid'])));
             $this->Session->write('access_token.account_id', $this->request->query['accid']);
             $this->Session->write('access_token.screen_name', $acc['TwitterAccount']['screen_name']);
+            $this->set('account', $acc['TwitterAccount']['screen_name']);
+            $this->Session->write('filter.account', $acc['TwitterAccount']['screen_name']);
         } else {
             $this->set('scroll', 0);
+        }
+
+        if (isset($this->request->data['currentmonth'])) {
+            $this->Session->write('Auth.User.monthSelector', $this->request->data['currentmonth']['Select Month']);
+            $this->set('scroll', 0);
+        } elseif ($this->Session->read('Auth.User.monthSelector') == false) {
+            $this->Session->write('Auth.User.monthSelector', 0);
         }
 
         $permissions = array();
@@ -133,8 +136,8 @@ class TwitterController extends AppController {
         $this->set('account', $this->Session->read('filter.account'));
         $this->set('team', $this->Session->read('filter.team'));
         if (!empty($this->request->query['h'])) {
-            if ($this->request->query['h'] == 'daybyday') {
-                $this->set('params', 'h:daybyday');
+            if ($this->request->query['h'] == 'nocalendar') {
+                $this->set('params', 'h:nocalendar');
             }
         } else {
             $this->set('params', '');
@@ -144,6 +147,7 @@ class TwitterController extends AppController {
 
         if (!empty($this->request->data['filter'])) {
             $filter1 = $this->request->data['filter'];
+            $this->set('scroll', 0);
             if ($filter1['status']) {
                 $filter['status'] = $filter1['status'];
             }
@@ -197,7 +201,7 @@ class TwitterController extends AppController {
         }
 
         if (!empty($filter['account'])) {
-            if (empty($this->request->query['s'])) {
+            if (!empty($filter1['account'])) {
                 $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
                 if ($filter['account'] == 'All Accounts') {
                     $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
@@ -667,8 +671,8 @@ class TwitterController extends AppController {
         $this->set('account', '');
         $this->set('team', '');
         if (!empty($this->request->query['h'])) {
-            if ($this->request->query['h'] == 'daybyday') {
-                $this->set('params', 'h:daybyday');
+            if ($this->request->query['h'] == 'nocalendar') {
+                $this->set('params', 'h:nocalendar');
             }
         } else {
             $this->set('params', '');
@@ -859,7 +863,7 @@ class TwitterController extends AppController {
         $this->redirect(Controller::referer());
     }
 
-    public function test($id) {
+    public function test() {
         /*$Email = new CakeEmail();
         $Email->from(array('registration@social.guestlist.net' => 'Guestlist Social'));
         $Email->to("sharif9876@hotmail.com");
@@ -870,7 +874,7 @@ class TwitterController extends AppController {
         //$this->Notification->add(1, 'A comment was added to your tweet2', 0);
         //$this->Notification->markAsRead(1);
         //debug($this->Tweet->find('first', array('conditions' => array('Tweet.id' => 52826), 'recursive' => 2)));
-        $tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $id)));
+        /*$tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $id)));
         $calendarID = $tweet['Tweet']['calendar_id'];
         $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('id' => $calendarID)));
         //debug($calendar);
@@ -884,6 +888,9 @@ class TwitterController extends AppController {
             foreach ($value as $key1) {
                 echo $key1['body'] . '<br />';
             }
-        }
+        }*/
+
+        $t = $this->Tweet->find('list', array('conditions' => array('timestamp >' => time(), 'verified' => 1)));
+        debug($t);
     }
 }
