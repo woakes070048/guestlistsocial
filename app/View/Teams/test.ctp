@@ -235,7 +235,7 @@ $(document).ready(function() {
 	$('tr td:nth-child(n + 1)').click(function () {
 		scroll = $(this).attr('data-scroll');
 		account_id = $(this).attr('data-account-id');
-		window.location.replace("/tweets?h=daybyday&s=" + scroll + "&m=" + <?echo $months;?> + "&accid=" + account_id);
+		window.location.replace("/tweets?s=" + scroll + "&m=" + <?echo $months;?> + "&accid=" + account_id);
 	});
 	$(".myChart").each(function () {
 		var ctx = $(this).get(0).getContext("2d");
