@@ -30,178 +30,6 @@ class TeamsController extends AppController {
 	}
 
 	public function manageteam() {
-		$conditions = array('team_id' => $this->Session->read('Auth.User.Team.0.id'));
-
-
-		if ($this->Session->read('Auth.User.Team')) {
-			$permissions = array();
-			foreach ($this->Session->read('Auth.User.Team') as $key) {
-				if ($key['TeamsUser']['group_id'] == 1) {
-            	$permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
-            	$permissions = array_merge($permissionsx, $permissions);
-            	}
-        	}
-            $ddconditions = array('account_id' => $permissions);
-        } else {
-            $ddconditions = array('user_id' => $this->Session->read('Auth.User.id'));
-        }
-
-        if ($this->Session->read('Auth.User.id') == 0 || $this->Session->read('Auth.User.id') == 1) {
-            $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('screen_name'), 'order' => array('screen_name' => 'ASC')));
-        } else {
-            $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('screen_name'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
-        }
-		$this->set('dropdownaccounts', $dropdownaccounts);
-		$accounts = $this->TwitterAccount->find('all', array('fields' => array('screen_name', 'account_id'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
-		$this->set('accounts', $accounts);
-
-
-		foreach ($this->Session->read('Auth.User.Team') as $key) {
-			$dropdownusers = $this->User->Team->find('all', array('conditions' => array('Team.id' => $key['id'])));
-			foreach ($dropdownusers as $key1) {
-				foreach ($key1['User'] as $key2) {
-					$dropdownusers1[$key2['id']] = $key2['first_name'];
-				}
-			}
-
-			$dropdownteams = $this->Team->find('all', array('conditions' => array('id' => $key['id'])));
-			$dropdownteams1[$key['id']] = $dropdownteams[0]['Team']['name'];
-		}
-		$this->set('dropdownusers', $dropdownusers1);
-		$this->set('dropdownteams', $dropdownteams1);
-
-
-		if (isset($this->request->data['filterAccount'])) {//If filtering by account
-			$twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => 'account_id', 'conditions' => array('screen_name' => $this->request->data['filterAccount']['account'])));
-			$users1 = $dropdownusers1;
-			$users1 = $dropdownteams1;
-			foreach ($users1 as $key => $value) {
-				$permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key)));
-				$users[$value] = array('team_id' => $key , 'name' => $value, 'permissions' => $permissions);
-			}
-			$this->set('twitter_account_id', (int)$twitter_account_id['TwitterAccount']['account_id']);
-			$this->set('currentAccount', $this->request->data['filterAccount']['account']);
-			$this->set('accountTable', true);
-
-
-		} elseif (isset($this->request->data['filterTeam'])) {//If filtering by team
-			$teamx = $this->Team->find('all', array('conditions' => array('id' => $this->request->data['filterTeam']['team'])));
-				$permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
-				$users = array('team_id' => $teamx[0]['Team']['id'], 'name' => $teamx[0]['Team']['name'], 'permissions' => $permissions);
-			$currentTeam = $this->Team->find('first', array('fields' => array('name'), 'conditions' => array('id' => $this->request->data['filterTeam']['team'])));
-			$teamMembers = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->request->data['filterTeam']['team'])));
-        	$this->set('teamMembers', $teamMembers[0]['User']);
-			$this->set('currentTeam', $currentTeam['Team']['name']);
-			$this->set('currentTeamId', $this->request->data['filterTeam']['team']);
-			$this->Session->write('Auth.User.currentTeamId', $this->request->data['filterTeam']['team']);
-			$this->set('teamTable', true);
-		} else {
-			$users = '';
-		}
-
-		$this->set('users', $users);
-
-
-		//right panel
-		$v = "AND verified =";
-        $p = "AND published =";
-		if (isset($this->passedArgs['h'])) {
-            if ($this->passedArgs['h'] == 'queued') {
-                $v = $v . 1;
-                $p = $p . 0;            } elseif ($this->passedArgs['h'] == 'published') {
-                $v = $v . 1;
-                $p = $p . 1;
-            } elseif ($this->passedArgs['h'] == 'improving') {
-                $v = $v . 2;
-                $p = $p . 0;
-            } elseif ($this->passedArgs['h'] == 'notpublished') {
-                $v = "AND verified IN (0, 2)";
-                $p = $p . 0 . " AND timestamp < " . time();
-            }
-        } else {
-        	$v = '';
-        	$p = '';
-        }
-
-
-		$allusers = array();
-		foreach ($this->Session->read('Auth.User.Team') as $key) {
-			$id = $key['id'];
-			$users = $this->TeamsUser->find('list', array('fields' => 'user_id', 'conditions' => array('team_id' => $id)));
-			$allusers = array_merge($allusers, $users);
-			$allusers = array_unique($allusers);
-		}
-
-		$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
-		$counts = array();
-		/*foreach ($allusers as $key => $value) {
-			$user = $this->User->find('first', array('conditions' => array('User.id' => $value)));
-			$counts[$value][6] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-6 day', $base)), date("Y-m-d H:i:s", strtotime('-5 day', $base))))));
-			$counts[$value][5] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-5 day', $base)), date("Y-m-d H:i:s", strtotime('-4 day', $base))))));
-			$counts[$value][4] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-4 day', $base)), date("Y-m-d H:i:s", strtotime('-3 day', $base))))));
-			$counts[$value][3] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-3 day', $base)), date("Y-m-d H:i:s", strtotime('-2 day', $base))))));
-			$counts[$value][2] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-2 day', $base)), date("Y-m-d H:i:s", strtotime('-1 day', $base))))));
-			$counts[$value][1] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-1 day', $base)), date("Y-m-d H:i:s", strtotime('0 day', $base))))));
-			$counts[$value][0] = $this->Tweet->find('count', array('conditions' => array('user_id' => $value, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('0 day', $base)), date("Y-m-d H:i:s", time())))));		
-			$counts[$value]['sum'] = array_sum($counts[$value]);
-			$counts[$value]['name'] = $user['User']['first_name'];
-		}*/
-		//foreach ($allusers as $key => $value) {
-			//foreach (range(6,0) as $i) {
-				//$counts[$i] = $this->Tweet->find('count', array('group' => array('id', 'user_id'), 'conditions' => array('user_id' => $allusers, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime(-$i . ' day', $base)), date("Y-m-d H:i:s", strtotime(-$i + 1 . ' day', $base))))));
-				//debug(-$i + 1 . ' day');
-			//}
-		//}
-
-		//$counts = $this->Tweet->find('count', array('conditions' => array('user_id' => $allusers, 'created between ? and ?' => array(date("Y-m-d H:i:s", strtotime('-6 day', $base)), date("Y-m-d H:i:s", strtotime('-5 day', $base))))));
-		
-			$allusersquery = join(',', $allusers);
-			foreach ($allusers as $key => $value) {
-			$user[$value] = $this->User->find('first', array('fields' => 'first_name', 'conditions' => array('User.id' => $value)));
-		}
-		foreach (range(6,0) as $i) {
-			$firstdate = date("Y-m-d H:i:s", strtotime(-$i . " day", $base));
-			$seconddate = date("Y-m-d H:i:s", strtotime(-$i + 1 . " day", $base));
-			$query[$i] = $this->Tweet->query("SELECT COUNT(user_id), user_id
-											FROM tweets
-											WHERE created BETWEEN  '$firstdate' AND '$seconddate' AND
-											user_id IN ($allusersquery) $v $p
-											GROUP BY user_id");
-			foreach ($allusers as $key) {
-				$counts[$key][$i] = '0';
-				$counts[$key]['name'] = $user[$key]['User']['first_name'];
-			}
-
-			foreach ($query[$i] as $key) {
-				$tempcount = $key[0]['COUNT(user_id)'];
-				$tempid = $key['tweets']['user_id'];
-				$counts[$tempid][$i] = $tempcount;
-			}
-		}
-
-		foreach ($counts as $key => $value) {
-			$counts[$key]['sum'] = array_sum($value);
-		}
-		
-		//debug($query);
-		//debug($counts);
-
-		/*foreach ($allusers as $key => $value) {
-			foreach (range(6,0) as $i) {
-				$counts1[$value][$i] = $count;
-			}
-		}*/
-
-		function cmp_by_sum($a, $b) {
-		  return $b['sum'] - $a['sum'];
-		}
-
-		usort($counts, 'cmp_by_sum');
-		$this->set('counts', $counts);
-        //$teamMembers = debug($this->User->find('all', array('fields' => array('first_name', 'group_id', 'id'))));*/
-	}
-
-	public function test() {
 		$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
 		$myTeamIDs = array();
 		$ddTeams = array();
@@ -380,7 +208,7 @@ class TeamsController extends AppController {
 	}
 
 	public function removeFromTeam($user_id, $team_id) {
-		if ($this->TeamsUser->hasAny(array('user_id' => $this->Session->read('Auth.User.id'), 'team_id' => $team_id))) {
+		if ($this->TeamsUser->hasAny(array('user_id' => $this->Session->read('Auth.User.id'), 'team_id' => $team_id, 'group_id' => 1))) {
 			$this->User->id = $user_id;
 
 			$id = $this->TeamsUser->find('first', array('fields' => 'id', 'conditions' => array('user_id' => $user_id, 'team_id' => $team_id)));
@@ -498,18 +326,41 @@ class TeamsController extends AppController {
         
 		$this->set('dropdownaccounts', $dropdownaccounts);
 
+		$dropdownteams1 = array();
 		foreach ($this->Session->read('Auth.User.Team') as $key) {
-			$dropdownteams = $this->Team->find('all', array('conditions' => array('id' => $key['id'])));
-			$dropdownteams1[$key['id']] = $dropdownteams[0]['Team']['name'];
+			if ($key['TeamsUser']['group_id'] == 1) {
+				$dropdownteams = $this->Team->find('all', array('conditions' => array('id' => $key['id'])));
+				$dropdownteams1[$key['id']] = $dropdownteams[0]['Team']['name'];
+			}
 		}
 		$this->set('dropdownteams', $dropdownteams1);
 
-		if (!empty($this->request->data['filterTeam'])) {
+		if (!empty($this->request->data['filterTeam']) && $this->request->data['filterTeam']['team'] != 'empty') {
 			$accounts = $this->TwitterAccount->find('all', array('fields' => array('screen_name', 'account_id'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
 			$this->set('accounts', $accounts);
 			$this->set('currentTeam', $this->request->data['filterTeam']['team']);
-			$usersPermissions = $this->TeamsUser->find('list', array('fields' => 'user_id', 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
-			$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions)));
+			$usersPermissions = $this->TeamsUser->find('all', array('fields' => array('user_id', 'group_id', 'id'), 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
+			$usersPermissions = Hash::combine($usersPermissions, '{n}.TeamsUser.user_id', '{n}');
+			foreach ($usersPermissions as $key1 => $value1) {
+				$usersPermissions1[] = $value1['TeamsUser']['user_id'];
+			}
+			
+			$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions1)));
+			$this->set('users', $users);
+			$this->set('usersPermissions', $usersPermissions);
+		}
+
+		if (!empty($this->request->data['filterAccount']) && $this->request->data['filterAccount']['account'] != 'empty') {
+			$twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => 'account_id', 'conditions' => array('screen_name' => $this->request->data['filterAccount']['account'])));
+			$teams = $this->TwitterPermission->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('twitter_account_id' => $twitter_account_id['TwitterAccount']['account_id'])));
+			$allTeams = $this->TeamsUser->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1)));
+			$this->set('teams', $teams);
+			$this->set('allTeams', $allTeams);
+			$this->set('currentAccount', $twitter_account_id['TwitterAccount']['account_id']);
+			$teamsName = $this->Team->find('all', array('fields' => array('id', 'name'), 'conditions' => array('Team.id' => $allTeams), 'recursive' => -1));
+			$teamsName = Hash::combine($teamsName, '{n}.Team.id', '{n}');
+			$this->set('teamsName', $teamsName);
+			debug($teamsName);
 		}
 
 	}
@@ -537,7 +388,31 @@ class TeamsController extends AppController {
 		}
 
 		if (!empty($this->request->data['Users'])) {
+			foreach ($this->request->data['Users'] as $key => $value) {
+				$array = array('id' => $key, 'team_id' => $value['team_id'], 'user_id' => key($value['permissions']), 'group_id' => $value['permissions'][key($value['permissions'])]);
+				$toSave[] = $array;
+			}
+			$this->TeamsUser->saveAll($toSave);
+			$this->Session->setFlash('Saved successfully');
+		}
+
+		if (!empty($this->request->data['Teams'])) {
+			foreach ($this->request->data['Teams'] as $key => $value) {
+				if ($this->TwitterPermission->hasAny(array('team_id' => $key, 'twitter_account_id' => key($value['permissions'])))) {
+					if ($value['permissions'][$value['account_id']] == 0) {//if 0
+						$permission = $this->TwitterPermission->find('first', array('fields' => 'id', 'conditions' => array('twitter_account_id' => $value['account_id'], 'team_id' => $key)));
+						$this->TwitterPermission->delete($permission['TwitterPermission']['id']);
+					}
+				} else {
+					if ($value['permissions'][$value['account_id']] == 1) {//if 1
+						$toSave['TwitterPermission']['twitter_account_id'] = $value['account_id'];
+						$toSave['TwitterPermission']['team_id'] = $key;
+						$this->TwitterPermission->save($toSave);
+					}
+				}
+			}
 
 		}
+		$this->redirect(Controller::referer());
 	}
 }

@@ -205,7 +205,7 @@ foreach ($calendar as $key1) {
                     </div>
             <?  } else {?>
                 <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
-                    <img src=''>
+                    <img src='' style='max-width:500px'>
                 </div>
             </div>
             <?  }  ?>

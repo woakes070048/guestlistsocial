@@ -1,202 +1,285 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
+<?
+echo $this->Html->script('Chart.min');
+echo $this->Html->script('jquery.qtip.min');
+echo $this->Html->css('jquery.qtip.min');
+echo $this->Html->script('jquery.selectric.min');
+?>
+<div id='topManageTeams'>
+<?
+$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
+echo $this->Form->create('Team');
+echo $this->Form->input('id', array('type' => 'select', 'options' => $ddTeams, 'empty' => 'Select Team', 'label' => false));
+echo $this->Form->input('Select Month', array(
+    'options' => array(
+        0 => date('F Y', strtotime('+0 month', $base)),
+        1 => date('F Y', strtotime('+1 month', $base)),
+        2 => date('F Y', strtotime('+2 month', $base)),
+        3 => date('F Y', strtotime('+3 month', $base)),
+        4 => date('F Y', strtotime('+4 month', $base)),
+        5 => date('F Y', strtotime('+5 month', $base))
+        ),
+    'selected' => $months,
+    'id' => 'monthSelector',
+    'onchange' => 'this.form.submit()',
+    'label' => false,
+    ));
+echo $this->Form->end('Go');
+echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'urlSubmit', 'style' => 'display: inline; float: none'));?>
+</div>
+<?if (!empty($totalCount1)) {
+	foreach ($totalCount1 as $key => $value) {
+		if (empty($value[0])) {
+			$value[0] = 0;
+		}
+		if (empty($value[1])) {
+			$value[1] = 0;
+		}
+		if (empty($value[2])) {
+			$value[2] = 0;
+		}
 
-<!--<div id='team'>
-<table>
-<th>My Team</th>
-	<? foreach ($teamMembers as $key) { ?>
-	<tr>
-		<td>
-			<? if ($key['group_id'] == 1 || $key['group_id'] == 5) {
-				$admin = $this->Html->image('user_purple.png', array('url' => array('action' => 'removeadmin', $key['id']), 'style' => 'float:right; margin-left: 5px', 'title' => 'Remove as admin'));
-			} elseif ($key['group_id'] == 7) {
-				$admin = $this->Html->image('user_light_purple.png', array('url' => array('action' => 'makeadmin', $key['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make admin'));
-			} else {
-				$admin = $this->Html->image('user_grey.png', array('url' => array('action' => 'makeproofer', $key['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make proofer'));
-			}
-			$x = $this->Html->image('false1.png', array('url' => array('action' => 'removeFromTeam', $key['id']), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");'));
-			echo $key['first_name'] . $x . $admin . '<br />';?>
-		</td>
-	</tr>
-	<? } ?>
-	<?php if ($this->Session->read('Auth.User.Team.id') == 0) {echo '<tr><td>' . $this->Html->link('Part of a marketing team?', '/teams/manage') . '</td></tr>';}?>
-</table>
-<? if ($this->Session->read('Auth.User.Team.id') != 0) {
-	if ($this->Session->read('Auth.User.group_id') == 1 || $this->Session->read('Auth.User.group_id') == 5) {
-		echo '<small>' . $this->Html->link('Invite', '/teams/invite') . '</small> <br />';
-		echo '<small>' . $this->Html->link('Manage Team', '/teams/manageteam') . '</small> <br />';
-		echo '<small>' . $this->Html->link('Manage Tweets', '/twitter/index') . '</small>';
-	}
+		$total = $value[0] + $value[1] + $value[2];
+		if ($total == 0) {
+			$total = 1;
+		}
+		$value['total'] = $total;
+		$totalCount1[$key] = $value;
 	}?>
+<div class='teamsRow'>
+		<div class='teamsContainer' style='min-width:0'>
+			<div class='teamsContainerHeader'>
+				Monthly Performance
+			</div>
+			<span class='teamsContainerSpan'>
+				<b>
+					<? if (!empty($monthCount)) {?>
+						<?echo $monthCount;?>
+					<?} else {
+						echo 0;
+					}?>
+				</b>
+			tweets</span>
+			<small> this month</small>
+		</div>
+		<div class='teamsContainer' style='min-width:0'>
+			<div class='teamsContainerHeader'>
+				Weekly Performance
+			</div>
+			<span class='teamsContainerSpan'>
+				<b>
+					<? if (!empty($weekCount)) {?>
+						<?echo $weekCount;?>
+					<?} else {
+						echo 0;
+					}?>
+				</b>
+			tweets</span>
+			<small> this week</small>
+		</div>
+		<div class='teamsContainer' style='min-width:0'>
+			<div class='teamsContainerHeader'>
+				Daily Performance
+			</div>
+			<span class='teamsContainerSpan'>
+				<b>
+					<? if (!empty($dayCount)) {?>
+						<?echo $dayCount;?>
+					<?} else {
+						echo 0;
+					}?>
+				</b>
+			tweets</span>
+			<small> today</small>
+		</div>
+</div>
+<?}?>
+<? if (!empty($tableTweets1)) {?>
+	<div class='teamsRow'>
+		<div class='teamsContainer'>
+		<div class='teamsContainerHeader'>
+		<b>Team Overview:</b>
+		</div>
+
+		<small style='float:left'>(Click a box to be redirected to the day-by-day view for that day)</small>
+		<div style='float: right; padding: 10px;'>
+			<div id="howManyWrittenBlock1" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>All Approved
+			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some still to be Approved
+			<div id="howManyWrittenBlock2" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some need Improving
+			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing<br />
+		</div>
+			<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
+				<tr>
+					<th>
+					</th>
+					<?for ($i=1; $i <= date('t'); $i++) {?>
+						<th style='font-size: 8pt;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?></th>
+					<?}?>
+				</tr>
+				<?foreach ($tableTweets1 as $key => $value) {?>
+					<tr>
+						<td class='screenName' style='display:block'><?echo $totalCount1[$key]['screen_name'];?></td>
+						<?for ($i=1; $i <= date('t'); $i++) {?>
+								<?
+								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) {
+										$class = 'notAllApproved';
+									} else {
+										$class = '';
+									}
+								} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
+									if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1]) {
+										$class = 'allApproved';
+									} else {
+										$class = '';
+									}
+								} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2])) {
+									if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2]) {
+										$class = 'improveApproved';
+									} else {
+										$class = '';
+									}
+								} else {
+										$class = '';
+								}?>
+							<td class='<?echo $class;?>' data-scroll='<?echo $i;?>' data-account-id='<?echo $key;?>'>
+							</td>
+						<?}?>
+					</tr>
+				<?}?>
+			</table>
+		</div>
+	</div>
+
+	<div class='teamsRow'>
+		<div class='teamsContainer' style='min-width: 0'>
+			<div class='teamsContainerHeader'>
+			<b>User's Performance</b>
+			</div>
+			<canvas id="barChart" width="940" height="300"></canvas>
+		</div>
+	</div>
+<?}?>
+<!--<div class='teamsRow'>
+<?
+if (!empty($totalCount1)) {
+	foreach ($totalCount1 as $key => $value) {
+	if (empty($value[0])) {
+		$value[0] = 0;
+	}
+	if (empty($value[1])) {
+		$value[1] = 0;
+	}
+	if (empty($value[2])) {
+		$value[2] = 0;
+	}?>	
+		<div class='teamsContainer byAccount'>
+			<span class='screenName'><? echo $value['screen_name'];?></span><br />
+			<? $total = $value[0] + $value[1] + $value[2];
+			if ($total == 0) {
+				$total = 1;
+			}?>
+			<span class='howManyWritten'><b><?echo $value[0] + $value[1] + $value[2];?>/<?echo $value['calendarCount'] * date('t');?></b> WRITTEN</span>
+			<div class='multiProgressBar' style='display:none;'>
+				<hr style='width: <? echo ($value[1] / $total) * 300;?>px; background-color: #21a750;' />
+				<hr style='width: <? echo ($value[0] / $total) * 300;?>px; background-color: #ffcc00;' />
+				<hr style='width: <? echo ($value[2] / $total) * 300;?>px; background-color: #ff0000;' />
+			</div>
+			<canvas class="myChart" width="120" height="120" data-approved= "<? echo $value[1]?>" data-not-approved= "<? echo $value[0]?>" data-improve= "<? echo $value[2]?>" data-empty="<?echo$total - $value['calendarCount'];?>"></canvas>
+			<div class='lowerTeamsWrapper'>
+				<div class='topTweeters'>
+				Top Tweeters:
+					<? if (!empty($tweetCount1[$key])) {
+						foreach ($tweetCount1[$key] as $key1 => $value1) {?>
+							<div style='width: 150px; height: 85px; margin: 5px;'>
+								<?echo $this->Html->image($value1['profile_pic'], array('style' => 'height: 25px; vertical-align: middle'));?><span class='topTweetersName'><?echo $value1['name'];?></span>
+								<div class='topTweetersNumbers'>
+									<div class='topTweetersNumbers1'>
+										<div id="howManyWrittenBlock1" style='float: none; display: inline-block;'>
+										</div>
+										<?
+										if (!empty($value1[1])) {
+											echo $value1[1];
+										} else {
+											echo '0';
+										}?>
+									</div>
+									<div class='topTweetersNumbers1'>
+										<div id="howManyWrittenBlock0" style='float: none; display: inline-block;'>
+										</div>
+										<?
+										if (!empty($value1[0])) {
+											echo $value1[0];
+										} else {
+											echo '0';
+										}?>
+									</div>
+									<div class='topTweetersNumbers1'>
+										<div id="howManyWrittenBlock2" style='float: none; display: inline-block;'>
+										</div>
+										<?
+										if (!empty($value1[2])) {
+											echo $value1[2];
+										} else {
+											echo '0';
+										}?>
+									</div>
+								</div>
+							</div>
+						<?}?>
+					<?}?>
+				</div>
+				<div class='howManyWritten1'>
+					<div><b><?echo $value[1]; ?></b> APPROVED<div id='howManyWrittenBlock1'></div></div>
+					<div><b><?echo $value[0]; ?></b> AWAITING APPROVAL<div id='howManyWrittenBlock0'></div></div>
+					<div><b><?echo $value[2]; ?></b> NEED IMPROVING<div id='howManyWrittenBlock2'></div></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+	<?}?>
+<?}?>
 </div>-->
 
-<div id='leftpanel'>
-<h2 class='smallerheader'>MANAGE YOUR TEAMS</h2>
-<?
-echo $this->Form->create('filterAccount');
-echo $this->Form->input('account', array(
-	'label' => false,
-	'onchange' => 'this.form.submit()',
-	'options' => array('empty' => 'Select by Twitter Account', array_combine($dropdownaccounts,$dropdownaccounts))));
-echo $this->Form->end();
-
-echo $this->Form->create('filterTeam');
-echo $this->Form->input('team', array(
-	'label' => false,
-	'onchange' => 'this.form.submit()',
-	'options' => array('empty' => 'Select by Team', $dropdownteams)));
-echo $this->Form->end();
-?>
-
-<? echo $this->Html->link('<p> ADD TEAM </p>', '/teams/manage', array('class' => 'addteam', 'escape' => false));?>
-
-<? echo $this->Form->create('Teams', array('action' => 'permissionSave'));?>
-<div id='selectall'>
-<? echo $this->Form->input('Select All', array('type' => 'checkbox', 'class' => 'selectAll', 'label' => 'Select All')); ?>
-</div>
-
-<?if (isset($accountTable)) { //If they are filtering by account show this table?>
-<h1 id='manageteamtext'> <? echo strtoupper($currentAccount); ?> </h1>
-<table class='permissionstable'>
-
-<? foreach ($users as $key) {?>
-	<tr>
-		
-	<? 
-		if (in_array($twitter_account_id, $key['permissions'])) {
-			$checked = 'checked';
-			$value = $twitter_account_id;
-		} else {
-			$checked = '';
-			$value = $twitter_account_id;
-			//$value = 0;
-		}
-
-		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => $key['name'], 'name' => 'data[Teams]['.$key['team_id'].'][permissions]['.$value.']', 'value' => $key['team_id'])) . '</td>';
-		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key['team_id'], 'name' => 'data[Teams]['.$key['team_id'].'][team_id]'));?>
-	</tr><?
-	
-}
-?>
-</table>
-
-<?} elseif (isset($teamTable)) { //If they are filtering by team show this table?>
-<h1 id='manageteamtext'> ACCOUNTS </h1> <p class='floatleft'>| </p><h5 id='manageteamtext1'>USERS</h5>
-<table class='permissionstable' id='permissionstable'>
-<? 
-foreach ($accounts as $key) {?>
-	<tr>
-		
-	<?
-		if (in_array($key['TwitterAccount']['account_id'], $users['permissions'])) {
-			$checked = 'checked';
-			$value = $key['TwitterAccount']['account_id'];
-		} else {
-			$checked = '';
-			$value = $key['TwitterAccount']['account_id'];
-			//$value = 0;
-		}
-
-		echo '<td>' . $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => $key['TwitterAccount']['screen_name'], 'name' => 'data[Teams]['.$value.'][permissions]['.$value.']', 'value' => $users['team_id'])) . '</td>';
-		echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $users['team_id'], 'name' => 'data[Teams]['.$value.'][team_id]'));?>
-	</tr><?
-}?>
-</table>
-<table class='permissionstable' id='teamMembers'>
-<? foreach ($teamMembers as $key) { ?>
-	<tr>
-		<td>
-		<? if ($key['TeamsUser']['group_id'] == 1 || $key['TeamsUser']['group_id'] == 5) {
-				$admin = $this->Html->image('user_purple.png', array('url' => array('action' => 'removeadmin', $key['id'], $currentTeamId), 'style' => 'float:right; margin-left: 5px', 'title' => 'Remove as admin'));
-			} elseif ($key['TeamsUser']['group_id'] == 7) {
-				$admin = $this->Html->image('user_light_purple.png', array('url' => array('action' => 'makeadmin', $key['id'], $currentTeamId), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make admin'));
-			} else {
-				$admin = $this->Html->image('user_grey.png', array('url' => array('action' => 'makeproofer', $key['id'], $currentTeamId), 'style' => 'float: right; margin-left: 5px', 'title' => 'Make proofer'));
-			}
-			$x = $this->Html->image('false1.png', array('url' => array('action' => 'removeFromTeam', $key['id'], $currentTeamId), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");'));
-			echo $key['first_name'] . $x . $admin . '<br />';?>
-		</td>
-	</tr>
-<?}?>
-</table>
-<?
-echo $this->Html->link('<p class="ta"> ADD TWITTER ACCOUNT </p>', '/twitter/connect', array('class' => 'addteam', 'escape' => false));
-echo $this->Html->link('<p class="iu"> INVITE USER </p>', '/teams/invite', array('class' => 'addteam', 'escape' => false));
-}
-?>
-<hr style='width:95%; background-color:#bbb; display: block; margin: auto;'></hr>
-<? echo $this->Form->submit('Submit changes', array('class' => 'addteam')); ?>
-</div>
-<hr style='width: 1px; height: 1500px; float: left; margin: 0; background-color: #dcdcdc'>
-
-<div id='rightpanel'>
-<div id='teamspanel'>
-	Top Tweeters
-	<div id="filterLinks">
-		<? echo $this->Html->link('Awaiting Proof', '/teams/manageteam/', array('class' => (empty($this->params['named']['h']))?'awaitingProof active' :'awaitingProof inactive'));
-		echo $this->Html->link('Queued', '/teams/manageteam/h:queued', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='queued') )?'queued active' :'queued inactive'));
-		echo $this->Html->link('Published', '/teams/manageteam/h:published', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='published') )?'published active' :'published inactive'));
-		echo $this->Html->link('Need Improving', '/teams/manageteam/h:improving', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='improving') )?'needImproving active' :'needImproving inactive'));
-		echo $this->Html->Link('Not Published', '/teams/manageteam/h:notpublished', array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
-		?>
-	</div>
-	<table>
-	<th>Name</th>
-	<th><? echo date('D', strtotime('-6 day'));?></th>
-	<th><? echo date('D', strtotime('-5 day'));?></th>
-	<th><? echo date('D', strtotime('-4 day'));?></th>
-	<th><? echo date('D', strtotime('-3 day'));?></th>
-	<th><? echo date('D', strtotime('-2 day'));?></th>
-	<th><? echo date('D', strtotime('-1 day'));?></th>
-	<th><? echo date('D', strtotime('-0 day'));?></th>
-	<th>7 day total</th>
-
-	<? foreach ($counts as $key) {?>
-	<tr>
-		<td><? echo $key['name'] ?> </td>
-		<td><? echo $key[6] ?> </td>
-		<td><? echo $key[5] ?> </td>
-		<td><? echo $key[4] ?> </td>
-		<td><? echo $key[3] ?> </td>
-		<td><? echo $key[2] ?> </td>
-		<td><? echo $key[1] ?> </td>
-		<td><? echo $key[0] ?> </td>
-		<td><? echo $key['sum'] ?> </td>
-	</tr>
-	<?}?>
-	</table>
-</div>
-</div>
-
-
 <script>
-$(document).ready(function () { 
-	$('#teamMembers').hide();
-	$('#leftpanel').on('click', '#manageteamtext1', function() {
-		$('#teamMembers').toggle();
-		$('#permissionstable').toggle();
-		$('#manageteamtext').replaceWith('<h5 id="manageteamtext2" style="float:left">' + 'ACCOUNTS' + '</h5>');
-
-		$('#manageteamtext1').replaceWith('<h1 id="manageteamtext">' + 'USERS' + '</h1>');
+$(document).ready(function() { 
+	$('.multiProgressBar').show('slide');
+	<? if ($months == 0) {?>
+		$('tr td:nth-child(n + <?echo date("d") + 1;?>), tr th:nth-child(n + <?echo date("d");?>)').css('opacity', '1');
+	<?} else {?>
+		$('tr td').css('opacity', '1');
+	<?}?>
+	$('tr td:nth-child(n + <?echo date("d") + 1;?>)').hover(function () {
+		$(this).css('opacity', '0.5');
+	}, function () {
+		$(this).css('opacity', '1');
 	});
 
-	$('#leftpanel').on('click', '#manageteamtext2', function() {
-		$('#teamMembers').toggle();
-		$('#permissionstable').toggle();
-		$('#manageteamtext').replaceWith('<h5 id="manageteamtext1">' + 'USERS' + '</h5>');
-
-		$('#manageteamtext2').replaceWith('<h1 id="manageteamtext">' + 'ACCOUNTS' + '</h1>');
+	$('tr td:nth-child(n + 1)').click(function () {
+		scroll = $(this).attr('data-scroll');
+		account_id = $(this).attr('data-account-id');
+		window.location.replace("/tweets?s=" + scroll + "&m=" + <?echo $months;?> + "&accid=" + account_id);
 	});
-
-
 	
-	$('#selectall').on('change', '.selectAll', function(e) {
-	  if(this.checked) {
-	      // Iterate each checkbox
-	      $(".aCheckbox").prop('checked', this.checked);
-	  }
-	  else {
-	    $(".aCheckbox").prop('checked', this.checked);
-	  }
-	});
+	<? if (!empty($barChartData)) {?>
+		$("#barChart").each(function () {
+			var ctx1 = $(this).get(0).getContext("2d");
+			var barData = {
+				labels: <?echo $barChartLabels;?>,
+				datasets: [{
+					label: "Tweets",
+					fillColor: "rgba(151,187,205,0.5)",
+		            strokeColor: "rgba(151,187,205,0.8)",
+		            highlightFill: "rgba(151,187,205,0.75)",
+		            highlightStroke: "rgba(151,187,205,1)",
+		            data: <?echo $barChartData;?>
+				}]
+			}
+			barOptions = {};
+			var myBarChart = new Chart(ctx1).Bar(barData, barOptions);
+		});
+	<?}?>
+
+	$('select').selectric();
+
 });
 </script>

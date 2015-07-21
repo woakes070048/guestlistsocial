@@ -803,9 +803,9 @@ form .submit input[type=submit],
 
 .urlSubmit {
 
-	background:#773d8d;
+	background:#243135;
 
-	border-color: #773d8d;
+	border-color: #243135;
 
 	color: #fff;
 
@@ -4066,8 +4066,16 @@ form .submit #commentSaveButton {
 	list-style: none;
 	background-color: #fff;
 	padding: 10px;
-	margin-left: 5%;
+	margin-left: 20px;
 	float: left;
+}
+
+#editTeam:nth-child(2) {
+	float: right;
+}
+
+#editTeam .teamsContainerHeader {
+	margin-bottom: 20px;
 }
 
 .teamsRow {
@@ -4077,4 +4085,50 @@ form .submit #commentSaveButton {
 
 #barChart {
 	padding: 15px;
+}
+
+.editTeamFilter .selectric {
+	width: 300px;
+}
+
+.editTeamFilter {
+	width: 760px;
+	margin: 50px auto;
+	height: auto;
+	padding: 20px;
+}
+
+#filterTeamEditForm .selectricWrapper {
+	float: right;
+}
+
+label[for="UsersUserPermissions"] {
+	display: inline;
+	padding: 5px;
+}
+
+.selectricWrapper.selectric-aCheckbox {
+	float: right;
+}
+
+.selectricWrapper.selectric-aCheckbox .selectric {
+	width: 100px;
+}
+
+#UsersEditForm .input.select {
+	width: 300px;
+	display: inline-block;
+}
+
+#editTeamRow {
+	width: 800px;
+	margin: 0 auto;
+}
+
+#topManageTeams {
+	margin-top: 50px;
+}
+
+#TeamManageteamForm .submit input {
+	float: none;
 }
