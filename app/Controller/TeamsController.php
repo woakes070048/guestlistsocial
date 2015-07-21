@@ -344,10 +344,12 @@ class TeamsController extends AppController {
 			foreach ($usersPermissions as $key1 => $value1) {
 				$usersPermissions1[] = $value1['TeamsUser']['user_id'];
 			}
+			$accountPermissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
 			
 			$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions1)));
 			$this->set('users', $users);
 			$this->set('usersPermissions', $usersPermissions);
+			$this->set('accountPermissions', $accountPermissions);
 		}
 
 		if (!empty($this->request->data['filterAccount']) && $this->request->data['filterAccount']['account'] != 'empty') {

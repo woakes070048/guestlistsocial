@@ -32,13 +32,13 @@ echo $this->Html->script('jquery.selectric.min');?>
             </div>
         <? echo $this->Form->create('Accounts', array('url' => array('controller' => 'teams', 'action' => 'permissionSave1')));?>
         <? foreach ($accounts as $key) {
-            if (in_array($key['TwitterAccount']['account_id'], $permissions)) {
+            if (in_array($key['TwitterAccount']['account_id'], $accountPermissions)) {
                 $checked = 'checked';
             } else {
                 $checked = '';
             }?>
             <li>
-                <?echo $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => "<span class='screenName'>" . $key['TwitterAccount']['screen_name'] . "</span>", 'name' => 'data[Accounts]['.$key['TwitterAccount']['account_id'].'][permissions]['.$key['TwitterAccount']['account_id'].']', 'value' => ''));
+                <?echo $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => "<span class='screenName'>" . $key['TwitterAccount']['screen_name'] . "</span>", 'name' => 'data[Accounts]['.$key['TwitterAccount']['account_id'].'][permissions]['.$key['TwitterAccount']['account_id'].']'));
                 echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $currentTeam, 'name' => 'data[Accounts]['.$key['TwitterAccount']['account_id'].'][team_id]'));?>
             </li>
         <?}?>
