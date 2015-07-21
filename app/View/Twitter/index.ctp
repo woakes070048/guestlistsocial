@@ -1,7 +1,7 @@
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
-<script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script> 
-<script src="//js.pusher.com/2.2/pusher.min.js"></script>
 <? 
+echo $this->Html->script("http://code.jquery.com/jquery-1.9.1.min.js");
+echo $this->Html->script("http://malsup.github.io/jquery.form.js");
+echo $this->Html->script("//js.pusher.com/2.2/pusher.min.js");
 echo $this->Html->script('jquery-ui-1.10.3.custom');
 echo $this->Html->script('jquery-ui-timepicker-addon');
 echo $this->Html->script('charCount');
