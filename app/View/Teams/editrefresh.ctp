@@ -33,7 +33,7 @@
                 <li>
                     <?echo $this->Form->input('user_permissions', array('type' => 'select', 'class' => 'aCheckbox', 'label' => "<img src='" . $key['User']['profile_pic'] . "' width=25px style='margin: 0 10px 0 0; vertical-align:middle '>" . $key['User']['first_name'] . ' ' . $key['User']['last_name'], 'name' => 'data[Users]['.$usersPermissions[$key['User']['id']]['TeamsUser']['id'].'][permissions]['.$key['User']['id'].']', 'options' => array(1 => 'Admin', 2 => 'Team Member', 7 => 'Proofer'), 'selected' => $usersPermissions[$key['User']['id']]['TeamsUser']['group_id'], 'id' => 'UsersUserPermissions' . $key['User']['id'], $disabled));
                     echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $currentTeam, 'name' => 'data[Users]['.$usersPermissions[$key['User']['id']]['TeamsUser']['id'].'][team_id]', $disabled));
-                    echo $this->Html->image('false1.png', array('url' => array('action' => 'removeFromTeam', $key['User']['id'], $currentTeam), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");'));?>
+                    echo $this->Html->image('false1.png', array('url' => array('action' => 'removeFromTeam', $key['User']['id'], $currentTeam), 'style' => 'float: right; margin-left: 5px', 'title' => 'Remove from team', 'onclick' => 'confirm("Are you sure you want to remove this person from your team?");', 'class' => 'removeFromTeam'));?>
 
                 </li>
             <?}?>
@@ -110,5 +110,19 @@
             });
         }});
         return false;
+    });
+    $('.removeFromTeam').click(function(e) {
+        $('#refresh1').css('opacity', 0.4);
+        $('#loading').show();
+        e.preventDefault();
+        $.ajax({
+           url: $(this).closest("a").attr('href'),
+           success: function (data) {
+                $('#refresh1').load('/teams/editrefresh/' + <?echo $currentTeam;?> + '/' + <?echo $currentAccount;?>, function() {        
+                $('#refresh1').css('opacity', 1);
+                $('#loading').hide();
+            });
+           }
+        });
     });
 </script>

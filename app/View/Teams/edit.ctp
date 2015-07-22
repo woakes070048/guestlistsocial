@@ -1,6 +1,7 @@
 <?echo $this->Html->script("http://code.jquery.com/jquery-1.9.1.min.js");
 echo $this->Html->script("http://malsup.github.io/jquery.form.js");
-echo $this->Html->script('jquery.selectric.min');?>
+echo $this->Html->script('jquery.selectric.min');
+echo $this->Html->script('jquery.timeago');?>
 <div class='filter editTeamFilter'>
     <?
     echo $this->Form->create('filterTeam');
