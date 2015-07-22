@@ -124,9 +124,23 @@ echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'url
 								if (empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
 									$value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] = 0;
 								}
+								if (empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2])) {
+									$value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2] = 0;
+								}
+								if (empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {
+									$value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0] = 0;
+								}
 
-
-								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0] + $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1]) {
+								if ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] == $totalCount1[$key]['calendarCount']) {
+									$class = 'allApproved';
+								} elseif (($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] + $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) == $totalCount1[$key]['calendarCount']) {
+									$class = 'notAllApproved';
+								} elseif ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2]) {
+									$class = 'improveApproved';
+								} else {
+									$class = '';
+								}
+								/*if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0] + $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
 										$class = 'notAllApproved';
 									} else {
 										$class = '';
@@ -147,7 +161,7 @@ echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'url
 										$class = 'improveApproved';
 								} else {
 										$class = '';
-								}?>
+								}*/?>
 							<td class='<?echo $class;?>' data-scroll='<?echo $i;?>' data-account-id='<?echo $key;?>'>
 							</td>
 						<?}?>
