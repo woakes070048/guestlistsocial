@@ -121,23 +121,30 @@ echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'url
 						<td class='screenName' style='display:block'><?echo $totalCount1[$key]['screen_name'];?></td>
 						<?for ($i=1; $i <= date('t'); $i++) {?>
 								<?
-								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) {
+								if (empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
+									$value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] = 0;
+								}
+
+
+								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0])) {								if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0] + $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1]) {
 										$class = 'notAllApproved';
 									} else {
 										$class = '';
 									}
-								} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
+								} else {
+									$class = '';
+								}
+								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
 									if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1]) {
 										$class = 'allApproved';
 									} else {
 										$class = '';
 									}
-								} elseif (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2])) {
-									if ($totalCount1[$key]['calendarCount'] == $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2]) {
+								} else {
+									$class = '';
+								}
+								if (!empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2])) {
 										$class = 'improveApproved';
-									} else {
-										$class = '';
-									}
 								} else {
 										$class = '';
 								}?>
