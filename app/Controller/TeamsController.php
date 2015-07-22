@@ -6,7 +6,7 @@ class TeamsController extends AppController {
     
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('test', 'edit', 'users', 'permissionSave1');
+        $this->Auth->allow('test', 'edit', 'users', 'permissionSave1', 'editrefresh');
     }
 
 
@@ -184,7 +184,7 @@ class TeamsController extends AppController {
 	public function addtoTeam($teamHash, $group = null, $permissions = null) {
 		$team = $this->Team->find('first', array('fields' => array('id', 'name', 'hash'), 'conditions' => array('id' => $this->Tickets->get($teamHash))));
 
-		if ($this->referer() === 'http://social.guestlist.net/teams/manageteam') {
+		if ($this->referer() === 'http://social.guestlist.net/teams/manage') {
 			$group = 1;
 		}
 
@@ -416,5 +416,77 @@ class TeamsController extends AppController {
 
 		}
 		$this->redirect(Controller::referer());
+	}
+
+	public function editrefresh($team_id = null, $account_id = null) {
+		$conditions = array('team_id' => $this->Session->read('Auth.User.Team.0.id'));
+
+		if ($this->Session->read('Auth.User.Team')) {
+			$permissions = array();
+			$teamIDs = array();
+			foreach ($this->Session->read('Auth.User.Team') as $key) {
+				if ($key['TeamsUser']['group_id'] == 1) {
+            	$permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
+            	$permissions = array_merge($permissionsx, $permissions);
+            	$teamIDs[] = $key['id'];
+            	}
+        	}
+            $ddconditions = array('account_id' => $permissions);
+        } else {
+            $ddconditions = array('user_id' => $this->Session->read('Auth.User.id'));
+        }
+        $this->set('permissions', $permissions);
+
+        
+        $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('screen_name'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
+        
+		$this->set('dropdownaccounts', $dropdownaccounts);
+
+		$dropdownteams1 = array();
+		foreach ($this->Session->read('Auth.User.Team') as $key) {
+			if ($key['TeamsUser']['group_id'] == 1) {
+				$dropdownteams = $this->Team->find('all', array('conditions' => array('id' => $key['id'])));
+				$dropdownteams1[$key['id']] = $dropdownteams[0]['Team']['name'];
+			}
+		}
+		$this->set('dropdownteams', $dropdownteams1);
+
+		if (!empty($team_id)) {
+			if ($this->TeamsUser->hasAny(array('user_id' => $this->Session->read('Auth.User.id'), 'team_id' => $team_id, 'group_id' => 1))) {
+				$accounts = $this->TwitterAccount->find('all', array('fields' => array('screen_name', 'account_id'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
+				$this->set('accounts', $accounts);
+				$this->set('currentTeam', $team_id);
+				$usersPermissions = $this->TeamsUser->find('all', array('fields' => array('user_id', 'group_id', 'id'), 'conditions' => array('team_id' => $team_id)));
+				$usersPermissions = Hash::combine($usersPermissions, '{n}.TeamsUser.user_id', '{n}');
+				foreach ($usersPermissions as $key1 => $value1) {
+					$usersPermissions1[] = $value1['TeamsUser']['user_id'];
+				}
+				$accountPermissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $team_id)));
+				
+				$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions1)));
+				$this->set('users', $users);
+				$this->set('usersPermissions', $usersPermissions);
+				$this->set('accountPermissions', $accountPermissions);
+			} else {
+				$this->Session->setFlash('You do not have permission to edit this team.');
+			}
+		}
+
+		if (!empty($account_id)) {
+			if ($this->TwitterPermission->hasAny(array('twitter_account_id' => $account_id, 'team_id' => $teamIDs))) {
+				$twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => 'account_id', 'conditions' => array('screen_name' => $account_id)));
+				$teams = $this->TwitterPermission->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('twitter_account_id' => $twitter_account_id['TwitterAccount']['account_id'])));
+				$allTeams = $this->TeamsUser->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1)));
+				$this->set('teams', $teams);
+				$this->set('allTeams', $allTeams);
+				$this->set('currentAccount', $twitter_account_id['TwitterAccount']['account_id']);
+				$teamsName = $this->Team->find('all', array('fields' => array('id', 'name'), 'conditions' => array('Team.id' => $allTeams), 'recursive' => -1));
+				$teamsName = Hash::combine($teamsName, '{n}.Team.id', '{n}');
+				$this->set('teamsName', $teamsName);
+			} else {
+				$this->Session->setFlash('You do not have permission to edit this account.');
+			}
+		}
+		$this->layout = '';
 	}
 }
