@@ -429,41 +429,6 @@ $(document).ready(function() {
         $('.selectric .label:contains("APPROVED")').css({'background': 'url("../img/radiogreen.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
         $('.selectric .label:contains("IMPROVE")').css({'background': 'url("../img/radiored.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
 
-        $('.fr div').hover(function() {
-            $('#userlogout').toggle();
-        });
-
-        $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
-
-        $('.fr img').click(function () {
-            $('#notificationbox, .notificationarrow').toggle();
-            if ($('#notificationbox').css('display') == 'none') {
-                str = $("#notificationFrontImage").attr('src');
-                str1 = str.substr(17);
-                if (str1 != "9plus.png") {
-                    str1 =  Number(str1.split('.')[0]) - 5;
-                    if (str1 < 0) {
-                        str1 = 0
-                    }
-                }
-                $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
-            }
-        });
-
-        $(document).click(function(e) {   
-            if(e.target.id != 'notificationbox' && e.target.id != 'notificationFrontImage') {
-                $("#notificationbox, .notificationarrow").hide();
-                str = $("#notificationFrontImage").attr('src');
-                str1 = str.substr(17);
-                if (str1 != "9plus.png") {
-                    str1 =  Number(str1.split('.')[0]) - 5;
-                    if (str1 < 0) {
-                        str1 = 0
-                    }
-                }
-                $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
-            } 
-        });
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
             nextSelector : '.next a',  // selector for the NEXT link (to page 2)

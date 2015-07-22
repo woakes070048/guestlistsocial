@@ -362,7 +362,6 @@ class TeamsController extends AppController {
 			$teamsName = $this->Team->find('all', array('fields' => array('id', 'name'), 'conditions' => array('Team.id' => $allTeams), 'recursive' => -1));
 			$teamsName = Hash::combine($teamsName, '{n}.Team.id', '{n}');
 			$this->set('teamsName', $teamsName);
-			debug($teamsName);
 		}
 
 	}
@@ -379,7 +378,7 @@ class TeamsController extends AppController {
 					} else {
 						if ($value['permissions'][$key] == 1) {//if 1
 							$toSave['TwitterPermission']['twitter_account_id'] = $key;
-							$toSave['TwitterPermission']['team_id'] = $key['team_id'];
+							$toSave['TwitterPermission']['team_id'] = $value['team_id'];
 							$this->TwitterPermission->save($toSave);
 						}
 					}
@@ -418,7 +417,7 @@ class TeamsController extends AppController {
 		$this->redirect(Controller::referer());
 	}
 
-	public function editrefresh($team_id = null, $account_id = null) {
+	public function editrefresh($team_id, $account_id) {
 		$conditions = array('team_id' => $this->Session->read('Auth.User.Team.0.id'));
 
 		if ($this->Session->read('Auth.User.Team')) {
@@ -451,7 +450,7 @@ class TeamsController extends AppController {
 		}
 		$this->set('dropdownteams', $dropdownteams1);
 
-		if (!empty($team_id)) {
+		if ($team_id != 'null' && $account_id == 'null') {
 			if ($this->TeamsUser->hasAny(array('user_id' => $this->Session->read('Auth.User.id'), 'team_id' => $team_id, 'group_id' => 1))) {
 				$accounts = $this->TwitterAccount->find('all', array('fields' => array('screen_name', 'account_id'), 'conditions' => $ddconditions, 'order' => array('screen_name' => 'ASC')));
 				$this->set('accounts', $accounts);
@@ -472,14 +471,14 @@ class TeamsController extends AppController {
 			}
 		}
 
-		if (!empty($account_id)) {
+		if ($team_id == 'null' && $account_id != 'null') {
 			if ($this->TwitterPermission->hasAny(array('twitter_account_id' => $account_id, 'team_id' => $teamIDs))) {
-				$twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => 'account_id', 'conditions' => array('screen_name' => $account_id)));
-				$teams = $this->TwitterPermission->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('twitter_account_id' => $twitter_account_id['TwitterAccount']['account_id'])));
+				//$twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => 'account_id', 'conditions' => array('screen_name' => $account_id)));
+				$teams = $this->TwitterPermission->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('twitter_account_id' => $account_id)));
 				$allTeams = $this->TeamsUser->find('list', array('fields' => array('id', 'team_id'), 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1)));
 				$this->set('teams', $teams);
 				$this->set('allTeams', $allTeams);
-				$this->set('currentAccount', $twitter_account_id['TwitterAccount']['account_id']);
+				$this->set('currentAccount', $account_id);
 				$teamsName = $this->Team->find('all', array('fields' => array('id', 'name'), 'conditions' => array('Team.id' => $allTeams), 'recursive' => -1));
 				$teamsName = Hash::combine($teamsName, '{n}.Team.id', '{n}');
 				$this->set('teamsName', $teamsName);
