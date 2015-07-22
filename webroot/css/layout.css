@@ -2833,7 +2833,8 @@ input[type=file] {
 
 
 #TeamsTwitterPermissions,
-#AccountsTwitterPermissions {
+#AccountsTwitterPermissions,
+#editTeam input[type=checkbox] {
 
 	opacity: 0;
 
@@ -2846,7 +2847,8 @@ input[type=file] {
 
 
 #TeamsTwitterPermissions + label,
-#AccountsTwitterPermissions + label {
+#AccountsTwitterPermissions + label,
+#editTeam input[type=checkbox] + label {
 
 	background: url(../img/false1.png) right center no-repeat;
 
@@ -2863,7 +2865,8 @@ input[type=file] {
 
 
 #TeamsTwitterPermissions:checked + label,
-#AccountsTwitterPermissions:checked + label {
+#AccountsTwitterPermissions:checked + label,
+#editTeam input[type=checkbox]:checked + label {
 
 	background: url(../img/true.png) right center no-repeat;
 
@@ -4102,7 +4105,8 @@ form .submit #commentSaveButton {
 	float: right;
 }
 
-label[for="UsersUserPermissions"] {
+#UsersEditForm label,
+#UsersEditrefreshForm label {
 	display: inline;
 	padding: 5px;
 }
@@ -4115,7 +4119,8 @@ label[for="UsersUserPermissions"] {
 	width: 100px;
 }
 
-#UsersEditForm .input.select {
+#UsersEditForm .input.select,
+#UsersEditrefreshForm .input.select {
 	width: 300px;
 	display: inline-block;
 }
@@ -4131,4 +4136,9 @@ label[for="UsersUserPermissions"] {
 
 #TeamManageteamForm .submit input {
 	float: none;
+	margin: 5px 10px;
+}
+
+#TeamManageteamForm .selectric {
+	margin: 0 10px;
 }
