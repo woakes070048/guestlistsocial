@@ -150,7 +150,7 @@ class EditorialCalendarsController extends AppController {
                 if ($original['Tweet']['body'] != $key['body']) {
                     if ($original['Tweet']['verified'] == 0 && $key['verified'] == 1) {
                         $key['verified'] = 1;
-                    } elseif ($original['Tweet']['verified'] == 1 && $key['verified'] == 1) {
+                    } elseif ($original['Tweet']['verified'] == 1 && $key['verified'] == 1 && $key['forceVerified'] == 'true') {
                         $key['verified'] = 1;
                     } else {
                         $key['verified'] = 0;
@@ -193,7 +193,7 @@ class EditorialCalendarsController extends AppController {
                     }
                     $edited = true;
                 } else {
-                    //$key['img_url'] = $original['Tweet']['img_url'];
+                    $key['img_url'] = $original['Tweet']['img_url'];
                 }
 
                 if (!empty($key['img_url'])) {

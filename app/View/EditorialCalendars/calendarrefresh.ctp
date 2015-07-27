@@ -233,7 +233,7 @@ foreach ($calendar as $key1) {
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]', 'data-id' => $idForPusher));
     echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
     echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
-    echo $this->Form->input('forceVerified', array('type' => 'hidden', 'value' => false, 'name' => 'forceVerified'));
+    echo $this->Form->input('forceVerified', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][forceVerified]'));
     echo $this->Form->input('tosubmit', array('type' => 'hidden', 'value' => false, 'name' => 'tosubmit'));
     //echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
     /*echo $this->Form->input('verfied_by', array(
@@ -301,7 +301,7 @@ foreach ($calendar as $key1) {
 
             $(".TwitterVerified1:checked").click(function() {
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
-                $(this).closest("tr").find('input[name=forceVerified]').val(true);
+                $(this).closest("tr").find('#TweetForceVerified').val(true);
                     $("#table").css('opacity', '.4');
                     $('#loading').show();
                     var dat = new FormData();
