@@ -13,6 +13,15 @@
 
 <?php
 echo $this->Session->flash('auth');
+$days = array(
+    0 => 'monday',
+    1 => 'tuesday',
+    2 => 'wednesday',
+    3 => 'thursday',
+    4 => 'friday',
+    5 => 'saturday',
+    6 => 'sunday'
+);
 //Select Twitter Account
 echo $this->Form->create('TwitterAccount');
         echo $this->Form->input('Select Account:', array(
@@ -55,11 +64,12 @@ echo $this->Form->create('Calendar', array('url'=>$this->Html->url(array('contro
 
 
 <?
-foreach ($calendar as $key) {?>
+foreach ($calendar as $value => $key) {?>
     <tr class="topic">
-        <td><b><? echo $this->Form->input('Time', array('value' => $key['EditorialCalendar']['time'], 'name' => 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .'][time]')); ?></b></td>
+    <!-- AJAX HIDDEN INPUT FOR EACH CALENDAR WITH TIME name used to be 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .']['. $key1 .']'-->
+        <td><b><? echo $this->Form->input('Time', array('value' => $value, 'name' => '', 'class' => 'CalendarTimeMain')); ?></b></td>
         <?
-        foreach ($key['EditorialCalendar'] as $key1 => $value1) {
+        /*foreach ($key['EditorialCalendar'] as $key1 => $value1) {
             if ($key1 != 'id') {
                 if (strpos($key1, 'topic')) {
                     echo '<td>' . $this->Form->textarea($value1, array(
@@ -68,9 +78,15 @@ foreach ($calendar as $key) {?>
                         'label' => false)) . '</td>';
                 }
             }
-        }?>
+        }*/?>
+
+        <?
+        foreach ($days as $key1 => $value1) {?>
+        <td><? echo  $this->Form->input('category', array('type' => 'select', 'options' => $bank_categories, 'selected' => $key[$value1]['EditorialCalendar']['bank_category_id'], 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_id]')); ?></td>
+        <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][time]', 'value' => $value, 'class' => 'CalendarTime'));?>
+        <?}?>
     </tr>
-    <tr class="content-type">
+    <!--<tr class="content-type">
         <td>Content type</td>
         <?
         foreach ($key['EditorialCalendar'] as $key1 => $value1) {
@@ -97,16 +113,23 @@ foreach ($calendar as $key) {?>
                 }
             }
         }?>
-    </tr>
-    <tr style="height:20px"><td><div class='deleteimage'><?php echo $this->Html->Link('Delete', array('controller' => 'editorial_calendars', 'action' => 'deletecalendar', $key['EditorialCalendar']['id'])); ?></div></td></tr>
+    </tr>-->
+    <tr style="height:20px"><td><div class='deleteimage'><?php echo $this->Html->Link('Delete', array('controller' => 'editorial_calendars', 'action' => 'deletecalendar', $this->Session->read('access_token.account_id'), str_replace(":", "", $value))); ?></div></td></tr>
 <?
-echo $this->Form->input('id', array('type' => 'hidden', 'value' => $key['EditorialCalendar']['id'], 'name' => 'data[EditorialCalendar]['. $key['EditorialCalendar']['id'] .'][id]'));
 }
-?>
+?><tr>
+    <td><b><? echo $this->Form->input('Time', array('value' => '00:00', 'name' => '', 'class' => 'CalendarTimeMain')); ?></b></td>
+    <?foreach ($days as $key1 => $value1) {?>
+    <td><? echo  $this->Form->input('category', array('type' => 'select', 'options' => $bank_categories, 'name' => 'data[EditorialCalendar][' . uniqid() . '][bank_category_id]')); ?></td>
+        <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][' . uniqid() . '][time]', 'value' => '00:00', 'class' => 'CalendarTime'));?>
+        <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][' . uniqid() . '][day]', 'value' => $value1));?>
+    <?}?>
+</tr>
 </table>
 <?php 
-echo $this->Html->Link('Add +', array('controller' => 'editorial_calendars', 'action' => 'addCalendar'), array('style' => 'font-weight:bold'));
-echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save')); ?>
+//echo $this->Html->Link('Add +', array('controller' => 'editorial_calendars', 'action' => 'addCalendar'), array('style' => 'font-weight:bold', 'class' => 'UrlSubmit add'));
+echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save'));
+echo $this->Form->button('Add +', array('style' => 'font-weight:bold', 'class' => 'urlSubmit add')); ?>
 
 <? 
 $base = strtotime(date('Y-m',time()) . '-01 00:00:01');
@@ -238,47 +261,26 @@ echo $this->Form->end();?>
 
 <!-- SCRIPTS -->
 <script> 
-        // wait for the DOM to be loaded 
-        $(document).ready(function () { 
+// wait for the DOM to be loaded 
+$(document).ready(function () { 
+    $('.CalendarTimeMain').change(function () {
+        var time = $(this).val();
+        $(this).closest("tr").find(".CalendarTime").val(time);
+    });
 
-            $("#table").on("change", ".TwitterVerified" , function() {
-                $("#table").css('opacity', '.4');
-                $('#edit').ajaxSubmit();
-                setTimeout(refresh, 100);//delaying the table refresh so that the form can successfully submit into the databases
-                function refresh() {
-                    $('#table').load('/twitter/tablerefresh', function() {
-                    $("#table").css('opacity', '1');
-                    $('.schedule').each(function(){
-                        $(this).datetimepicker({
-                            dateFormat: 'dd-mm-yy',
-                            altFormat: '@',
-                        });
-                    });
-                });
-                };
-                
-            });
+    $('.add').click(function () {
+        $('tr:last-child').after("<tr><td><? echo $this->Form->input('hello');?></td></tr>");
+    });
 
-            jQuery.urlShortener.settings.apiKey = 'AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08';
-            $("#shortIt").click(function () {
-                //$("#shortUrlInfo").html("<img src='images/loading.gif'/>");
-                regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
-                var longUrlLink = $("#TweetBody").val().match(regex);
-                //split = longUrlLink.split(",");
-                //alert(split[1]);
-                jQuery.urlShortener({
-                    longUrl: longUrlLink,
-                    success: function (shortUrl) {
-                        $("#TweetBody").val($("#TweetBody").val().replace(longUrlLink, shortUrl));
-                    },
-                    error: function(err) {
-                        $("#shortUrlInfo").html(JSON.stringify(err));
-                    }
-                });
-
-            });
-
-        });
+    /*"<tr>
+    <td><b><? echo $this->Form->input('Time', array('value' => '00:00', 'name' => '', 'class' => 'CalendarTimeMain')); ?></b></td>
+    <?foreach ($days as $key1 => $value1) {?>
+    <td><? echo  $this->Form->input('category', array('type' => 'select', 'options' => $bank_categories, 'name' => 'data[EditorialCalendar][' . uniqid() . '][bank_category_id]')); ?></td>
+        <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][' . uniqid() . '][time]', 'value' => '00:00', 'class' => 'CalendarTime'));?>
+        <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][' . uniqid() . '][day]', 'value' => $value1));?>
+    <?}?>
+</tr>"*/
+});
 
 </script>
 <style>
