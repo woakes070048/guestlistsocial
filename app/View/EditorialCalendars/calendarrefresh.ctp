@@ -332,6 +332,7 @@ foreach ($calendar as $time => $key1) {
                                 warnMessage = null;
                                 $("#table").css('opacity', '1');
                                 $('#loading').hide();
+                                toastr.success('Saved successfully');
                                 pusher.disconnect();
                             });
                         }
@@ -575,6 +576,7 @@ foreach ($calendar as $time => $key1) {
                             warnMessage = null;
                             $("#table").css('opacity', '1');
                             $('#loading').hide();
+                            toastr.success('Saved successfully');
                             pusher.disconnect();
                         });
                     }
@@ -654,6 +656,7 @@ foreach ($calendar as $time => $key1) {
                             $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
                                     $("#table").css('opacity', '1');
                                     $('#loading').hide();
+                                    toastr.success('Saved successfully');
                                     pusher.disconnect();
                                 });
                             }
@@ -677,10 +680,9 @@ foreach ($calendar as $time => $key1) {
             content: {
                     text: function(event, api) {
                         id = $(this).closest('tr').find('#TweetCalendarId').attr('value');
-                        day = $(this).closest('tr').find('.calendar.scheduled b').attr('class');
                         //return $('#' + id + '-comments').clone();
                         $.ajax({
-                            url: '/editorial_calendars/recycle/' + id + '/' + day
+                            url: '/editorial_calendars/recycle/' + id
                         })
                         .then(function(content) {
                         // Set the tooltip content upon successful retrieval

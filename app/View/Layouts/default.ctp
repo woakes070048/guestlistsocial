@@ -41,7 +41,12 @@ $cakeDescription = __d('cake_dev', 'tweetPROOF');
 </head>
 
 <div id="loading" style="display: none;">
-<? echo $this->Html->image('ajax-loader.GIF'); ?>
+<? //echo $this->Html->image('ajax-loader.GIF'); ?>
+<div class="loader">
+    <svg class="circular">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+    </svg>
+</div>
 </div>
 
 <body>

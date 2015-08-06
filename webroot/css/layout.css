@@ -299,7 +299,7 @@ p {
 
 	/**max-width: 1300px;**/
 
-	margin: 0 0 0 200px;
+	margin: 40px 0 0 200px;
 
 }
 
@@ -2198,7 +2198,7 @@ input[type='radio'][value='2']:checked + label {
 
 #loading {
 
-	position: absolute;
+	position: fixed;
 
 	top: 50%;
 
@@ -3102,20 +3102,6 @@ input[type=file] {
 
 
 
-.deleteimage {
-
-	float:right;
-
-	padding-right: 20px;
-
-	background: url(../img/trash.png) no-repeat right center;
-
-	color: #333;
-
-}
-
-
-
 .imagecontainer {
 
 	width: 500px;
@@ -3806,10 +3792,10 @@ form .submit #commentSaveButton {
 
 .recycleBody {
 	margin-left: 30px;
-	display: inline-block;
+	display: block;
 }
 
-.recycleBody div {
+.recycleBody div.rr1 {
 	margin: 5px;
 }
 
@@ -3819,7 +3805,7 @@ form .submit #commentSaveButton {
 	border-radius: 4px;
 	cursor: pointer;
 	margin: 2px;
-	float: left;
+	display: inline-block;
 	max-width: 500px;
 }
 
@@ -4137,4 +4123,80 @@ form .submit #commentSaveButton {
 
 #TeamManageteamForm .selectric {
 	margin: 0 10px;
+}
+
+.tweetBank {
+	background-color: #fff;
+	padding: 10px;
+	width: 470px
+}
+
+textarea#TweetBankBody {
+	width: 450px;
+	border: 1px solid #dcdcdc;
+	height: 60px;
+	resize: none;
+	font-size: 9pt;
+}
+
+/*SVG LOADER*/
+.loader {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  left: 50%;
+
+  top: 20%;
+}
+
+.circular{
+ animation: rotate 2s linear infinite;
+ height: 100px;
+ position: relative;
+ width: 100px;
+}
+
+
+.path {
+  stroke-dasharray: 1,200;
+  stroke-dashoffset: 0;
+  animation: 
+   dash 1.5s ease-in-out infinite,
+   color 6s ease-in-out infinite
+  ;
+  stroke-linecap: round;
+}
+
+@keyframes rotate{
+ 100%{
+  transform: rotate(360deg);
+ }
+}
+@keyframes dash{
+ 0%{
+  stroke-dasharray: 1,200;
+  stroke-dashoffset: 0;
+ }
+ 50%{
+  stroke-dasharray: 89,200;
+  stroke-dashoffset: -35;
+ }
+ 100%{
+  stroke-dasharray: 89,200;
+  stroke-dashoffset: -124;
+ }
+}
+@keyframes color{
+  100%, 0%{
+    stroke: #d62d20;
+  }
+  40%{
+    stroke: #0057e7;
+  }
+  66%{
+    stroke: #008744;
+  }
+  80%, 90%{
+    stroke: #ffa700;
+  }
 }

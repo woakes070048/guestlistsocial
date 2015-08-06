@@ -354,7 +354,7 @@ class TwitterController extends AppController {
         foreach ($bank_categories as $key) {
             $bank_categoriesx[$key['BankCategory']['id']] = $key['BankCategory']['category'];
         }
-        $bank_categoriesx = array(0 => 'Select Category') + $bank_categoriesx;
+        $bank_categoriesx = array(0 => 'Select Category') + $bank_categoriesx + array('New' => 'Add New Category...');
         $this->set('bank_categories', $bank_categoriesx);
 
         $info = $this->TwitterAccount->find('all', array('fields' => array('infolink'), 'conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));

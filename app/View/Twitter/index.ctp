@@ -10,8 +10,10 @@ echo $this->Html->script('jquery.infinitescroll');
 echo $this->Html->script('jquery.qtip.min');
 echo $this->Html->script('jquery.selectric.min');
 echo $this->Html->script('jquery.timeago');
+echo $this->Html->script('toastr.min');
 echo $this->Html->css('jquery.qtip.min');
-echo $this->Html->css('calendar');?>
+echo $this->Html->css('calendar');
+echo $this->Html->css('toastr.min')?>
 <?php
 echo $this->Session->flash('auth');
 ?>
