@@ -29,7 +29,8 @@ class EditorialCalendar extends AppModel {
 			'conditions' => '',
 			'fields' => 'account_id',
 			'order' => ''
-		)
+		),
+		'BankCategory'
 	);
 
 	public $hasMany = array(
@@ -42,5 +43,5 @@ class EditorialCalendar extends AppModel {
 		)
 	);
 
-    public $actsAs = array('Pusher.Pusher');
+    public $actsAs = array('Pusher.Pusher', 'Containable');
 }

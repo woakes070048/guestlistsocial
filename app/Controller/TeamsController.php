@@ -347,6 +347,7 @@ class TeamsController extends AppController {
 			$accountPermissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
 			
 			$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions1)));
+			$this->Session->write('Auth.User.currentTeamId');
 			$this->set('users', $users);
 			$this->set('usersPermissions', $usersPermissions);
 			$this->set('accountPermissions', $accountPermissions);

@@ -4,7 +4,7 @@ App::import('Vendor', 'OAuth/OAuthClient');
 class TwitterController extends AppController {
     public $components = array('Session', 'Auth', 'Paginator', 'Tickets');
     public $helpers =  array('Html' , 'Form');
-    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification', 'Editor');
+    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification', 'Editor', 'TweetBank', 'BankCategory');
 
     public function index() {
         if (!empty($this->request->query['s'])) {
@@ -340,8 +340,22 @@ class TwitterController extends AppController {
         } else {
             $conditions = array('TwitterAccount.user_id' => $this->Session->read('Auth.User.id'));
         }
-        $calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
+        //$calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
+        $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
+        $calendarx = array();
+        foreach ($calendar as $key) {
+            $calendarx[$key['EditorialCalendar']['time']][$key['EditorialCalendar']['day']] = $key;
+        }
+        $calendar = $calendarx;
         $this->set('calendar', $calendar);
+
+        //grab all bank_categories for accout
+        $bank_categories = $this->BankCategory->find('all', array('conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
+        foreach ($bank_categories as $key) {
+            $bank_categoriesx[$key['BankCategory']['id']] = $key['BankCategory']['category'];
+        }
+        $bank_categoriesx = array(0 => 'Select Category') + $bank_categoriesx + array('New' => 'Add New Category...');
+        $this->set('bank_categories', $bank_categoriesx);
 
         $info = $this->TwitterAccount->find('all', array('fields' => array('infolink'), 'conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
         $this->set('info', $info);
@@ -869,28 +883,6 @@ class TwitterController extends AppController {
         $Email->to("sharif9876@hotmail.com");
         $Email->subject('TEST');
         debug($Email->send('THIS IS A TEST'));*/
-        //$this->Notification->add(1, 'A comment was added to your tweet', 0);
-        //$this->Notification->add(1, 'A comment was added to your tweet1', 1);
-        //$this->Notification->add(1, 'A comment was added to your tweet2', 0);
-        //$this->Notification->markAsRead(1);
-        //debug($this->Tweet->find('first', array('conditions' => array('Tweet.id' => 52826), 'recursive' => 2)));
-        /*$tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $id)));
-        $calendarID = $tweet['Tweet']['calendar_id'];
-        $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('id' => $calendarID)));
-        //debug($calendar);
-        foreach ($calendar['Tweet'] as $key) {
-            $date = date('F Y', $key['timestamp']);
-            $test[$date][] = $key;
-        }
-
-        foreach ($test as $key => $value) {
-            echo '<br />' . $key . ': <br />';
-            foreach ($value as $key1) {
-                echo $key1['body'] . '<br />';
-            }
-        }*/
-
-        $t = $this->Tweet->find('list', array('conditions' => array('timestamp >' => time(), 'verified' => 1)));
-        debug($t);
+        debug($this->EditorialCalendar->find('all', array('conditions' => array('EditorialCalendar.id' => 1))));
     }
 }

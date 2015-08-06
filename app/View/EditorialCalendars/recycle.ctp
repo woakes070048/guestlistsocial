@@ -1,21 +1,44 @@
+<div id='editrefresh'>
 <span class='recycleHead'>TweetBank</span>
 <div class='recycleTweets'>
-<span>Topic: <b2><?echo $topic;?></b2></span>
+<div id="editloading" style="display: none;">
+<? //echo $this->Html->image('ajax-loader.GIF'); ?>
+<div class="loader">
+    <svg class="circular">
+        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+    </svg>
+</div>
+</div>
+
+
+<?echo $this->Form->create('TwitterAccount');
+        echo $this->Form->input('Select Account:', array(
+        'name' => 'accountSubmit',
+        'options' => array('empty' => 'Select Account...', array_combine($accounts,$accounts)), //Setting the HTML "value" = to screen_name
+        'selected' => $selected
+        ));
+		echo $this->Form->input('Category', array(
+		'type' => 'select',
+		'name' => 'BankCategory',
+		'options' => $categories,
+		'selected' => $selectedCategories,
+		'empty' => 'Select a Category'
+		));
+	echo $this->Form->end();
+?>
 <? 
 $i = 0;
-foreach ($test as $key => $value) {
+?><div class='recycleBody <?echo 'recycle' . $i;?>'><?
+foreach ($tweetBanks as $key => $value) {
 	$i++;?>
-	<div class='recycleHeader <?echo 'recycle' . $i;?>'>
+	<!--<div class='recycleHeader <?echo 'recycle' . $i;?>'>
 		<? echo $key;?>
 		<div class='arrowdown'></div>
 
-	</div>
-		<div class='recycleBody <?echo 'recycle' . $i;?>' style='display: none;'>
-			<? foreach ($value as $value1) {?>
-				<div class='rr1'><div><?echo $value1['body'];?></div><? echo ($value1['img_url']) ? $this->Html->image('/img/imageicon.png', array('class' => 'recycleBodyImage', 'data' => $value1['img_url'])) : '' ;?></div>
-			<?} ?>
-		</div>
+	</div>-->
+				<div class='rr1'><div><?echo $value['TweetBank']['body'];?></div><? echo ($value['TweetBank']['img_url']) ? $this->Html->image('/img/imageicon.png', array('class' => 'recycleBodyImage', 'data' => $value['TweetBank']['img_url'])) : '' ;?></div>
 <?}?>
+</div>
 </div>
 
 <script>
@@ -52,5 +75,17 @@ $(document).ready(function () {
 	    	$('.calendar_topic[data-hasqtip=' + id + ']').closest('tr').find('.imagecontainer').hide();
 	    }
 	});
+
+	$('#TwitterAccountRecycleForm').change(function (e) {
+	    var postData = $(this).serializeArray();
+	    $('#editrefresh').css('opacity', 0.4);
+	    $('#editloading').show();
+	    $('#editrefresh').load('/editorial_calendars/recycle/137', postData);
+	    $('#editloading').hide();
+	    $('#editrefresh').css('opacity', 1);
+	    e.preventDefault(); //STOP default action
+	    e.unbind(); //unbind. to stop multiple form submit.
+	});
 });
 </script>
+</div>

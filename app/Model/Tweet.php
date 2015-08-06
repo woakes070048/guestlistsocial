@@ -4,6 +4,11 @@ class Tweet extends AppModel {
         'TwitterAccount' => array(
             'className' => 'TwitterAccount',
             'foreignKey' => 'account_id'
+        ),
+        'TweetBank',
+        'EditorialCalendar' => array(
+        	'className' => 'EditorialCalendar',
+        	'foreignKey' => 'calendar_id'
         )
     );
 

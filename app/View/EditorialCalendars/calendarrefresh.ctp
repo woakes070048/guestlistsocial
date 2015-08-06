@@ -57,8 +57,8 @@ echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalen
 </thead>
 <?
 $testid = 1;
+$allApproved = array();
 foreach ($days as $key => $value) {
-$allApproved[] = array();
 $allApproved[date('jS', strtotime($key))] = 0; ?>
 <tr class='divider'><td style="border:none"></td></tr>
 <thead>
@@ -68,10 +68,12 @@ $allApproved[date('jS', strtotime($key))] = 0; ?>
     <th class='day last'></th>
 </thead>
 <?php
-foreach ($calendar as $key1) {
+foreach ($calendar as $time => $key1) {
     $testid = $testid + 1;
     echo '<tr>';
 
+    $key1 = $key1[strtolower($value)];
+    //debug($key1);
     /*foreach ($key1['Tweet'] as $key2) {
         if ($key2['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
             $value2 = $key2['body'];
@@ -97,7 +99,8 @@ foreach ($calendar as $key1) {
         }
     }*/
 
-    if ($tweets[$key1['EditorialCalendar']['id']] == false) {
+    //if (empty($tweets[$key1['EditorialCalendar']['id']])) {
+    if (!$key1['Tweet']) {
         $value2 = '';
         $value1 = $testid;
         $id = '';
@@ -111,60 +114,62 @@ foreach ($calendar as $key1) {
         $commentCount = 0;
         $present = '';
         $editors = false;
-    }
-
-    foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
-        if ($key2['Tweet']['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
-            $value2 = $key2['Tweet']['body'];
-            $value1 = $testid;
-            $id = $key2['Tweet']['id'];
-            $idForPusher = $key2['Tweet']['id'];
-            $img = $key2['Tweet']['img_url'];
-            if (!empty($img)) {
-                $txtareaClass = 'withImage';
+    } else {
+        //foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
+        foreach ($key1['Tweet'] as $item => $key2) {
+            if ($key2['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
+                $value2 = $key2['body'];
+                $value1 = $testid;
+                $id = $key2['id'];
+                $idForPusher = $key2['id'];
+                $img = $key2['img_url'];
+                if (!empty($img)) {
+                    $txtareaClass = 'withImage';
+                } else {
+                    $txtareaClass = 'withoutImage';
+                }
+                $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing ' . $txtareaClass));
+                $firstName = $key2['first_name'];
+                $verified = $key2['verified'];
+                if ($verified == 1) {
+                    $allApproved[date('jS', strtotime($key))] += 1;
+                } elseif ($verified == 0) {
+                    $allApproved[date('jS', strtotime($key))] -= 0.01;
+                } elseif ($verified == 2) {
+                    $allApproved[date('jS', strtotime($key))] -= 1000000;
+                }
+                $published = $key2['published'];
+                $commentCount = count($key2['Comment']);
+                $present = 'present';
+                $empty = false;
+                if (!empty($key2['Editor'])) {
+                    $editors = $key2['Editor'];
+                } else {
+                    $editors = false;
+                }
+                //unset($tweets[$key1['EditorialCalendar']['id']][$item]);
+                unset($key1['Tweet'][$item]);
+                break;
             } else {
-                $txtareaClass = 'withoutImage';
-            }
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing ' . $txtareaClass));
-            $firstName = $key2['Tweet']['first_name'];
-            $verified = $key2['Tweet']['verified'];
-            if ($verified == 1) {
-                $allApproved[date('jS', strtotime($key))] += 1;
-            } elseif ($verified == 0) {
-                $allApproved[date('jS', strtotime($key))] -= 0.01;
-            } elseif ($verified == 2) {
-                $allApproved[date('jS', strtotime($key))] -= 1000000;
-            }
-            $published = $key2['Tweet']['published'];
-            $commentCount = count($key2['Comment']);
-            $present = 'present';
-            $empty = false;
-            if (!empty($key2['Editor'])) {
-                $editors = $key2['Editor'];
-            } else {
+                $value2 = '';
+                $value1 = $testid;
+                $id = '';
+                $idForPusher = md5($this->Session->read('access_token.account_id') . 'x' . $value1);
+                $img = '';
+                $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
+                $firstName = '';
+                $verified = 0;
+                //$allApproved[date('jS', strtotime($key))] -= 1000;
+                $published = false;
+                $commentCount = 0;
+                $present = '';
                 $editors = false;
+                $empty = true;
             }
-            unset($tweets[$key1['EditorialCalendar']['id']][$item]);
-            break;
-        } else {
-            $value2 = '';
-            $value1 = $testid;
-            $id = '';
-            $idForPusher = md5($this->Session->read('access_token.account_id') . 'x' . $value1);
-            $img = '';
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
-            $firstName = '';
-            $verified = 0;
-            //$allApproved[date('jS', strtotime($key))] -= 1000;
-            $published = false;
-            $commentCount = 0;
-            $present = '';
-            $editors = false;
-            $empty = true;
+        }   
+        if (!empty($empty)) {
+            $allApproved[date('jS', strtotime($key))] -= 1000;
         }
-    }
-    if (!empty($empty)) {
-        $allApproved[date('jS', strtotime($key))] -= 1000;
     }
 
         if ($this->Session->read('Auth.User.group_id') == 2) {
@@ -182,11 +187,11 @@ foreach ($calendar as $key1) {
 
             echo date('H:i', strtotime($key . $key1['EditorialCalendar']['time']));?></td>
     <td class="topic">
-    <div class='calendar_topic'><? echo $key1['EditorialCalendar'][strtolower($value) . '_topic']; ?></div>
+    <div class='calendar_topic'><? if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?></div>
 
-    <div class='calendar_content_type'><? echo $key1['EditorialCalendar'][strtolower($value) . '_content_type']; ?></div>
+    <!--<div class='calendar_content_type'><? echo $key1['EditorialCalendar'][strtolower($value) . '_content_type']; ?></div>
 
-    <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div></td>
+    <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div>--></td>
     <td class="calendar nopadding">
     <?echo $body;?>
         <div class='isTyping'></div>
@@ -327,6 +332,7 @@ foreach ($calendar as $key1) {
                                 warnMessage = null;
                                 $("#table").css('opacity', '1');
                                 $('#loading').hide();
+                                toastr.success('Saved successfully');
                                 pusher.disconnect();
                             });
                         }
@@ -570,6 +576,7 @@ foreach ($calendar as $key1) {
                             warnMessage = null;
                             $("#table").css('opacity', '1');
                             $('#loading').hide();
+                            toastr.success('Saved successfully');
                             pusher.disconnect();
                         });
                     }
@@ -649,6 +656,7 @@ foreach ($calendar as $key1) {
                             $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
                                     $("#table").css('opacity', '1');
                                     $('#loading').hide();
+                                    toastr.success('Saved successfully');
                                     pusher.disconnect();
                                 });
                             }
@@ -672,10 +680,9 @@ foreach ($calendar as $key1) {
             content: {
                     text: function(event, api) {
                         id = $(this).closest('tr').find('#TweetCalendarId').attr('value');
-                        day = $(this).closest('tr').find('.calendar.scheduled b').attr('class');
                         //return $('#' + id + '-comments').clone();
                         $.ajax({
-                            url: '/editorial_calendars/recycle/' + id + '/' + day
+                            url: '/editorial_calendars/recycle/' + id
                         })
                         .then(function(content) {
                         // Set the tooltip content upon successful retrieval
