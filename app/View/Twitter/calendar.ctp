@@ -77,6 +77,7 @@ foreach ($calendar as $value => $key) {?>
         <td><? echo  $this->Form->input('category', array('type' => 'select', 'options' => $bank_categories, 'selected' => $key[$value1]['EditorialCalendar']['bank_category_id'], 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_id]', 'class' => 'CalendarCategory')); ?>
         <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][time]', 'value' => $value, 'class' => 'CalendarTime'));?>
+        <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][changed]', 'value' => false, 'class' => 'changed'));?>
         <?}?></td>
     </tr>
 <?
@@ -89,7 +90,9 @@ foreach ($calendar as $value => $key) {?>
     <td><? echo  $this->Form->input('category', array('type' => 'select', 'options' => $bank_categories, 'name' => '', 'class' => 'CalendarCategory')); ?>
         <? echo  $this->Form->input('category', array('name' => '', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => '', 'value' => '00:00', 'class' => 'CalendarTime'));?>
-        <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => '', 'value' => $value1));?></td>
+        <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => '', 'value' => $value1));?>
+        <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][changed]', 'value' => true, 'class' => 'changed'));?>
+        </td>
     <?}?>
 </tr>
 </table>
@@ -178,6 +181,10 @@ $(document).ready(function () {
             $(this).closest('td').find('#HiddenCategory').hide();
             $(this).closest('td').find('#HiddenCategory').prop('disabled', true);
         }
+    });
+
+    $('.CalendarTimeMain, .CalendarCategory').change(function () {
+        $(this).closest('tr').find('.changed').attr('value', true);
     });
 });
 
