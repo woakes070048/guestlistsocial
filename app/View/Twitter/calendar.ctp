@@ -91,7 +91,7 @@ foreach ($calendar as $value => $key) {?>
         <? echo  $this->Form->input('category', array('name' => '', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => '', 'value' => '00:00', 'class' => 'CalendarTime'));?>
         <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => '', 'value' => $value1));?>
-        <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][changed]', 'value' => true, 'class' => 'changed'));?>
+        <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => '', 'value' => true, 'class' => 'changed'));?>
         </td>
     <?}?>
 </tr>
@@ -122,6 +122,7 @@ $(document).ready(function () {
             $(this).find("#CalendarCategory").attr('name', 'data[EditorialCalendar][' + random + '][bank_category_id]');
             $(this).find("#CalendarDay").attr('name', 'data[EditorialCalendar][' + random + '][day]');
             $(this).find("#CalendarTime").attr('name', 'data[EditorialCalendar][' + random + '][time]');
+            $(this).find("#CalendarChanged").attr('name', 'data[EditorialCalendar][' + random + '][changed]');
             $(this).find("#HiddenCategory").attr('name', 'data[EditorialCalendar][' + random + '][bank_category_manual]');
             $(this).find('.deleteimagenew').click(function (e) {
                 e.preventDefault();

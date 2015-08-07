@@ -6,6 +6,7 @@ class EditorialCalendarsController extends AppController {
 
     //saving editorial calendars
     public function calendarsave() {
+        debug($this->request->data);
         $data = $this->request->data;
         $saveTweets = array();
         $saveCronTweets = array();
