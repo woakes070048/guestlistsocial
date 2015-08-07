@@ -125,7 +125,7 @@ class TeamsController extends AppController {
 			$this->set('screen_names', $screen_names);
 
 			$calendarIDs = $this->EditorialCalendar->find('list', array('fields' => 'id', 'conditions' => array('EditorialCalendar.twitter_account_id' => $query_twitter_accounts)));
-			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => -1, 'order' => 'Tweet.modified DESC'));
+			$tableTweets = $this->Tweet->find('all', array('fields' => array('id', 'account_id', 'timestamp', 'verified', 'calendar_id', 'modified'), 'conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => -1, 'order' => 'Tweet.modified DESC'));
 			debug($tableTweets);
 			
 			$tableTweets1 = array();
@@ -147,6 +147,7 @@ class TeamsController extends AppController {
 			$this->set('monthCount', $monthCount);
 			$this->set('weekCount', $weekCount);
 			$this->set('dayCount', $dayCount);
+			debug($dayCount);
 		} else {
 			$months = 0;
 			$this->set('months', $months);
