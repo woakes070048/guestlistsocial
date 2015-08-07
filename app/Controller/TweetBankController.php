@@ -70,7 +70,7 @@ class TweetBankController extends AppController {
 
 
     	//create new editorial calendars by account id
-    	$toSave = array();
+    	/*$toSave = array();
     	$calendars = $this->EditorialCalendar1->find('all', array('conditions' => array('twitter_account_id' => array($account_id))));
     	foreach ($calendars as $key) {
     		$array = array('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');
@@ -134,11 +134,11 @@ class TweetBankController extends AppController {
     	unset($calendars);
     	unset($key);
     	unset($calendarcategories);
-    	unset($bankcategories);
+    	unset($bankcategories);*/
 
 
     	//get new calendar_ids for tweets given account and dates
-    	$months = 0;
+    	$months = 1;
     	$firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');
     	$seconddate = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
     	$tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $account_id, 'timestamp >' => $firstdate, 'timestamp <' => $seconddate)));
