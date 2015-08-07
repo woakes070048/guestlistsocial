@@ -38,7 +38,6 @@ class TeamsController extends AppController {
 			$ddTeams[$key['id']] = $key['name'];
 		}
 		$this->set('ddTeams', $ddTeams);
-		$teams = $this->Team->find('all', array('consitions' => array('id' => $myTeamIDs)));
 		if ($this->request->data) {
 			//monthselector
 			$months = $this->request->data['Team']['Select Month'];
