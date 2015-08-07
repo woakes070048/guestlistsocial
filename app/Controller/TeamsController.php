@@ -87,7 +87,6 @@ class TeamsController extends AppController {
 			$barChartLabels = array();
 			$barChartData = array();
 			foreach ($tweetCount as $key) {
-				debug($key);
 				//$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']]['name'] = $userNames[$key['tweets']['user_id']]['User']['first_name'] . $userNames[$key['tweets']['user_id']]['User']['last_name'];
 				//$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
 				//$tweetCount1[$key['tweets']['account_id']][$key['tweets']['user_id']]['profile_pic'] = $userNames[$key['tweets']['user_id']]['User']['profile_pic'];
@@ -113,8 +112,6 @@ class TeamsController extends AppController {
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key1['editorial_calendars']['twitter_account_id']];
 				}
 			}
-			debug($calendarCount);
-			debug($totalCount1);
 			unset($calendarCount);
 			//debug($calendarCount);
 
