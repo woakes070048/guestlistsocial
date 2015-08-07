@@ -12,52 +12,55 @@ class EditorialCalendarsController extends AppController {
         if (!empty($data)) {
             $saveCalendars = array();
             foreach ($data['EditorialCalendar'] as $id => $key) {
-                $x = array();
-                if (!empty($key['bank_category_manual'])) {
-                    $bc = array();
-                    unset($key['bank_category_id']);
-                    $bc['BankCategory']['category'] = $key['bank_category_manual'];
-                    $bc['BankCategory']['account_id'] = $this->Session->read('access_token.account_id');
-                    $this->BankCategory->save($bc);
-                    $key['bank_category_id'] = $this->BankCategory->getLastInsertID();
-                }
-                if (!empty($key['bank_category_id'])) {
-                    $x['EditorialCalendar']['bank_category_id'] = $key['bank_category_id'];
-                }
-                $x['EditorialCalendar']['time'] = $key['time'];
-                $x['EditorialCalendar']['twitter_account_id'] = $this->Session->read('access_token.account_id');
-                if (!empty($key['day'])) {
-                    $x['EditorialCalendar']['day'] = $key['day'];
-                }
-
-                if (is_int($id) && $key['changed'] == true) {
-                    $x['EditorialCalendar']['id'] = $id;
-                    $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $id, 'timestamp >' => time())));
-                    if (!empty($tweets)) {
-                        foreach ($tweets as $key1) {
-                            $x1 = array();
-                            $id = $key1['Tweet']['id'];
-
-                            $newtime = date('d-m-Y', $key1['Tweet']['timestamp']) . " " . $key['time'];
-                            $newtime = date('d-m-Y H:i', strtotime($newtime)); //this line corrects formatting issues with $key['time']
-
-                            $newtimestamp = strtotime($newtime);
-
-                            $x1['Tweet']['id'] = $id;
-                            $x1['Tweet']['time'] = $newtime;
-                            $x1['Tweet']['timestamp'] = $newtimestamp;
-
-                            $saveTweets[] = $x1;
-                            if ($key1['Tweet']['verified'] == 1) {
-                                $saveCronTweets[] = $x1['Tweet'];
-                            }
-                        }
-                        unset($key1);
+                if ($key['changed'] == true) {
+                    $x = array();
+                    if (!empty($key['bank_category_manual'])) {
+                        $bc = array();
+                        unset($key['bank_category_id']);
+                        $bc['BankCategory']['category'] = $key['bank_category_manual'];
+                        $bc['BankCategory']['account_id'] = $this->Session->read('access_token.account_id');
+                        $this->BankCategory->save($bc);
+                        $key['bank_category_id'] = $this->BankCategory->getLastInsertID();
                     }
-                }
+                    if (!empty($key['bank_category_id'])) {
+                        $x['EditorialCalendar']['bank_category_id'] = $key['bank_category_id'];
+                    }
+                    $x['EditorialCalendar']['time'] = $key['time'];
+                    $x['EditorialCalendar']['twitter_account_id'] = $this->Session->read('access_token.account_id');
+                    if (!empty($key['day'])) {
+                        $x['EditorialCalendar']['day'] = $key['day'];
+                    }
 
-                $saveCalendars[] = $x;
+                    if (is_int($id)) {
+                        $x['EditorialCalendar']['id'] = $id;
+                        $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $id, 'timestamp >' => time())));
+                        if (!empty($tweets)) {
+                            foreach ($tweets as $key1) {
+                                $x1 = array();
+                                $id = $key1['Tweet']['id'];
+
+                                $newtime = date('d-m-Y', $key1['Tweet']['timestamp']) . " " . $key['time'];
+                                $newtime = date('d-m-Y H:i', strtotime($newtime)); //this line corrects formatting issues with $key['time']
+
+                                $newtimestamp = strtotime($newtime);
+
+                                $x1['Tweet']['id'] = $id;
+                                $x1['Tweet']['time'] = $newtime;
+                                $x1['Tweet']['timestamp'] = $newtimestamp;
+
+                                $saveTweets[] = $x1;
+                                if ($key1['Tweet']['verified'] == 1) {
+                                    $saveCronTweets[] = $x1['Tweet'];
+                                }
+                            }
+                            unset($key1);
+                        }
+                    }
+
+                    $saveCalendars[] = $x;  
+                }
             }
+            debug($saveCalendars);
             if (!empty($saveTweets)) {
                 $this->Tweet->saveAll($saveTweets);
             }
