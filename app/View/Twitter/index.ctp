@@ -5,7 +5,6 @@ echo $this->Html->script("//js.pusher.com/2.2/pusher.min.js");
 echo $this->Html->script('jquery-ui-1.10.3.custom');
 echo $this->Html->script('jquery-ui-timepicker-addon');
 echo $this->Html->script('charCount');
-echo $this->Html->script('jquery.urlshortener');
 echo $this->Html->script('jquery.infinitescroll');
 echo $this->Html->script('jquery.qtip.min');
 echo $this->Html->script('jquery.selectric.min');
@@ -301,12 +300,11 @@ $(document).ready(function() {
             warnMessage = null;
         });
 
-        jQuery.urlShortener.settings.apiKey = 'AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08';
         $(".shortsingle").click(function () {
-            regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
-            textbox = $(this).closest('.nopadding').children('.editing');
-            var longUrlLink = textbox.val().match(regex);
-                jQuery.urlShortener({
+            //regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
+            //textbox = $(this).closest('.nopadding').children('.editing');
+            //var longUrlLink = textbox.val().match(regex);
+                /*jQuery.urlShortener({
                     longUrl: longUrlLink,
                     success: function (shortUrl) {
                         textbox.val(textbox.val().replace(longUrlLink, shortUrl));
@@ -314,7 +312,7 @@ $(document).ready(function() {
                     error: function(err) {
                         $("#shortUrlInfo").html(JSON.stringify(err));
                     }
-                });
+                });*/
         });
 
         $('.input.file input').on('change', function() {

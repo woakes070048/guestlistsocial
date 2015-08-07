@@ -7,6 +7,8 @@ class EditorialCalendarsController extends AppController {
     //saving editorial calendars
     public function calendarsave() {
         $data = $this->request->data;
+        $saveTweets = array();
+        $saveCronTweets = array();
         if (!empty($data)) {
             $saveCalendars = array();
             foreach ($data['EditorialCalendar'] as $id => $key) {
@@ -32,8 +34,6 @@ class EditorialCalendarsController extends AppController {
                     $x['EditorialCalendar']['id'] = $id;
                     $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $id, 'timestamp >' => time())));
                     if (!empty($tweets)) {
-                        $saveTweets = array();
-                        $saveCronTweets = array();
                         foreach ($tweets as $key1) {
                             $x1 = array();
                             $id = $key1['Tweet']['id'];
@@ -52,6 +52,7 @@ class EditorialCalendarsController extends AppController {
                                 $saveCronTweets[] = $x1['Tweet'];
                             }
                         }
+                        unset($key1);
                     }
                 }
 
