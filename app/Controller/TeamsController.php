@@ -13,7 +13,7 @@ class TeamsController extends AppController {
 	public function manage() {
 		$data = $this->request->data;
 		if (isset($data['name'])) {
-			$data['hash'] = substr(md5(rand()), 0, 20);;
+			$data['hash'] = substr(md5(rand()), 0, 20);
 			$this->Team->save($data);
 			$id = $this->Team->getLastInsertId();
 			

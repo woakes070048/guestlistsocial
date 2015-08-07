@@ -354,44 +354,48 @@ foreach ($calendar as $time => $key1) {
             });
 
             
-            
-            jQuery.urlShortener.settings.apiKey = 'AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08';
             //shorten all URLs
             $("#shortIt1").click(function () {
-                //$("#shortUrlInfo").html("<img src='images/loading.gif'/>");
                 regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
                 $(".editing").each(function() {
                     var longUrlLink = $(this).val().match(regex);
-                    //split = longUrlLink.split(",");
-                    //alert(split[1]);
+                    textbox = $(this).closest('tr').find('.editing');
+                    $(this).closest('tr').find('input[name=tosubmit]').val(true);
                     var $this = $(this);
-                    jQuery.urlShortener({
-                        longUrl: longUrlLink,
-                        success: function (shortUrl) {
-                            $this.val($this.val().replace(longUrlLink, shortUrl));
-                        },
-                        error: function(err) {
-                            $("#shortUrlInfo").html(JSON.stringify(err));
+                    $.ajax({
+                        url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08',
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        data: '{ longUrl: "' + longUrlLink + '"}',
+                        dataType: 'json',
+                        success: function(response) {
+                             $this.val($this.val().replace(longUrlLink, response.id));
+                             toastr.success("URLs Shortened");
                         }
-                    });
+                     });
 
                 });
             });
 
             $(".shortsingle").click(function () {
             regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
-            textbox = $(this).closest('.nopadding').children('.editing');
+            textbox = $(this).closest('tr').find('.editing');
             $(this).closest('tr').find('input[name=tosubmit]').val(true);
             var longUrlLink = textbox.val().match(regex);
-                jQuery.urlShortener({
-                    longUrl: longUrlLink,
-                    success: function (shortUrl) {
-                        textbox.val(textbox.val().replace(longUrlLink, shortUrl));
-                    },
-                    error: function(err) {
-                        $("#shortUrlInfo").html(JSON.stringify(err));
-                    }
-                });
+            $.ajax({
+                url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: '{ longUrl: "' + longUrlLink + '"}',
+                dataType: 'json',
+                success: function(response) {
+                     textbox.val(textbox.val().replace(longUrlLink, response.id));
+                     toastr.success("URL successfully shortened: <br/>" + longUrlLink + " -> " + response.id);
+                },
+                error: function(response) {
+                    taostr.warning("Error while trying to shorten URL. Please try again");
+                }
+             });
         });
 
             var channel1 = pusher.subscribe('private-body_channel_<?echo $this->Session->read("access_token.account_id");?>');
