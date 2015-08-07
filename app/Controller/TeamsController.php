@@ -107,13 +107,13 @@ class TeamsController extends AppController {
 															GROUP BY twitter_account_id");
 			foreach ($calendarCount as $key1) {
 				if (!empty($totalCount1[$key1['editorial_calendars']['twitter_account_id']])) {
-					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'];
+					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'] / 7;
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key1['editorial_calendars']['twitter_account_id']];
 				}
 			}
 			//debug($calendarCount);
 
-			//debug($totalCount);
+			//debug($totalCount1);
 			//debug($tweetCount1);
 			//debug($userNames);
 			$this->set('query_twitter_accounts', $query_twitter_accounts);
