@@ -12,7 +12,7 @@ class EditorialCalendarsController extends AppController {
         if (!empty($data)) {
             $saveCalendars = array();
             foreach ($data['EditorialCalendar'] as $id => $key) {
-                if ($key['changed'] == true) {
+                if (!empty($key['changed'])) {
                     $x = array();
                     if (!empty($key['bank_category_manual'])) {
                         $bc = array();
