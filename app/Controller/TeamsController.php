@@ -58,17 +58,17 @@ class TeamsController extends AppController {
 			//$tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts)));
 			$firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');//need to be able to select months
 			$seconddate = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
-			$totalCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, verified
+			/*$totalCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, verified
 											FROM tweets
 											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
 											account_id IN ($query_twitter_accounts1) AND calendar_id <> ''
-											GROUP BY account_id, verified");
+											GROUP BY account_id, verified");*/
 
-			$tweetCount = $this->Tweet->query("SELECT COUNT(user_id), user_id
+			/*$tweetCount = $this->Tweet->query("SELECT COUNT(user_id), user_id
 											FROM tweets
 											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
 											account_id IN ($query_twitter_accounts1)
-											GROUP BY user_id");
+											GROUP BY user_id");*/
 			$userIDs = array();
 			foreach ($tweetCount as $key) {
 				$userIDs[] = $key['tweets']['user_id'];
