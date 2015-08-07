@@ -58,17 +58,23 @@ class TeamsController extends AppController {
 			//$tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts)));
 			$firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');//need to be able to select months
 			$seconddate = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
-			/*$totalCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, verified
+			$totalCount = $this->Tweet->query("SELECT COUNT(user_id), account_id, verified
 											FROM tweets
 											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
 											account_id IN ($query_twitter_accounts1) AND calendar_id <> ''
-											GROUP BY account_id, verified");*/
+											GROUP BY account_id, verified");
 
-			/*$tweetCount = $this->Tweet->query("SELECT COUNT(user_id), user_id
+			$totalCount1 = array();
+			foreach ($totalCount as $key) {
+				$totalCount1[$key['tweets']['account_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
+			}
+			unset($totalCount);
+
+			$tweetCount = $this->Tweet->query("SELECT COUNT(user_id), user_id
 											FROM tweets
 											WHERE timestamp BETWEEN  '$firstdate' AND '$seconddate' AND
 											account_id IN ($query_twitter_accounts1)
-											GROUP BY user_id");*/
+											GROUP BY user_id");
 			$userIDs = array();
 			foreach ($tweetCount as $key) {
 				$userIDs[] = $key['tweets']['user_id'];
@@ -92,13 +98,9 @@ class TeamsController extends AppController {
 				array_push($barChartLabels, $userNames[$key['tweets']['user_id']]['User']['first_name'] . $userNames[$key['tweets']['user_id']]['User']['last_name']);
 				array_push($barChartData, $key[0]['COUNT(user_id)']);
 			}
+			unset($tweetCount);
 			$this->set('barChartLabels', json_encode($barChartLabels));
 			$this->set('barChartData', json_encode($barChartData));
-			
-			$totalCount1 = array();
-			foreach ($totalCount as $key) {
-				$totalCount1[$key['tweets']['account_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
-			}
 			
 			$calendarCount = $this->EditorialCalendar->query("SELECT COUNT(id), twitter_account_id, id
 															FROM editorial_calendars
@@ -110,6 +112,7 @@ class TeamsController extends AppController {
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key1['editorial_calendars']['twitter_account_id']];
 				}
 			}
+			unset($calendarCount);
 			//debug($calendarCount);
 
 			//debug($totalCount1);
@@ -122,7 +125,8 @@ class TeamsController extends AppController {
 			$this->set('screen_names', $screen_names);
 
 			$calendarIDs = $this->EditorialCalendar->find('list', array('fields' => 'id', 'conditions' => array('EditorialCalendar.twitter_account_id' => $query_twitter_accounts)));
-			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => 0, 'order' => 'Tweet.modified DESC'));
+			$tableTweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => -1, 'order' => 'Tweet.modified DESC'));
+			debug($tableTweets);
 			
 			$tableTweets1 = array();
 			foreach ($tableTweets as $key) {
@@ -132,6 +136,7 @@ class TeamsController extends AppController {
 				$tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']] += 1;
 			}
 			$this->set('tableTweets1', $tableTweets1);
+			unset($tableTweets1);
 
 			$monthdate = strtotime(date('M Y'));
 			$weekdate = strtotime('Monday this week');
