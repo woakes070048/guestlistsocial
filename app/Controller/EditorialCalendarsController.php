@@ -30,7 +30,7 @@ class EditorialCalendarsController extends AppController {
                     $x['EditorialCalendar']['day'] = $key['day'];
                 }
 
-                if (is_int($id)) {
+                if (is_int($id) && $key['changed'] == true) {
                     $x['EditorialCalendar']['id'] = $id;
                     $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $id, 'timestamp >' => time())));
                     if (!empty($tweets)) {
