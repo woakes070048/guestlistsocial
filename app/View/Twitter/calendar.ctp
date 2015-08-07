@@ -158,7 +158,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#tweetsubmit').click(function (e) {
+    /*$('#tweetsubmit').click(function (e) {
         e.preventDefault();
         $('#edit').ajaxSubmit({
             success: function() {
@@ -168,7 +168,7 @@ $(document).ready(function () {
                 toastr.error('An error occurred. Please try again.');
             }
         });
-    });
+    });*/
 
     $('.CalendarCategory').change(function () {
         if ($(this).val() == 'New') {
