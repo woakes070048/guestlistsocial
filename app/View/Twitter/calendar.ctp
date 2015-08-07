@@ -144,13 +144,13 @@ $(document).ready(function () {
     $('.deleteimage').click(function (e) {
         e.preventDefault();
         url = $(this).attr('href');
-        var this = $(this);
+        var thisx = $(this);
         $.ajax({
             url: url,
             success: function(data) {
                 toastr.success('Deleted successfully.');
-                this.closest('tr').find('input, select').prop('disabled', true);
-                this.closest('tr').hide();
+                thisx.closest('tr').find('input, select').prop('disabled', true);
+                thisx.closest('tr').hide();
             },
             error: function(XMLHttpRequest, textStatus, errorThrown) { 
                 toastr.error('An error occurred. Please try again.');

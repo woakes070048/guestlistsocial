@@ -309,9 +309,4 @@ class TweetBankController extends AppController {
 		return $this->response;
     	$this->redirect(Controller::referer());
     }
-
-    public function test() {
-    	debug(strtotime('10-08-2015 11:00'));
-    	debug(strtotime('11-08-2015 11:00'));
-    }
 }
