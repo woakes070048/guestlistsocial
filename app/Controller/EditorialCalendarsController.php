@@ -75,7 +75,7 @@ class EditorialCalendarsController extends AppController {
             }
         }
         return $this->response;
-        //$this->redirect(Controller::referer());
+        $this->redirect(Controller::referer());
     }
 
     //old save process that had a lot of errors
