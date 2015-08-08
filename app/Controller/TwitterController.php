@@ -392,6 +392,7 @@ class TwitterController extends AppController {
         $requestToken = $this->Session->read('twitter_request_token');
         $client = $this->createClient();
         $accessToken = $client->getAccessToken('https://api.twitter.com/oauth/access_token', $requestToken);
+        debug($access_token);
 
         $this->Session->write('access_token.oauth_token', $accessToken['oauth_token']);
         $this->Session->write('access_token.oauth_token_secret', $accessToken['oauth_token_secret']);
@@ -426,7 +427,7 @@ class TwitterController extends AppController {
                 $this->Session->setFlash('Account already added to this team');
             }
         //$this->redirect('/twitter/info');
-        $this->redirect('/');//REMOVE WHEN REPORTING IS COMPLETE
+        //$this->redirect('/');//REMOVE WHEN REPORTING IS COMPLETE
 
         //setting database table for reporting archives
         
