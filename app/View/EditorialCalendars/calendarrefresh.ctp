@@ -235,6 +235,17 @@ foreach ($calendar as $time => $key1) {
         </ul>
         <?}?>
     </div>
+
+    <? if ($img) { ?>
+        <div class='imagecontainer'>
+            <? echo $this->Html->link("<i class='deleteimage fa fa-times'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
+            <? echo $this->Html->image($img, array('style' => 'max-width:496px')); ?>
+        </div>
+    <?  } else {?>
+        <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
+            <img src='' style='max-width:640px'>
+        </div>
+    <?  }  ?>
     <?
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]', 'data-id' => $idForPusher));
@@ -251,17 +262,6 @@ foreach ($calendar as $time => $key1) {
     'id' => $id . '_' . $this->Session->read('Auth.User.first_name')));*/
     //echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => $img, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
     ?>
-
-    <? if ($img) { ?>
-        <div class='imagecontainer'>
-            <? echo $this->Html->image($img, array('style' => 'max-width:640px')); ?>
-            <? echo $this->Html->link("<i class='deleteimage fa fa-times'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
-        </div>
-    <?  } else {?>
-        <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
-            <img src='' style='max-width:640px'>
-        </div>
-    <?  }  ?>
 </div><?
 }
 }

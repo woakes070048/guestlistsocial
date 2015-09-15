@@ -693,6 +693,7 @@ span.counter1.exceeded {
 	vertical-align: top;
 	padding: 0px 15px 5px 5px;
 	margin-left: 15px;
+	float: right;
 }
 
 .calendar.verified input[type='radio'] {
@@ -855,9 +856,8 @@ span.counter1.exceeded {
 
 .imagecontainer {
 	padding: 0 5px;
-	display: block;
-	margin: 0 auto;
-	max-width: 640px;
+	display: inline-block;
+	max-width: 496px;
 }
 
 #loading {
@@ -1593,7 +1593,7 @@ input#CalendarTime {
 
 .deleteimage {
     position: absolute;
-    margin-left: 280px;
+    margin-left: 476px;
     margin-top: 5px;
     color: #e30000;
 }
