@@ -136,6 +136,7 @@ class UsersController extends AppController {
                     }
       	        } else {
            	        $this->Session->setFlash(__('Invalid username or password, try again'));
+                    $this->redirect('/landing');
         	    }
             }
     	} else {
