@@ -159,8 +159,8 @@ class TwitterController extends AppController {
         $this->set('status', $this->Session->read('filter.status'));
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
-        $currentTeam = $this->Cookie->read('currentTeam');
-        if (!empty($currentTeam)) {
+        $currentTeamCookie = $this->Cookie->read('currentTeam');
+        if (!empty($currentTeamCookie)) {
             $this->set('team', $this->Cookie->read('currentTeam'));
         } else {
             $this->set('team', $this->Session->read('filter.team'));
@@ -175,11 +175,11 @@ class TwitterController extends AppController {
 
         $filter = $this->Session->read('filter');
 
-        if(!empty($this->Cookie->read('currentTeam'))) {
+        if(!empty($currentTeamCookie)) {
             $filter['team'] = $this->Cookie->read('currentTeam');
         }
-
-        if(!empty($this->Cookie->read('currentAccount'))) {
+        $currentAccountCookie = $this->Cookie->read('currentAccount');
+        if(!empty($currentAccountCookie)) {
             $filter['account'] = $this->Cookie->read('currentAccount');
             $this->Session->write('access_token.account_id', $this->Cookie->read('currentAccount'));
             $this->Session->write('access_token.screen_name', $this->Cookie->read('currentAccountScreenName'));
@@ -338,7 +338,7 @@ class TwitterController extends AppController {
         $this->set('usersPermissions', $usersPermissions);
 
         //Check if you are allowed to add more twitter accounts or not
-        if ($team_id = $this->Cookie->read('currentTeam')) {
+        if ($team_id = $currentTeamCookie) {
             $owner = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id)));
             $owner = $owner['Team']['user_id'];
             $ownerGroup = $this->User->find('first', array('conditions' => array('User.id' => $owner)));
@@ -519,7 +519,8 @@ class TwitterController extends AppController {
     }
 
     public function connect() {
-        if ($team_id = $this->Cookie->read('currentTeam')) {
+        $currentTeamCookie = $this->Cookie->read('currentTeam');
+        if ($team_id = $currentTeamCookie) {
             $owner = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id)));
             $owner = $owner['Team']['user_id'];
             $ownerGroup = $this->User->find('first', array('conditions' => array('User.id' => $owner)));
