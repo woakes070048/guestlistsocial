@@ -1,6 +1,25 @@
-<div></div>
+<div class="shortenAllUrls" id="shortIt1"><i class="fa fa-code fa-fw"></i>Shorten All URLs</div>
+<?if (!empty($isTeamAdmin)) {?>
+    <div class="approveAll"><i class="fa fa-check fa-fw"></i>Approve All</div>
+<?}?>
+<div class='slick'>
+    <?
+    $base = strtotime(date('Y-m',time()) . '-01 00:00:01'); 
+    $monthsarray = array(
+        0 => date('F Y', strtotime('+0 month', $base)),
+        1 => date('F Y', strtotime('+1 month', $base)),
+        2 => date('F Y', strtotime('+2 month', $base)),
+        3 => date('F Y', strtotime('+3 month', $base)),
+        4 => date('F Y', strtotime('+4 month', $base)),
+        5 => date('F Y', strtotime('+5 month', $base))
+        );
+    foreach ($monthsarray as $key => $value) {?>
+        <div data-month=<?echo $key;?>>
+            <?echo $value;?>
+        </div>
+    <?}?>
+</div>
 <?
-$base = strtotime(date('Y-m',time()) . '-01 00:00:01');
 if (!isset($months)) {
     $months = 0;
 }
@@ -20,58 +39,27 @@ for ($i=$day; $i<=$daysinmonth; $i++) {
     $days[date('d-m-Y',mktime(0,0,0,$month,$i,$year))] = date('l',mktime(0,0,0,$month,$i,$year));
 }
 ?>
-<div id='calendarbuttons'>
-<?
-echo $this->Form->create('currentmonth', array('url' => array('controller' => 'twitter', 'action' => '../tweets'), 'id' => 'monthForm'));
-echo $this->Form->input('Select Month', array(
-    'options' => array(
-        0 => date('F Y', strtotime('+0 month', $base)),
-        1 => date('F Y', strtotime('+1 month', $base)),
-        2 => date('F Y', strtotime('+2 month', $base)),
-        3 => date('F Y', strtotime('+3 month', $base)),
-        4 => date('F Y', strtotime('+4 month', $base)),
-        5 => date('F Y', strtotime('+5 month', $base))
-        ),
-    'selected' => $months,
-    'id' => 'monthSelector',
-    'onchange' => 'this.form.submit()'
-    ));
-echo $this->Form->end();
-
-?>
+<!--<div id='calendarbuttons'>
 <? echo $this->Form->button('Shorten all URLs', array('id' => 'shortIt1', 'class' => 'urlSubmit1', 'type' => 'button'));
 echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
 ?>
-</div>
+</div>-->
 <?
 echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet1', 'id' => 'submitTweets', 'type' => 'file'));
 ?>
 
 <?php if (!empty($calendar)) { ?>
-<table id='refresh'>
-<thead class="mainheader">
-    <th>Scheduled</th>
-    <th>Topic</th>
-    <th>Tweet</th>
-    <th>Status</th>
-</thead>
 <?
 $testid = 1;
 $allApproved = array();
 foreach ($days as $key => $value) {
 $allApproved[date('jS', strtotime($key))] = 0; ?>
-<tr class='divider'><td style="border:none"></td></tr>
-<thead>
-    <th class='day first'></th>
-    <th class='day' style='text-align: center'>tweet<b style='color:#4ec3ff; margin: 0;'>PROOF</b> TweetBank</th>
-    <th class='day'><b> <? echo strtoupper($value); ?></b></th>
-    <th class='day last'></th>
-</thead>
+<div class='bigdate'><?echo date('jS ', strtotime($key)) . date('F Y', strtotime('+' . $months .' month', $base));?></div>
 <?php
 foreach ($calendar as $time => $key1) {
-    $testid = $testid + 1;
-    echo '<tr>';
-
+    $testid = $testid + 1;?>
+    <div class='tweet'>
+<?
     $key1 = $key1[strtolower($value)];
     //debug($key1);
     /*foreach ($key1['Tweet'] as $key2) {
@@ -177,48 +165,61 @@ foreach ($calendar as $time => $key1) {
         } else {
             $disabled = '';
         }?>
-    <td class="calendar scheduled <?echo date('jS', strtotime($key . $key1['EditorialCalendar']['time']));?>">
-            <? if($published == 1) {
-                echo date('d.m.Y', strtotime($key . $key1['EditorialCalendar']['time'])) . '<small>[Published]</small>' . '<br />';
-            } else {
-                echo date('d.m.Y', strtotime($key . $key1['EditorialCalendar']['time'])) . '<br />';
-            }
-            echo '<b class="' .date('l', strtotime($key . $key1['EditorialCalendar']['time'])) . '">' . strtoupper(date('l', strtotime($key . $key1['EditorialCalendar']['time']))) . '</b>' . '<br />';
-
-            echo date('H:i', strtotime($key . $key1['EditorialCalendar']['time']));?></td>
-    <td class="topic">
-    <div class='calendar_topic'><? if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?></div>
+    <div class='tweetTop'>
+        <div class="calendar scheduled <?echo date('jS', strtotime($key . $key1['EditorialCalendar']['time']));?>">
+                <i class='fa fa-clock-o'></i>
+                <?echo date('H:i ', strtotime($key . $key1['EditorialCalendar']['time'])) . '<b class="' .date('l', strtotime($key . $key1['EditorialCalendar']['time'])) . '">' . date('l ', strtotime($key . $key1['EditorialCalendar']['time'])) . '</b>' . date('jS F Y', strtotime($key . $key1['EditorialCalendar']['time']));?>
+                <? if($published == 1) {
+                    echo '<small>[Published]</small>';
+                }?>
+        </div>
+        <div class='categoryContainer'>
+            <div class='calendar_topic'><? if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?></div>
+            <!--<div class='calendar_notes'><? //if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?> Some comment</div>-->
+        </div>
+    </div>
+    <div class="topic">
+    
 
     <!--<div class='calendar_content_type'><? echo $key1['EditorialCalendar'][strtolower($value) . '_content_type']; ?></div>
 
-    <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div>--></td>
-    <td class="calendar nopadding">
-    <?echo $body;?>
-        <div class='isTyping'></div>
+    <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div>--></div>
+    <div class="textBoxAndButtons">
+        <?echo $body;?>
+        <div class='isTyping' style="display: inline-block"></div>
         <div class="tweetButtons">
         <?if ($commentCount > 9) {
             $commentCount = '9plus';
         }?>
-            <div class="empty comments <?echo $present;?>" id="<? echo $id; ?>" style="background-image: url('/img/comment<?echo $commentCount;?>.png')">COMMENTS</div>
-            <? echo $this->Form->button('SAVE', array('type' => 'submit', 'class' => 'smallSaveButton', 'type' => 'button'));?>
-            <? echo $this->Form->button('SHORTEN URLS', array('class' => 'urlSubmit1 shortsingle', 'type' => 'button')); ?>
+            <i class="empty comments <?echo $present;?> fa fa-comments" id="<? echo $id; ?>"></i>
+            <i class="smallSaveButton fa fa-floppy-o"></i>
+            <i class="urlSubmit1 shortsingle fa fa-code"></i>
             <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false, 'class' => 'imgupload')); ?>
-            <? if ($img) { ?>
-                    <div class='imagecontainer'>
-                        <? echo $this->Html->image($img, array('style' => 'max-width:500px')); ?>
-                        <? echo $this->Html->link("<div class='deleteimage'>Delete image</div>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
-                    </div>
-            <?  } else {?>
-                <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
-                    <img src='' style='max-width:500px'>
-                </div>
-            </div>
-            <?  }  ?>
-    </td>
-    <td class="calendar verified"><? echo $this->Form->input('verified', array('type' => 'radio', 'options' => array(1 => 'APPROVED', 0 => 'AWAITING APPROVAL', 2 => 'IMPROVE'), 'legend' => false, 'name' => 'data[Tweet]['.$value1.'][verified]', 'class' => 'calendar TwitterVerified1', 'id' => $id, 'default' => $verified, $disabled));?>
-
-        <ul style='list-style: none; font-size: 8pt; margin: 0; text-align: right'>
-        <?if (!empty($editors)) {
+        </div>
+    </div>
+    <div class="calendar verified">
+    <? echo $this->Form->input('verified', 
+            array(
+                'type' => 'radio',
+                'options' => array(
+                    1 => 'Approved',
+                    0 => 'Pending',
+                    2 => 'Improve'
+                ),
+                'legend' => false,
+                'name' => 'data[Tweet]['.$value1.'][verified]',
+                'class' => 'calendar TwitterVerified1',
+                'id' => $id,
+                'default' => $verified,
+                $disabled,
+                'before' => '<div class="verifiedLabel">',
+                'separator' => '</div><div class="verifiedLabel">',
+                'after' => '</div>'
+            )
+    );?>
+        
+        <?if (!empty($editors)) {?>
+        <ul style='list-style: none; font-size: 9px; margin: 5px 0 5px 5px;'><?
             foreach ($editors as $keyx) {
                 if ($keyx['type'] == 'written') {
                     $x = 'Written By';
@@ -229,10 +230,11 @@ foreach ($calendar as $time => $key1) {
                 } elseif ($keyx['type'] == 'improve') {
                     $x = 'Set to Improve';
                 }?>
-            <li style='margin: 0;'><b style='float: left'><? echo $x . ': ' ?></b><? echo $keyx['User']['first_name'];?></li>
-            <?}
-        }?>
-        </ul></td>
+            <li style='margin: 0;'><b style='width: 110px; overflow: hidden; text-overflow: ellipsis;'><? echo $x . ': ' ?></b><? echo $keyx['User']['first_name'];?></li>
+            <?}?>
+        </ul>
+        <?}?>
+    </div>
     <?
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]', 'data-id' => $idForPusher));
@@ -248,12 +250,23 @@ foreach ($calendar as $time => $key1) {
     'class' => 'verifiedby', 
     'id' => $id . '_' . $this->Session->read('Auth.User.first_name')));*/
     //echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => $img, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
-    echo '</tr>';
+    ?>
+
+    <? if ($img) { ?>
+        <div class='imagecontainer'>
+            <? echo $this->Html->image($img, array('style' => 'max-width:640px')); ?>
+            <? echo $this->Html->link("<i class='deleteimage fa fa-times'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
+        </div>
+    <?  } else {?>
+        <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
+            <img src='' style='max-width:640px'>
+        </div>
+    <?  }  ?>
+</div><?
 }
 }
 ?>
-</table>
-<? echo $this->Form->end(array('id' => 'tweetsubmit', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); }?>
+<? echo $this->Form->end(array('id' => 'tweetsubmit1', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); }?>
 
 <div class='fixedTwitterAccount' style='display: none;'><span class='screenName'>@<?echo $this->Session->read('access_token.screen_name');?></span></div>
 <div class='fixedScroller'>
@@ -292,27 +305,24 @@ foreach ($calendar as $time => $key1) {
 
             $(".TwitterVerified1:checked").each( function() {
                 if ($(this).val() == 0) {
-                    color = '#ffcc00';
+                    color = '#f0ad4e';
                 } else if ($(this).val() == 1) {
-                    color = '#21a750';
+                    color = '#5cb85c';
                 } else if ($(this).val() == 2) {
-                    color = '#ff0000';
+                    color = '#d9534f';
                 }
-                $(this).closest("tr").find('#TweetBody').css("border", "1px solid" + color);
-                $(this).closest("tr").find('#TweetBody').css("border-bottom", "none");
-                $(this).closest("tr").find('.counter1, .counter2').css("border", "1px solid" + color);
-                $(this).closest("tr").find('.counter1, .counter2').css("border-top", "none");
+                $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
             });
 
             $(".TwitterVerified1:checked").click(function() {
-                $(this).closest("tr").find('input[name=tosubmit]').val(true);
-                $(this).closest("tr").find('#TweetForceVerified').val(true);
+                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
+                $(this).closest(".tweet").find('#TweetForceVerified').val(true);
                     $("#table").css('opacity', '.4');
                     $('#loading').show();
                     var dat = new FormData();
                     $('input[name=tosubmit][value=true]').each(function () {
                         //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
-                        $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                        $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
                             if ($(this).attr('type') == 'file') {
                                 dat.append($(this).attr('name'), this.files[0]);
                             } else {
@@ -333,6 +343,15 @@ foreach ($calendar as $time => $key1) {
                                 $("#table").css('opacity', '1');
                                 $('#loading').hide();
                                 toastr.success('Saved successfully');
+                                pusher.disconnect();
+                            });
+                        },
+                        error: function(data) {
+                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                                warnMessage = null;
+                                $("#table").css('opacity', '1');
+                                $('#loading').hide();
+                                toastr.error('Not saved successfully. Please try again');
                                 pusher.disconnect();
                             });
                         }
@@ -359,8 +378,8 @@ foreach ($calendar as $time => $key1) {
                 regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
                 $(".editing").each(function() {
                     var longUrlLink = $(this).val().match(regex);
-                    textbox = $(this).closest('tr').find('.editing');
-                    $(this).closest('tr').find('input[name=tosubmit]').val(true);
+                    textbox = $(this).closest('.tweet').find('.editing');
+                    $(this).closest('.tweet').find('input[name=tosubmit]').val(true);
                     var $this = $(this);
                     $.ajax({
                         url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08',
@@ -379,8 +398,8 @@ foreach ($calendar as $time => $key1) {
 
             $(".shortsingle").click(function () {
             regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
-            textbox = $(this).closest('tr').find('.editing');
-            $(this).closest('tr').find('input[name=tosubmit]').val(true);
+            textbox = $(this).closest('.tweet').find('.editing');
+            $(this).closest('.tweet').find('input[name=tosubmit]').val(true);
             var longUrlLink = textbox.val().match(regex);
             $.ajax({
                 url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08',
@@ -406,9 +425,9 @@ foreach ($calendar as $time => $key1) {
 
             $(".editing").on('change', function () {
                 warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost."
-                $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                 text = $(this).val();
-                id = $(this).closest("tr").find('#TweetId').attr('data-id');
+                id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
                 /*channel1.bind('body_update',
                     function(data) {
                         alert('data');
@@ -424,7 +443,7 @@ foreach ($calendar as $time => $key1) {
             function userTyping() {
                 first_name =  '<?echo $this->Session->read("Auth.User.first_name");?>';
                 last_name = '<?echo $this->Session->read("Auth.User.last_name");?>';
-                tweet_id = $(this).closest("tr").find('#TweetId').attr('data-id');
+                tweet_id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
                 if (!typingTimeout) {
                     channel1.trigger('client-body_typing', {'typing' : true, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name});
                 } else {
@@ -441,7 +460,7 @@ foreach ($calendar as $time => $key1) {
 
             channel1.bind('client-body_update',
                 function(data) {
-                    $('#TweetId[data-id="' + data['tweet_id'] + '"]').closest('tr').find('.editing').text(data['body']);
+                    $('#TweetId[data-id="' + data['tweet_id'] + '"]').closest('.tweet').find('.editing').text(data['body']);
                 }
             );
 
@@ -449,11 +468,11 @@ foreach ($calendar as $time => $key1) {
                 function(data) {
                     if (data['typing'] == true) {  
                         string = data['first_name'] + ' ' + data['last_name'] + ' is typing...'; 
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').text(string).slideDown();
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', 'disabled');
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.isTyping').text(string).slideDown();
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.editing').attr('disabled', 'disabled');
                     } else {
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.isTyping').slideUp();
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('tr').find('.editing').attr('disabled', false);
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.isTyping').slideUp();
+                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.editing').attr('disabled', false);
                     }
                 }
             );
@@ -470,11 +489,11 @@ foreach ($calendar as $time => $key1) {
             });
 
             $('.input.file input').on('change', function() {
-                $(this).parent().css('background', "url(/img/upload_image_green.png) left center no-repeat");
-                $(this).closest("tr").find('input[name=tosubmit]').val(true);
-                $(this).closest("tr").find('.editing').addClass('withImage').removeClass('withoutImage');
-                $(this).closest("tr").find('.counter1').hide();
-                val = $(this).closest("tr").find('.TwitterVerified1:checked').val();
+                $(this).parent().css('color', "#0788D3");
+                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
+                $(this).closest(".tweet").find('.editing').addClass('withImage').removeClass('withoutImage');
+                $(this).closest(".tweet").find('.counter1').hide();
+                val = $(this).closest(".tweet").find('.TwitterVerified1:checked').val();
                 if (val == 0) {
                     color = '#ffcc00';
                 } else if (val == 1) {
@@ -482,13 +501,10 @@ foreach ($calendar as $time => $key1) {
                 } else if (val == 2) {
                     color = '#ff0000';
                 }
-                $(this).closest("tr").find('#TweetBody').css("border", "1px solid" + color);
-                $(this).closest("tr").find('#TweetBody').css("border-bottom", "none");
-                $(this).closest("tr").find('.counter2').css("border", "1px solid" + color);
-                $(this).closest("tr").find('.counter2').css("border-top", "none");
+                $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
 
                 //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
-                $(this).closest("tr").find('.editing').charCount({css: 'counter counter2', allowed: 117});
+                $(this).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
 
                 var files = !!this.files ? this.files : [];
                 if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
@@ -496,14 +512,15 @@ foreach ($calendar as $time => $key1) {
                 if (/^image/.test( files[0].type)){ // only image file
                     var reader = new FileReader(); // instance of the FileReader
                     reader.readAsDataURL(files[0]); // read the local file
-                    var id = $(this).closest("tr").find('#TweetId').attr('data-id');
+                    var id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
                     reader.onloadend = function(){ // set image data as background of div
                         $("#imagePreview" + id + " img").attr('src', this.result);
+                        $("#imagePreview" + id + " img").css('margin-top', '20px');
                     }
                 }
             });
 
-            $('select').selectric();
+            /*$('select').selectric();*/
 
             /*$("#table").on("change", ".TwitterVerified1", function() {
                 $(this).closest("tr").find('input[name=tosubmit]').val(true);
@@ -560,7 +577,7 @@ foreach ($calendar as $time => $key1) {
                 var dat = new FormData();
                 $('input[name=tosubmit][value=true]').each(function () {
                     //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
-                    $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                    $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
                         if ($(this).attr('type') == 'file') {
                             dat.append($(this).attr('name'), this.files[0]);
                         } else {
@@ -683,7 +700,7 @@ foreach ($calendar as $time => $key1) {
         $('.calendar_topic').qtip({
             content: {
                     text: function(event, api) {
-                        id = $(this).closest('tr').find('#TweetCalendarId').attr('value');
+                        id = $(this).closest('.tweet').find('#TweetCalendarId').attr('value');
                         //return $('#' + id + '-comments').clone();
                         $.ajax({
                             url: '/editorial_calendars/recycle/' + id
@@ -704,8 +721,8 @@ foreach ($calendar as $time => $key1) {
                     event: 'unfocus'
                 },
                 position: {
-                    my: 'bottom center',
-                    at: 'top center', 
+                    my: 'left top',
+                    at: 'right top', 
                     target: 'event'
                 },
                 show: 'click'
@@ -730,9 +747,25 @@ foreach ($calendar as $time => $key1) {
             } else {
                 var text = $(this).text();
                 $('html, body').animate({
-                    scrollTop: $("." + text).offset().top - 30
+                    scrollTop: $("." + text).offset().top - 60
                 }, 2000);
             }
+        });
+
+        $('.slick').slick({
+            prevArrow: "<div class='slick-arrowleft'></div>",
+            nextArrow: "<div class='slick-arrowright'></div>",
+            initialSlide: <? echo $this->Session->read('Auth.User.monthSelector');?>
+        });
+
+        $('.slick-arrowright, .slick-arrowleft').click(function () {
+            $('#table').css('opacity', '.4');
+            $('#loading').show();
+            var month = $(this).closest('.slick').find('.slick-current').attr('data-month');
+            $('#table').load('/editorial_calendars/calendarrefresh/' + month, function () {
+                $('#table').css('opacity', '1');
+                $('#loading').hide();
+            });
         });
         });
 

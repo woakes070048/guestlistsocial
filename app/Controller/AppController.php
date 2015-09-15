@@ -42,7 +42,9 @@ class AppController extends Controller {
                                     'fields' => array('username' => 'email',
                                                       'password' => 'password'))),
             'loginRedirect' => array('controller' => 'twitter', 'action' => 'index'),
-            'logoutRedirect' => array('controller' => 'twitter', 'action' => 'index'),
+            'logoutRedirect' => '/landing',
+            'unauthorizedRedirect' => '/landing',
+            'loginAction' => '/landing',
             'authorize' => array('Actions' => array('actionPath' => 'controllers'))
             //'authorize' => array('Controller')
         ));
@@ -94,5 +96,17 @@ class AppController extends Controller {
 
         return false;
 
+    }
+
+    public function refreshUser() {
+        $user = $this->User->read(false, $this->Session->read('Auth.User.id'));
+        
+        foreach ($user['User'] as $key => $value) {
+            $user[$key] = $value;
+        }
+        foreach ($user as $key => $value) {
+            $user['User'][$key] = $value;
+        }
+        $this->Session->write('Auth', $user);
     }
 }

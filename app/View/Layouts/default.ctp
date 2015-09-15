@@ -27,135 +27,180 @@ $cakeDescription = __d('cake_dev', 'tweetPROOF');
 		<?php echo $cakeDescription ?>:
 		<?php echo $title_for_layout; ?>
 	</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	<?php
 		echo $this->Html->meta('icon');
 
-		echo $this->Html->css('layout');
+		echo $this->Html->css('newlayout');
 
 		echo $this->fetch('meta');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
-	<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 </li>
 </head>
 
 <div id="loading" style="display: none;">
-<? //echo $this->Html->image('ajax-loader.GIF'); ?>
-<div class="loader">
-    <svg class="circular">
-        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
-    </svg>
-</div>
+	<div class="loader">
+	    <svg class="circular">
+	        <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+	    </svg>
+	</div>
 </div>
 
 <body>
 	<div id="container">
-		<div id="header">
-		<div id="headercontainer">
-			<div id="logo">
-				<h1><a href='http://social.guestlist.net'>tweet<b>PROOF</b></a></h1>
-				<? echo $this->Html->image('beta.png', array('class' => 'beta'));?>
-			</div>
-			<nav>
-				<ul>
-					<? //if ($this->Session->read('Auth.User.Group.id') == 1 || $this->Session->read('Auth.User.Group.id') == 5) { ?>
-
-						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='index') )?'active' :'inactive' ?>">
-							<? echo $this->Html->link('Manage Tweets', array('controller' => 'twitter', 'action' => 'index'), array('class' => 'managetweets'));?>
-						</li>
-
-						<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='manageteam') )?'active' :'inactive' ?>">
-							<? echo $this->Html->link('Manage Teams', array('controller' => 'teams', 'action' => 'manageteam'), array('class' => 'manageteams'));?>
-						</li>
-	
-					<? //} ?>
-
-					<li class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='manage') )?'active' :'inactive' ?>">
-						<? echo $this->Html->link('Settings', array('controller' => 'users', 'action' => 'manage'), array('class' => 'settings'));?>
-					</li>
-				</ul>
-			</nav>
-			
-		</div>
-		</div>
-		<div id="content">
-			<div id='searchbar'>
-				<? echo $this->Form->create('search');
-				echo $this->Form->input('search', array('type' => 'text', 'label' => false, 'placeholder' => 'Search...')); 
-				echo $this->Form->end();?>
-
-				<div class = 'fr'>
-				<div style='margin:0; display: inline-block'><? echo $this->Html->image($this->Session->read('Auth.User.profile_pic'), array('style' => 'height: 25px; padding: 0 5px; margin-top: -3px')); ?>
-				<?php echo $this->Session->read('Auth.User.first_name') . ' ' . $this->Session->read('Auth.User.last_name') .  $this->Html->image('chevron.png'); ?></div>
-				<hr style='height: 20px; width: 1px; display: inline-block; background-color: #fff; margin: 0'>
-				<? if ($notificationCount > 9) { $notificationCount = '9plus';} echo $this->Html->image('notification' . $notificationCount . '.png', array('style' => 'padding: 0; margin: -5px 0 0 10px', 'id' => 'notificationFrontImage'));?>
-
-				<div id='userlogout'>
+		<header>
+			<div id="headercontainer">
+				<div id="logo">
+					<a href='/'><? echo $this->Html->image('/img/logo_white.png', array('height' => '40px'));?><span>TWEET<em>PROOF</em></span></a>
+					<? echo $this->Html->image('beta_white.png', array('class' => 'beta'));?>
+				</div>
+				<nav>
+					<? echo $this->Html->image($this->Session->read('Auth.User.profile_pic'), array('width' => '30px', 'height' => '30px')); ?>
+					<div class='arrowdown'></div>
+					<i class="fa fa-bell-o navbell" id="notificationFrontImage"></i>
+					<div class='arrowup notificationarrow' style='display: none'></div>
+					<div id='notificationbox' style="display: none">
+						<? echo $this->Html->image('/img/loader.gif', array('class' => 'notifloading', 'style' => 'position: absolute;top: 50%;right: 50%;display: none;')); ?>
+					</div>
+					<span class='help'><b style="font-weight: 600;">support</b></span>
+				</nav>
+				<div class='accountSettings'>
+					<? echo $this->Html->image($this->Session->read('Auth.User.profile_pic'), array('width' => '40px', 'height' => '40px')); ?>
+					<span><? echo $this->Session->read('Auth.User.first_name') . ' ' . $this->Session->read('Auth.User.last_name');?></span>
 					<ul>
-						<a href='/users/manage'><li>Account Management</li></a>
-						<a href='/users/logout'><li>Sign Out</li></a>
+						<li><a href="/users/manage"><i class="fa fa-user fa-fw"></i>Account Management</a></li>
+						<li><a href="#"><i class="fa fa-arrow-up fa-fw"></i>Upgrade</a></li>
+						<li><a href="#"><i class="fa fa-cog fa-fw"></i>Settings</a></li>
+						<li><a href="/users/logout"><i class="fa fa-sign-out fa-fw"></i>Sign Out</a></li>
 					</ul>
 				</div>
-				</div>
-				<div class='arrowup notificationarrow'></div>
-				<div id='notificationbox'>
-					
-				</div>
 			</div>
-
-
+		</header>
+		<div id="contentheader">
+			<div id="navcontainer">
+			<nav>
+				<ul>
+					<li><a href='#' class="<?php echo (!empty($this->params['action']) && ($this->params['action']=='index') )?'active' :'inactive' ?>"><i class="fa fa-twitter fa-fw"></i>My Tweets</a></li>
+					<li><a href='#'><i class="fa fa-users fa-fw"></i>Manage Teams</a></li>
+					<li><a href='#'><i class="fa fa-cog fa-fw"></i>Settings</a></li>
+				</ul>
+			</nav>
+			</div>
+		</div>
+		<div id="content">
 			<?php echo $this->Session->flash(); ?>
 
 			<?php echo $this->fetch('content'); ?>
 		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
-			?>
-		</div>
 	</div>
-	<script>
-		$(document).ready(function() {
-        $('.fr div').hover(function() {
-            $('#userlogout').toggle();
-        });
-
-        $('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
-
-        $('.fr img').click(function () {
-            $('#notificationbox, .notificationarrow').toggle();
-            if ($('#notificationbox').css('display') == 'none') {
-                str = $("#notificationFrontImage").attr('src');
-                str1 = str.substr(17);
-                if (str1 != "9plus.png") {
-                    str1 =  Number(str1.split('.')[0]) - 5;
-                    if (str1 < 0) {
-                        str1 = 0
-                    }
-                }
-                $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
-            }
-        });
-
-        $(document).click(function(e) {   
-            if(e.target.id != 'notificationbox' && e.target.id != 'notificationFrontImage') {
-                $("#notificationbox, .notificationarrow").hide();
-                str = $("#notificationFrontImage").attr('src');
-                str1 = str.substr(17);
-                if (str1 != "9plus.png") {
-                    str1 =  Number(str1.split('.')[0]) - 5;
-                    if (str1 < 0) {
-                        str1 = 0
-                    }
-                }
-                $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');
-            } 
-        });
-    });
-    </script>
+	
 </body>
+
+<script>
+$(document).ready(function() {
+
+<? if (!empty($notificationCount)) {?>
+	<?if ($notificationCount > 9) {
+		$notificationCount = '9+';
+	}?>
+	$('.navbell').addClass('badge badge' + <?echo strval($notificationCount);?>);
+<?}?>
+
+$('.navbell').click(function () {
+	$('#notificationbox').load('/notifications/notificationrefresh/' + <? echo $this->Session->read('Auth.User.id'); ?>);
+    $('#notificationbox, .notificationarrow').toggle();
+	$('.notifloading').show();
+    if ($('#notificationbox').css('display') == 'none') {
+        str = $(".navbell").attr('class');
+        str1 = str.substr(32);
+        if (str1 != "9+") {
+            str2 =  Number(str1.split('.')[0]) - 5;
+            if (str2 < 0) {
+                $('.navbell').removeClass('badge badge' + str2);
+            }
+        }
+        $(".navbell").removeClass('badge' + str1);
+        $(".navbell").addClass('badge' + str2);
+    }
+	$('.notifloading').hide();
+});
+
+$(document).click(function(e) {  
+    if(e.target.id != 'notificationbox' && e.target.id != 'notificationFrontImage') {
+        $("#notificationbox, .notificationarrow").hide();
+        str = $("#notificationFrontImage").attr('src');
+        /*str1 = str.substr(17);
+        if (str1 != "9plus.png") {
+            str1 =  Number(str1.split('.')[0]) - 5;
+            if (str1 < 0) {
+                str1 = 0
+            }
+        }
+        $("#notificationFrontImage").attr('src', '/img/notification' + str1 + '.png');*/
+    }
+    if(e.target.id != 'teamIcon') {
+    }
+
+});
+
+$(document).mouseup(function (e) {
+    var container = $("#twitterManage");
+
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+    }
+});
+
+$(document).mouseup(function (e) {
+    var container = $("#manageTeam");
+
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+    }
+});
+
+$(document).mouseup(function (e) {
+    var container = $("#createTeam");
+
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        container.hide();
+    }
+});
+
+$(document).mouseup(function (e) {
+    var container = $(".filter.filterTeamScroll");
+
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        if ($('.filter.filterTeamScroll').css('display') == 'none') {
+        } else {
+        	$('.filter.filterTeamScroll').hide();
+            $('.selectedTeam').find('i').css('transform', 'rotate(0deg)');
+            $('.selectedTeam').removeClass('clicked');
+        }
+    }
+});
+
+$(document).mouseup(function (e) {
+    var container = $(".filter.filterAccountScroll");
+
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+        if ($('.filter.filterAccountScroll').css('display') == 'none') {
+        } else {
+        	$('.filter.filterAccountScroll').hide();
+            $('.selectedAccount').find('i').css('transform', 'rotate(0deg)');
+            $('.selectedAccount').removeClass('clicked');
+        }
+    }
+});
+
+
+$('#headercontainer nav img, #headercontainer nav .arrowdown').click(function () {
+	$('.accountSettings').toggle();
+});
+
+});
+</script>
 </html>

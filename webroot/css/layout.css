@@ -1,4202 +1,1 @@
-@charset "utf-8";
-
-/**
-
- *
-
- * Generic CSS for CakePHP
-
- *
-
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
-
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
-
- *
-
- * Licensed under The MIT License
-
- * For full copyright and license information, please see the LICENSE.txt
-
- * Redistributions of files must retain the above copyright notice.
-
- *
-
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
-
- * @link          http://cakephp.org CakePHP(tm) Project
-
- * @package       app.webroot.css
-
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
-
- */
-
-* {
-
-	margin:0;
-
-	padding:0;
-
-}
-
-
-
-/** Fonts **/
-
-@font-face {
-
-    font-family: nevis;
-
-    src: url(../files/nevis.ttf);
-
-}
-
-html {
-	height: 100%;
-}
-
-/** General Style Info **/
-
-.empty {
-
-	margin: 0;
-
-	padding:0;
-
-}
-
-body {
-
-	background: url(/img/background.jpg) no-repeat fixed;
-
-	font-family: 'Lato', 'lucida grande',verdana,helvetica,arial,sans-serif;
-
-	font-size:90%;
-
-	margin: 0;
-	
-	min-height: 100%;
-
-}
-
-a {
-
-	color: #999999;
-
-	text-decoration: none;
-
-	font-weight: none;
-
-}
-
-a:hover {
-
-	color: #fff;
-
-	text-decoration:none;
-
-}
-
-a img {
-
-	border:none;
-
-}
-
-h1, h2, h3, h4 {
-
-	font-weight: normal;
-
-	margin-bottom:0.5em;
-
-}
-
-h1 {
-
-	color: #773d8d;
-
-	font-size: 100%;
-
-	font-family: 'Lato';
-
-	margin: 28px 0 0 15px;
-
-	font-size: 20pt;
-
-}
-
-h2 {
-
-	background:#fff;
-
-	color: #a5a5a5;
-
-	font-size: 150%;
-
-	font-weight: bold;
-
-	margin-bottom: 10px;
-
-	margin-top: 50px;
-
-}
-
-h3 {
-
-	color: #2c6877;
-
-	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;
-
-	font-size: 165%;
-
-}
-
-h4 {
-
-	color: #993;
-
-	font-weight: normal;
-
-}
-
-h5 {
-
-	color: #999;
-
-	font-family: Helvetica;
-
-	font-weight: normal;
-
-	font-size: 110%;
-
-	margin: 5px 0;
-
-	cursor: pointer;
-
-	float: left
-
-}
-
-ul, li {
-
-	margin: 0 15px;
-
-}
-
-p {
-
-	margin: 0 0 1em 0;
-
-}
-
-
-
-/** Layout **/
-
-#container {
-
-	text-align: left;
-
-}
-
-
-
-#header{
-
-	background: rgba(36, 49, 53, 0.5);
-
-	height: 100%;
-
-	width: 200px;
-
-	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, .75);
-	
-	position: fixed;
-	
-	left: 0;
-	
-	top: 0;
-	
-	z-index: 1;
-
-}
-
-#header h1 {
-
-	line-height:20px;
-
-	color: #fff;
-
-	display: inline;
-
-	float: left;
-	
-	margin-top: 35px;
-
-}
-
-#header h1 a {
-
-	color: #fff;
-
-	font-weight: normal;
-
-	text-decoration: none;
-
-}
-
-#header h1 a:hover {
-
-	color: #fff;
-
-}
-
-#header img {
-
-	float: left
-
-}
-
-#headercontainer {
-
-	width: 200px;
-
-	margin: auto;
-
-}
-
-#headercontainer h1 a b {
-	color: #4ec3ff;
-}
-
-#headercontainer .inactive:hover {
-	background: rgba(36, 49, 53, 0.7);
-}
-
-.beta {
-
-	margin: 25px 0 0 -37px;
-
-}
-
-#logo {
-	background: #243135;
-	height: 90px;
-}
-
-#content{
-
-	clear: both;
-
-	color: #333;
-
-	padding: 10px 20px 40px 20px;
-
-	overflow: auto;
-
-	min-height: 750px;
-
-	/**max-width: 1300px;**/
-
-	margin: 40px 0 0 200px;
-
-}
-
-#footer {
-
-	clear: both;
-
-	padding: 6px 10px;
-
-	text-align: right;
-
-	background-color: #2a2a2b;
-
-}
-
-
-
-/** containers **/
-
-div.form,
-
-div.index,
-
-div.view {
-
-	float:right;
-
-	width:76%;
-
-	border-left:1px solid #666;
-
-	padding:10px 2%;
-
-}
-
-div.actions {
-
-	float:left;
-
-	width:16%;
-
-	padding:10px 1.5%;
-
-}
-
-div.actions h3 {
-
-	padding-top:0;
-
-	color:#777;
-
-}
-
-
-
-
-
-/** Tables **/
-
-table {
-
-	border-right:0;
-
-	clear: both;
-
-	color: #333;
-
-	margin-bottom: 10px;
-
-	width: 100%;
-
-}
-
-th {
-
-	border:0;
-
-	text-align: left;
-
-	padding:4px;
-
-	font-weight: normal;
-
-}
-
-th a {
-
-	display: block;
-
-	padding: 2px 4px;
-
-	text-decoration: none;
-
-}
-
-/*
-
-th a.asc:after {
-
-	content: ' ⇣';
-
-}
-
-th a.desc:after {
-
-	content: ' ⇡';
-
-}  */
-
-table tr td {
-
-	padding: 6px;
-
-	vertical-align: top;
-
-}
-
-table tr:nth-child(even) {
-
-	background: #f9f9f9;
-
-}
-
-td.actions {
-
-	text-align: center;
-
-	white-space: nowrap;
-
-}
-
-table td.actions a {
-
-	margin: 0px 6px;
-
-	padding:2px 5px;
-
-}
-
-
-
-/* SQL log */
-
-.cake-sql-log {
-
-	background: #fff;
-
-}
-
-.cake-sql-log td {
-
-	padding: 4px 8px;
-
-	text-align: left;
-
-	font-family: Monaco, Consolas, "Courier New", monospaced;
-
-}
-
-.cake-sql-log caption {
-
-	color:#fff;
-
-}
-
-
-
-/** Paging **/
-
-.paging {
-
-	background:#fff;
-
-	color: #ccc;
-
-	margin-top: 1em;
-
-	clear:both;
-
-}
-
-.paging .current,
-
-.paging .disabled,
-
-.paging a {
-
-	text-decoration: none;
-
-	padding: 5px 8px;
-
-	display: inline-block
-
-}
-
-.paging > span {
-
-	display: inline-block;
-
-	border: 1px solid #ccc;
-
-	border-left: 0;
-
-}
-
-.paging > span:hover {
-
-	background: #efefef;
-
-}
-
-.paging .prev {
-
-	border-left: 1px solid #ccc;
-
-	-moz-border-radius: 4px 0 0 4px;
-
-	-webkit-border-radius: 4px 0 0 4px;
-
-	border-radius: 4px 0 0 4px;
-
-}
-
-.paging .next {
-
-	-moz-border-radius: 0 4px 4px 0;
-
-	-webkit-border-radius: 0 4px 4px 0;
-
-	border-radius: 0 4px 4px 0;
-
-}
-
-.paging .disabled {
-
-	color: #ddd;
-
-}
-
-.paging .disabled:hover {
-
-	background: transparent;
-
-}
-
-.paging .current {
-
-	background: #efefef;
-
-	color: #c73e14;
-
-}
-
-
-
-/** Scaffold View **/
-
-dl {
-
-	line-height: 2em;
-
-	margin: 0em 0em;
-
-	width: 60%;
-
-}
-
-dl dd:nth-child(4n+2),
-
-dl dt:nth-child(4n+1) {
-
-	background: #f4f4f4;
-
-}
-
-
-
-dt {
-
-	font-weight: bold;
-
-	padding-left: 4px;
-
-	vertical-align: top;
-
-	width: 10em;
-
-}
-
-dd {
-
-	margin-left: 10em;
-
-	margin-top: -2em;
-
-	vertical-align: top;
-
-}
-
-
-
-/** Forms **/
-
-form {
-
-	clear: both;
-
-	padding: 0;
-
-	display: inline;
-
-}
-
-fieldset {
-
-	border: none;
-
-	margin-bottom: 1em;
-
-	padding: 16px 10px;
-
-}
-
-fieldset legend {
-
-	color: #e32;
-
-	font-size: 160%;
-
-	font-weight: bold;
-
-}
-
-fieldset fieldset {
-
-	margin-top: 0;
-
-	padding: 10px 0 0;
-
-}
-
-fieldset fieldset legend {
-
-	font-size: 120%;
-
-	font-weight: normal;
-
-}
-
-fieldset fieldset div {
-
-	clear: left;
-
-	margin: 0 20px;
-
-}
-
-form div {
-
-	clear: both;
-
-	margin-bottom: 1em;
-
-	vertical-align: text-top;
-
-}
-
-form .input {
-
-	color: #444;
-
-}
-
-form .required {
-
-	font-weight: bold;
-
-}
-
-form .required label:after {
-
-	color: #e32;
-
-	content: '*';
-
-	display:inline;
-
-}
-
-form div.submit {
-
-	border: 0;
-
-	clear: both;
-	
-	display: inline;
-
-}
-
-label {
-
-	display: block;
-
-	font-size: 110%;
-
-	margin-bottom:3px;
-
-}
-
-input, textarea {
-
-	clear: both;
-
-	font-size: 140%;
-
-	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;
-
-	padding: 1%;
-
-	width:98%;
-
-}
-
-select {
-
-	clear: both;
-
-	font-size: 120%;
-
-	vertical-align: text-bottom;
-
-}
-
-select[multiple=multiple] {
-
-	width: 100%;
-
-}
-
-option {
-
-	font-size: 120%;
-
-	padding: 0 3px;
-
-}
-
-input[type=checkbox] {
-
-	clear: left;
-
-	float: left;
-
-	margin: 0px 6px 7px 2px;
-
-	width: auto;
-
-}
-
-div.checkbox label {
-
-	display: inline;
-
-}
-
-input[type=radio] {
-
-	float:left;
-
-	width:auto;
-
-	margin: 6px 0;
-
-	padding: 0;
-
-	line-height: 26px;
-	
-	cursor: pointer;
-
-}
-
-.radio label {
-
-	line-height: 26px;
-
-}
-
-input[type=submit] {
-
-	display: inline;
-
-	font-size: 110%;
-
-	width: auto;
-
-}
-
-form .submit input[type=submit],
-
-.delete, 
-
-.urlSubmit {
-
-	background:#243135;
-
-	border-color: #243135;
-
-	color: #fff;
-
-	padding: 8px 10px;
-
-	font-family: Arial;
-
-}
-
-form .submit input[type=submit]:hover {
-
-	background: #bd7fd5;
-
-	border-color: #bd7fd5;
-
-}
-
-/* Form errors */
-
-form .error {
-
-	background: #FFDACC;
-
-	-moz-border-radius: 4px;
-
-	-webkit-border-radius: 4px;
-
-	border-radius: 4px;
-
-	font-weight: normal;
-
-}
-
-form .error-message {
-
-	-moz-border-radius: none;
-
-	-webkit-border-radius: none;
-
-	border-radius: none;
-
-	border: none;
-
-	background: none;
-
-	margin: 0;
-
-	padding-left: 4px;
-
-	padding-right: 0;
-
-}
-
-form .error,
-
-form .error-message {
-
-	color: #9E2424;
-
-	-webkit-box-shadow: none;
-
-	-moz-box-shadow: none;
-
-	-ms-box-shadow: none;
-
-	-o-box-shadow: none;
-
-	box-shadow: none;
-
-	text-shadow: none;
-
-}
-
-
-
-/** Notices and Errors **/
-
-.message {
-
-	clear: both;
-
-	color: #fff;
-
-	font-size: 140%;
-
-	font-weight: bold;
-
-	margin: 0 0 1em 0;
-
-	padding: 5px;
-
-}
-
-
-
-.success,
-
-.message,
-
-.cake-error,
-
-.cake-debug,
-
-.notice,
-
-p.error,
-
-.error-message {
-
-	background: #ffcc00;
-
-	background-repeat: repeat-x;
-
-	border: 1px solid rgba(0, 0, 0, 0.2);
-
-	margin-bottom: 18px;
-
-	padding: 7px 14px;
-
-	color: #404040;
-
-	-webkit-border-radius: 4px;
-
-	-moz-border-radius: 4px;
-
-	border-radius: 4px;
-
-}
-
-.success,
-
-.message,
-
-.cake-error,
-
-p.error,
-
-.error-message {
-
-	clear: both;
-
-	color: #fff;
-
-	background: #c43c35;
-
-	border: 1px solid rgba(0, 0, 0, 0.5);
-
-	background-repeat: repeat-x;
-
-}
-
-.success {
-
-	clear: both;
-
-	color: #fff;
-
-	border: 1px solid rgba(0, 0, 0, 0.5);
-
-	background: #3B8230;
-
-	background-repeat: repeat-x;
-
-}
-
-p.error {
-
-	font-family: Monaco, Consolas, Courier, monospace;
-
-	font-size: 120%;
-
-	padding: 0.8em;
-
-	margin: 1em 0;
-
-}
-
-p.error em {
-
-	font-weight: normal;
-
-	line-height: 140%;
-
-}
-
-.notice {
-
-	color: #000;
-
-	display: block;
-
-	font-size: 120%;
-
-	padding: 0.8em;
-
-	margin: 1em 0;
-
-}
-
-.success {
-
-	color: #fff;
-
-}
-
-
-
-/**  Actions  **/
-
-.actions ul {
-
-	margin: 0;
-
-	padding: 0;
-
-}
-
-.actions li {
-
-	margin:0 0 0.5em 0;
-
-	list-style-type: none;
-
-	white-space: nowrap;
-
-	padding: 0;
-
-}
-
-.actions ul li a {
-
-	font-weight: normal;
-
-	display: block;
-
-	clear: both;
-
-}
-
-
-
-/* Buttons and button links */
-
-input[type=submit],
-
-.actions ul li a,
-
-.actions a,
-
-.delete,
-
-.urlSubmit,
-
-.urlSubmit1,
-
-.smallSaveButton {
-
-	font-weight: 400;
-	
-	font-size: 10pt;
-
-	padding: 5px 8px;
-
-	background: #fff;
-
-	color:#333;
-
-	border:1px solid #bbb;
-
-	-webkit-border-radius: 4px;
-
-	-moz-border-radius: 4px;
-
-	border-radius: 4px;
-
-	text-decoration: none;
-
-	min-width: 0;
-
-	-webkit-user-select: none;
-
-	user-select: none;
-
-	float: right;
-	
-	font-family: Lato;
-	
-	margin: 2px;
-
-}
-
-.actions ul li a:hover,
-
-.actions a:hover,
-
-.delete:hover,
-
-.urlSubmit:hover,
-
-.urlSubmit1:hover,
-
-.smallSaveButton:hover {
-
-	background: #ddd;
-
-	border-color: #acacac;
-
-	text-decoration: none;
-
-}
-
-input[type=submit]:active,
-
-.actions ul li a:active,
-
-.actions a:active,
-
-.delete:active
-
-.urlSubmit:active,
-
-.smallSaveButton:active {
-
-	background: #eee;
-
-	border-color: #aaa;
-
-	text-decoration: none;
-
-}
-
-
-
-/** Related **/
-
-.related {
-
-	clear: both;
-
-	display: block;
-
-}
-
-
-
-/** Debugging **/
-
-pre {
-
-	color: #000;
-
-	background: #f0f0f0;
-
-	padding: 15px;
-
-	-moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-
-	-webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-
-	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-
-}
-
-.cake-debug-output {
-
-	padding: 0;
-
-	position: relative;
-
-}
-
-.cake-debug-output > span {
-
-	position: absolute;
-
-	top: 5px;
-
-	right: 5px;
-
-	background: rgba(255, 255, 255, 0.3);
-
-	-moz-border-radius: 4px;
-
-	-webkit-border-radius: 4px;
-
-	border-radius: 4px;
-
-	padding: 5px 6px;
-
-	color: #000;
-
-	display: block;
-
-	float: left;
-
-	-moz-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);
-
-	-webkit-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);
-
-	box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);
-
-	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
-
-}
-
-.cake-debug,
-
-.cake-error {
-
-	font-size: 16px;
-
-	line-height: 20px;
-
-	clear: both;
-
-}
-
-.cake-error > a {
-
-	text-shadow: none;
-
-}
-
-.cake-error {
-
-	white-space: normal;
-
-}
-
-.cake-stack-trace {
-
-	background: rgba(255, 255, 255, 0.7);
-
-	color: #333;
-
-	margin: 10px 0 5px 0;
-
-	padding: 10px 10px 0 10px;
-
-	font-size: 120%;
-
-	line-height: 140%;
-
-	overflow: auto;
-
-	position: relative;
-
-	-moz-border-radius: 4px;
-
-	-webkit-border-radius: 4px;
-
-	border-radius: 4px;
-
-}
-
-.cake-stack-trace a {
-
-	text-shadow: none;
-
-	background: rgba(255, 255, 255, 0.7);
-
-	padding: 5px;
-
-	-moz-border-radius: 10px;
-
-	-webkit-border-radius: 10px;
-
-	border-radius: 10px;
-
-	margin: 0px 4px 10px 2px;
-
-	font-family: sans-serif;
-
-	font-size: 14px;
-
-	line-height: 14px;
-
-	display: inline-block;
-
-	text-decoration: none;
-
-	-moz-box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);
-
-	-webkit-box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);
-
-	box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);
-
-}
-
-.cake-code-dump pre {
-
-	position: relative;
-
-	overflow: auto;
-
-}
-
-.cake-context {
-
-	margin-bottom: 10px;
-
-}
-
-.cake-stack-trace pre {
-
-	color: #000;
-
-	background-color: #F0F0F0;
-
-	margin: 0px 0 10px 0;
-
-	padding: 1em;
-
-	overflow: auto;
-
-	text-shadow: none;
-
-}
-
-.cake-stack-trace li {
-
-	padding: 10px 5px 0px;
-
-	margin: 0 0 4px 0;
-
-	font-family: monospace;
-
-	border: 1px solid #bbb;
-
-	-moz-border-radius: 4px;
-
-	-wekbkit-border-radius: 4px;
-
-	border-radius: 4px;
-
-	background: #dcdcdc;
-
-	background-image: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#dcdcdc));
-
-	background-image: -webkit-linear-gradient(top, #fefefe, #dcdcdc);
-
-	background-image: -moz-linear-gradient(top, #fefefe, #dcdcdc);
-
-	background-image: -ms-linear-gradient(top, #fefefe, #dcdcdc);
-
-	background-image: -o-linear-gradient(top, #fefefe, #dcdcdc);
-
-	background-image: linear-gradient(top, #fefefe, #dcdcdc);
-
-}
-
-/* excerpt */
-
-.cake-code-dump pre,
-
-.cake-code-dump pre code {
-
-	clear: both;
-
-	font-size: 12px;
-
-	line-height: 15px;
-
-	margin: 4px 2px;
-
-	padding: 4px;
-
-	overflow: auto;
-
-}
-
-.cake-code-dump .code-highlight {
-
-	display: block;
-
-	background-color: rgba(255, 255, 0, 0.5);
-
-}
-
-.code-coverage-results div.code-line {
-
-	padding-left:5px;
-
-	display:block;
-
-	margin-left:10px;
-
-}
-
-.code-coverage-results div.uncovered span.content {
-
-	background:#ecc;
-
-}
-
-.code-coverage-results div.covered span.content {
-
-	background:#cec;
-
-}
-
-.code-coverage-results div.ignored span.content {
-
-	color:#aaa;
-
-}
-
-.code-coverage-results span.line-num {
-
-	color:#666;
-
-	display:block;
-
-	float:left;
-
-	width:20px;
-
-	text-align:right;
-
-	margin-right:5px;
-
-}
-
-.code-coverage-results span.line-num strong {
-
-	color:#666;
-
-}
-
-.code-coverage-results div.start {
-
-	border:1px solid #aaa;
-
-	border-width:1px 1px 0px 1px;
-
-	margin-top:30px;
-
-	padding-top:5px;
-
-}
-
-.code-coverage-results div.end {
-
-	border:1px solid #aaa;
-
-	border-width:0px 1px 1px 1px;
-
-	margin-bottom:30px;
-
-	padding-bottom:5px;
-
-}
-
-.code-coverage-results div.realstart {
-
-	margin-top:0px;
-
-}
-
-.code-coverage-results p.note {
-
-	color:#bbb;
-
-	padding:5px;
-
-	margin:5px 0 10px;
-
-	font-size:10px;
-
-}
-
-.code-coverage-results span.result-bad {
-
-	color: #a00;
-
-}
-
-.code-coverage-results span.result-ok {
-
-	color: #fa0;
-
-}
-
-.code-coverage-results span.result-good {
-
-	color: #0a0;
-
-}
-
-
-
-/** Elements **/
-
-#url-rewriting-warning {
-
-	display:none;
-
-}
-
-
-
-/* Custom */
-
-span.counter.exceeded {
-
-	color: #ff0000;
-
-}
-
-
-
-#urls {
-
-	display: inline;
-
-	float: left;
-
-	width: 18%;
-
-}
-
-
-
-.counter {
-
-	display:block;
-
-}
-
-
-
-.counter1,
-.counter2 {
-
-	border: 1px solid #ffcc00;
-	
-	border-top: none;
-
-	padding: 0 0 10px 10px;
-	
-	margin-top: -3px;
-	
-	font-weight: 700;
-	
-	background: #fff;
-	
-	text-align: left;
-
-}
-
-
-
-.urlSubmit {
-
-	margin-top: -15px;
-
-	display: block;
-
-	float: right;
-
-}
-
-
-
-#TweetBody {
-
-	overflow: auto;
-
-}
-
-
-
-#AddTweet:disabled {
-
-	opacity: .4
-
-}
-
-
-
-.tweetbody {
-
-	width: 40%;
-
-	height: auto;
-
-	padding: 0;
-
-	overflow: auto;
-
-}
-
-
-
-textarea.editing {
-
-	font-size: 95%;
-
-    height: 150px;
-
-    width: 700px;
-
-    padding: 6px 6px 0 6px;
-
-    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
-
-       -moz-box-sizing: border-box; /* FF1+ */
-
-            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
-            
-    resize: none;
-    
-    border-color: #ffcc00;
-    
-    border-bottom: none;
-
-}
-
-
-.calendar.editing {
-	width: 100%;
-}
-
-.editing:focus {
-	outline: 0;
-}
-
-
-
-.schedule {
-
-	font-size: 95%;
-	
-	width: 95px;
-	
-	float: left;
-	
-	margin-left: 10px;
-
-}
-
-.ttt {
-	margin-right: 10px;
-	
-	clear: none;
-	
-	float: right;
-	
-	width: 225px;
-	
-	height: 50px;
-}
-
-.color.verified {
-
-	width: 100%;
-
-}
-
-
-
-.fr {
-
-	float: right;
-	
-	position: absolute;
-
-	font-size: 105%;
-	
-	padding-bottom: 30px;
-	
-	top: 25%;
-	
-	right: 0;
-	
-	color: #fff;
-	
-	margin-right: 50px;
-	
-	cursor: pointer;
-	
-	height: 30px;
-
-}
-
-.fr div {
-	vertical-align: top;
-	padding-bottom: 30px;
-}
-
-.fr a {
-
-	color: #fff;
-
-}
-
-
-
-.fr a:hover {
-
-	color: #bd7fd5;
-
-}
-
-.fr img {
-	padding: 3px 10px 0 10px;
-	vertical-align: top;
-}
-
-
-#userlogout {
-	
-	background-color: #fff;
-	
-	position: absolute;
-	
-	width: 170px;
-	
-	margin-top: 30px;
-	
-	top: 0;
-	
-	z-index: 100;
-	
-	border-bottom-left-radius: 4px;
-	
-	border-bottom-right-radius: 4px;
-	
-	padding: 0;
-	
-	font-size: 90%;
-	
-	display: none;
-
-}
-
-
-#userlogout ul {
-	
-	list-style-type: none;
-	
-	padding: 0;
-	
-	margin: 0;
-
-}
-
-
-#userlogout ul li {
-	
-	padding: 10px 10px;
-	
-	margin: 5px 0;
-	
-}
-
-
-#userlogout ul li:hover {
-	
-	background-color: #dedede;
-	
-}
-
-
-#userlogout ul a {
-
-	color: #243135;
-
-}
-
-
-
-#teamwrapper {
-
-	float: left;
-
-	right:0px;
-
-	position: fixed;
-
-}
-
-
-
-#team table {
-
-	display: inline;
-
-}
-
-
-
-#team table tbody {
-
-	background: #efefef;
-
-}
-
-
-
-#team table td {
-
-	width: 175px;
-
-	text-align: left;
-
-}
-
-
-
-#submitTweet {
-
-	width: 100%;
-
-	float: left;
-
-}
-
-
-
-#table tr {
-
-	height: 75px;
-
-}
-
-
-
-#table tr:first-child {
-
-	height: auto;
-
-}
-
-
-
-.nopadding {
-
-	width: 700px;
-	
-	float: right;
-
-	clear: none;
-
-}
-
-
-.calendar.nopadding {
-	width: 55%;
-	float: none;
-}
-
-
-
-#table thead tr .asc {
-
-	background: url(../img/asc.gif) no-repeat right;
-
-}
-
-#table thead tr .desc {
-
-	background: url(../img/desc.gif) no-repeat right;
-
-}
-
-
-
-#table1 {
-
-	width:940px;
-	background-color: #fff;
-
-}
-
-
-
-.asc,.desc,#table a {
-
-	color: #fff;
-
-}
-
-
-
-#team {
-
-	width: 200px;
-
-	background: #efefef;
-
-	border-bottom-left-radius: 5px;
-
-	float: right;
-
-}
-
-
-
-label[for="TwitterAccountSelectAccount:"] {
-
-	display: inline;
-
-	margin-right: 10px
-
-}
-
-
-
-label[for="monthSelector"] {
-
-	display: inline;
-
-	margin-right: 10px
-
-}
-
-
-
-hr {
-
-	height: 1px;
-
-	background-color: #000;
-
-	margin: 30px 0;
-
-	border: none;
-
-	display: block
-
-}
-
-
-
-#hide {
-
-	width: 100%;
-
-	margin-top: -50px;
-
-	padding: 0;
-
-}
-
-
-
-#hide button {
-
-	font-weight:bold;
-
-	padding: 4px 8px;
-
-	background: #773d8d;
-
-	color:#fff;
-
-    border: 1px solid #773d8d;
-
-	border-radius: 4px;
-
-	text-decoration: none;
-
-	min-width: 100%;
-
-	height: 50px;
-
-	font-size: 200%
-
-}
-
-
-
-#hide button:hover {
-
-	background: #bd7fd5;
-
-}
-
-
-
-.input.select {
-
-	display: inline;
-
-}
-
-
-
-#monthForm {
-
-	display: inline;
-
-}
-
-
-
-#editinfobar {
-
-	margin-top: 20px;
-
-	display: inline;
-
-}
-
-
-
-#editinfobar img {
-
-	margin: 0 10px;
-
-}
-
-
-
-nav {
-
-	display: inline;
-
-	float: left;
-
-}
-
-
-
-nav ul {
-
-	margin: 0;
-
-}
-
-
-
-nav ul li {
-
-	font-family: 'Lato';
-
-	font-size: 11pt;
-	
-	font-weight: 500;
-
-	/* background-color: #243135; */
-
-	/* padding: 5px 5px 5px 10px; */
-	
-	list-style-type: none;
-	
-	width: 200px;
-	
-	height: 50px;
-	
-	margin: 0
-
-}
-
-
-
-nav ul li a {
-
-	color: #fff;
-
-	text-align: left;
-	
-	display: block;
-	
-	height: 34px;
-	
-	width: 155px;
-	
-	padding-top: 16px;
-	
-	opacity: 0.4;
-	
-	padding-left: 45px
-
-}
-
-
-
-nav ul li.active {
-
-	background-color: #6ed3fd;
-
-}
-
-
-
-nav ul li.active a {
-
-	pointer-events: none;
-
-	cursor: default;
-	
-	opacity: 1;
-
-}
-
-
-.managetweets {
-	background: url(/img/navtwitter.png) no-repeat 15px center
-}
-
-.manageteams {
-	background: url(/img/manageteams.png) no-repeat 15px center
-}
-
-.settings {
-	background: url(/img/settings.png) no-repeat 15px center
-}
-
-
-
-input[type='radio'] {
-
-	opacity: 0;
-
-	width: 10px;
-
-}
-
-
-
-input[type='radio'] + label {
-
-	padding: 0 0 0 20px;
-
-	background: url(../img/radio.png) left center no-repeat;
-
-	text-align: left;
-
-	font-size: 90%;
-	
-	cursor: pointer;
-
-}
-
-
-
-input[type='radio'][value='0']:checked + label {
-
-	background: url(../img/radioamber.png) left center no-repeat;
-
-}
-
-
-
-input[type='radio'][value='1']:checked + label {
-
-	background: url(../img/radiogreen.png) left center no-repeat;
-
-}
-
-
-
-input[type='radio'][value='2']:checked + label {
-
-	background: url(../img/radiored.png) left center no-repeat;
-
-}
-
-
-
-.input.radio {
-
-	padding: 10px;
-	
-	margin: 0
-
-}
-
-
-
-#teamicon {
-
-	float: left;
-
-	cursor: pointer;
-
-}
-
-
-
-#teambuttons img {
-
-	margin: 0 5px;
-
-}
-
-
-
-#loading {
-
-	position: fixed;
-
-	top: 50%;
-
-	left: 50%;
-
-}
-
-
-
-/* CSS from table from Manage Tweets and Write Tweets page */
-
-
-
-#table1 {
-
-    font-size: 100%;
-
-}
-
-
-
-.input.text {
-
-    font-size: 65%!important;
-    
-    display: inline; 
-
-}
-
-
-
-.mainheader {
-
-    background-color: #243135;
-
-    color: white;
-
-    height: 60px;
-
-}
-
-
-.mainheader th:first-child {
-	border-top-left-radius: 4px;
-}
-
-
-.mainheader th:last-child {
-	border-top-right-radius: 4px;
-}
-
-
-
-.mainheader th {
-
-    text-align: center;
-
-    padding: 10px;
-
-}
-
-
-
-#TweetBody {
-
-    font-size: 100%;
-
-}
-
-
-
-.day {
-
-    background: #dcdcdc;
-
-}
-
-
-.day b {
-	
-    margin-left: 150px;
-}
-
-
-
-.day.first {
-
-    border-top-left-radius: 8px;
-
-}
-
-
-
-.day.last {
-
-    border-top-right-radius: 8px;
-
-}
-
-
-
-#table tr {
-
-    height: 10px;
-
-}
-
-
-
-.writtenBy {
-
-    width: 10%;
-
-}
-
-
-
-.scheduled {
-
-    width: 15%;
-    
-    float: left;
-    
-    display: inline;
-    
-    margin-left: 21px;
-    
-    font-size: 9pt;
-
-}
-
-
-.calendar.scheduled {
-	float: none;
-	display: table-cell;
-	margin: 0;
-	font-size: 11pt;
-}
-
-
-
-.verified {
-
-    text-align: left;
-    
-    float: right;
-
-}
-
-
-.calendar.verified {
-	float: none;
-}
-
-
-
-.topic {
-
-    width: 15%;
-
-}
-
-
-.topic div {
-	
-	border-radius: 6px;
-
-}
-
-
-
-.divider {
-
-    margin: 10px 0;
-
-}
-
-
-
-#refresh,
-
-#table {
-
-    border-spacing: 0
-
-}
-
-
-#table {
-	
-	margin: 30px 0 0 5%;
-	
-  	width: 940px;
-
-}
-
-
-#refresh {
-	background: #fff;
-	padding: 20px;
-	width: 900px;
-	float: left;
-	margin-top: 30px;
-}
-
-table#refresh {
-	padding: 0;
-	width: 940px;
-	border-radius: 4px;
-}
-
-
-#tweetsubmit {
-
-    font-weight:bold;
-
-    padding: 4px 8px;
-
-    background: #243135;
-
-    color:#fff;
-
-    border: 1px solid #243135;
-
-    border-radius: 4px;
-
-    text-decoration: none;
-
-    min-width: 940px;
-
-    height: 50px;
-
-    font-size: 150%;
-    
-    float: left;
-    
-    margin: 0;
-
-}
-
-#tweetsubmit1 {
-
-    font-weight:bold;
-
-    padding: 4px 8px;
-
-    background: #243135;
-
-    color: #fff;
-
-    border: 1px solid #243135;
-
-    border-radius: 4px;
-
-    text-decoration: none;
-
-    min-width: 150px;
-
-    height: 30px;
-
-    font-size: 150%;
-    
-    float: left;
-    
-   	margin-left: 115px;
-   	
-   	margin-bottom: 0;
-   	
-   	font-size: 10pt;
-
-}
-
-#tweetsubmit:hover {
-
-    background: #45585e;
-
-}
-
-
-
-td {
-
-    border: 1px solid #e4e4e4;
-
-    text-align: center;
-
-}
-
-
-
-.tweetButtons {
-
-	margin-top: 10px;
-
-}
-
-
-
-.awaitingProof {
-
-	padding: 18px;
-
-	background: url(../img/clock.png) left center no-repeat;
-
-}
-
-
-
-.queued {
-
-	padding: 18px;
-
-	background: url(../img/list.png) left center no-repeat;
-
-}
-
-
-
-.published {
-
-	padding: 18px;
-
-	background: url(../img/tick.png) left center no-repeat;
-
-}
-
-
-
-.needImproving {
-
-	padding: 18px;
-
-	background: url(../img/alert.png) left center no-repeat;
-
-}
-
-
-
-.daybyday {
-
-	padding: 18px;
-
-	background: url(../img/calendarsmall.png) left center no-repeat;
-
-}
-
-
-
-.notPublished {
-
-	padding: 18px;
-
-	background: url(../img/crosssmall.png) left center no-repeat;
-
-}
-
-
-
-#filterLinks {
-
-	display: block;
-
-	margin-top: 30px;
-
-}
-
-
-
-#filterLinks .active {
-
-	color: #bd7fd5;
-
-}
-
-/* End */
-
-
-
-
-
-#progress {
-
-	display: inline;
-
-	float: right;
-	
-	width: 400px;
-	
-	height: 122px;
-	
-	background: #fff;
-	
-	border-radius: 4px;
-
-}
-
-
-
-#progress h2 {
-
-	width: 105px;
-
-	margin: 5px auto 0 auto;
-
-	font-size: 120%;
-	
-	color: #243135;
-
-}
-
-
-
-#progress table {
-
-	border-collapse:collapse;
-	
-	margin-top: 5px;
-
-}
-
-
-
-#progress td {
-
-	border: none;
-
-	background: #fff;
-
-	padding: 5px 10px;
-
-}
-
-
-
-.progress {
-
-	font-family: nevis;
-	
-	color: #243135;;
-
-}
-
-
-#addtweetprogress {
-	
-	width: 940px;
-	
-	margin-left: 5%;
-
-}
-
-
-
-.awaitingProofCount {
-
-	color: #ffcc00;
-
-}
-
-
-
-.queuedCount {
-
-	color: #21a750
-
-}
-
-
-
-.needImprovingCount {
-
-	color: #ff0000;
-
-}
-
-
-
-.progress.firstline {
-
-	font-size: 150%
-
-}
-
-
-
-#progress td.mid {
-
-	border-right: 1px solid #dcdcdc;
-
-	border-left: 1px solid #dcdcdc;
-
-}
-
-
-
-#filterAccountAccount {
-
-	margin: 10px 10px 10px 10px;
-
-}
-
-
-
-#filterTeamTeam, #filterUserUser {
-
-	margin: 10px 10px 10px 10px;
-
-}
-
-
-
-#leftpanel {
-
-	width: 250px;
-
-	float: left;
-
-}
-
-
-
-.selectimage {
-
-	margin: 10px 0; 
-
-}
-
-
-
-.notediting {
-
-	margin: 10px 0;
-	font-size: 11pt;
-
-}
-
-
-.notediting b,
-.calendar.scheduled b {
-
-	font-weight: 900;
-	
-	font-size: 14pt;
-	
-}
-
-
-table#table {
-
-	margin-top: 50px;
-
-	float: left;
-
-}
-
-
-
-.shortsingle {
-
-
-
-}
-
-
-
-input[type=file] {
-
-	opacity: 0;
-
-	padding-left: 100px;
-
-}
-
-
-
-.input.file {
-
-	background: url(../img/upload_image.png) left center no-repeat;
-
-	clear: none;
-
-	float: right;
-
-	width: 107px;
-	
-	overflow: hidden;
-
-}
-
-
-
-.input.file:hover {
-
-	background: url(../img/upload_image_hover.png) left center no-repeat;
-
-}
-
-.input.file input {
-	width: 6px;
-}
-
-
-
-.permissionstable {
-
-	width: 240px;
-
-}
-
-.permissionstable tr td {
-
-	background-color: #fff;
-
-	border: none;
-
-	text-align: left;
-
-}
-
-
-
-.permissionstable tr td div.input.checkbox {
-
-	margin: 0;
-
-}
-
-
-
-#TeamsTwitterPermissions,
-#AccountsTwitterPermissions,
-#editTeam input[type=checkbox] {
-
-	opacity: 0;
-
-	float: right;
-
-	margin: 3px 11px 7px 2px;
-
-}
-
-
-
-#TeamsTwitterPermissions + label,
-#AccountsTwitterPermissions + label,
-#editTeam input[type=checkbox] + label {
-
-	background: url(../img/false1.png) right center no-repeat;
-
-	padding: 0 116px 0 0;
-
-	width: 100px;
-
-	display: block!important;
-
-	height: 22px;
-
-}
-
-
-
-#TeamsTwitterPermissions:checked + label,
-#AccountsTwitterPermissions:checked + label,
-#editTeam input[type=checkbox]:checked + label {
-
-	background: url(../img/true.png) right center no-repeat;
-
-}
-
-
-
-#manageteamtext {
-
-	font-size: 130%;
-
-	margin: 5px;
-
-	float: left;
-
-	width: 110px;
-
-}
-
-
-
-#manageteamtext1,
-
-#manageteamtext2 {
-
-	width: 110px
-
-}
-
-
-
-#rightpanel {
-
-	width: 74%;
-
-	float: right
-
-}
-
-
-
-#teamspanel {
-
-	border: 1px solid #dcdcdc;
-
-	float: left;
-
-}
-
-
-
-#teamcomparison {
-
-	width: auto;
-
-	margin: 10px 0;
-
-}
-
-
-
-#teamcomparison td {
-
-	border: none;
-
-	border-right: 1px solid #dcdcdc;
-
-}
-
-
-
-#teamcomparison td:last-child {
-
-	border: none;
-
-}
-
-
-
-#teamMembers td {
-
-	font-size: 110%;
-
-}
-
-
-
-.addteam {
-
-	display: block;
-
-	padding: 0;
-
-	color:#bbb;
-
-	border:1px solid #bbb;
-
-	width: 95%;
-
-	min-width: 50px;
-
-	margin: 10px auto;
-
-}
-
-
-
-.addteam p {
-
-	width: 80px;
-
-	background: url(../img/greyplus.png) right center no-repeat;
-
-	padding: 10px 70px;
-
-	margin: auto
-
-}
-
-
-
-.addteam .ta {
-
-	padding: 10px 27px;
-
-	width: 166px;
-
-	font-size: 90%;
-
-}
-
-
-
-.addteam .iu {
-
-	padding: 10px 60px;
-
-	width: 100px
-
-}
-
-
-
-.submit .addteam {
-
-	border-radius: 0;
-
-	display: block;
-
-	padding: 0;
-
-	color:#bbb;
-
-	border:1px solid #bbb;
-
-	width: 98%;
-
-	min-width: 50px;
-
-	margin: 10px auto;
-
-	background: #fff;
-
-	float: left
-
-}
-
-
-
-.smallerheader {
-
-	font-size: 130%;
-
-}
-
-
-
-#filterAccountManageteamForm select option,
-
-#filterTeamManageteamForm select option {
-
-	font-size: 90%;
-
-}
-
-
-
-#filterAccountManageteamForm select,
-
-#filterTeamManageteamForm select {
-
-	width: 90%;
-
-}
-
-
-
-.floatleft {
-
-	float: left;
-
-	margin: 5px 0;
-
-	color: #999;
-
-}
-
-
-
-#paginatorcontainer {
-
-	float: left;
-
-	background-color: #773d8d;
-
-	padding: 10px;
-
-	color: #fff;
-
-}
-
-
-
-#paginatorcontainer a {
-
-}
-
-
-
-#paginatorcontainer .current {
-
-	color: #999;
-
-	font-weight: bold;
-
-}
-
-
-
-.imagecontainer {
-
-	width: 500px;
-
-	margin: 0 auto;
-
-	position: relative;
-
-}
-
-
-
-.calendar_topic {
-
-	background-color: #88E3FF;
-
-	margin-top: 5px;
-
-	display: block;
-
-	padding:5px;
-
-	min-height: 30px;
-
-	overflow: hidden;
-
-	font-size: 90%;
-	
-	cursor: pointer;
-
-}
-
-
-.calendar_topic:hover {
-
-	background-color: #7CB4C5;
-
-}
-
-
-.calendar_content_type {
-
-	background-color: #7CB4C5;
-
-	margin-top: 5px;
-
-	display: block;
-
-	padding:5px;
-
-	min-height: 30px;
-
-	overflow: hidden;
-
-	font-size: 90%;
-
-}
-
-.calendar_notes {
-
-	background-color: #2D5561;
-
-	margin-top: 5px;
-
-	display: block;
-
-	padding:5px;
-
-	min-height: 30px;
-
-	overflow: hidden;
-
-	font-size: 90%;
-	
-	color: #fff;
-
-}
-
-#addTweetWrapper {
-
-	width: 380px;
-
-	float: left;
-
-	background: #fff;
-
-	padding: 10px 10px 0px 10px;
-
-	margin-bottom: 10px;
-
-	border-radius: 5px;
-	
-	height: 112px;
-
-}
-
-.screenName {
-
-	padding-left: 21px;
-
-	background: url(../img/twitter19px.png) no-repeat left center;
-
-	color: #282828;
-	
-	font-weight: 900;
-	
-	display: inline;
-
-}
-
-.comments {
-
-	float: left;
-	
-	font-weight: 900;
-	
-	padding-left: 21px;
-	
-	background: url(../img/comment0.png) no-repeat left center;
-	
-	font-size: 10pt;
-	
-	clear: none;
-	
-	display: inline;
-	
-	height: 18px;
-	
-	margin-top: 8px;
-
-}
-
-.savetweet,
-.deletetweet {
-	
-	font-size: 10pt;
-	
-	float: left;
-	
-	margin-left: 40px;
-	
-	cursor: pointer;
-	
-	margin-top: 8px;
-
-}
-
-.savetweet:hover,
-.deletetweet:hover {
-	
-	font-weight: 900;
-
-}
-
-.filter {
-	width: 940px;
-	background: #243135;
-	margin: 60px 0 0 5%;
-	overflow: visible;
-	border-radius: 8px;
-	height: 105px;
-}
-
-.filter .selectric {
-	width: 350px;
-}
-
-.selectric-filterAccount {
-	margin: 10px 10px 10px 15px;
-	padding-left: 30px;
-	background: url(../img/twitter19px.png) no-repeat left center;
-	float: left;
-}
-
-.selectric-filterUser {
-	margin: 10px 10px 10px 15px;
-	padding-left: 30px;
-	background: url(../img/userblue.png) no-repeat left center;
-	clear: none;
-	float: right;
-}
-
-.selectric-filterStatus {
-	margin: 10px 10px 10px 15px;
-	padding-left: 30px;
-	background: url(../img/tickblue.png) no-repeat left center;
-	clear: none;
-	float: right;
-}
-
-.selectric-filterTeam {
-	margin: 10px 10px 10px 15px;
-	padding-left: 30px;
-	background: url(../img/groupblue.png) no-repeat left center;
-	clear: none;
-	float: left;
-}
-
-.Monday {
-	color: #36c2ff;
-}
-
-.Tuesday {
-	color: #efa802;
-}
-
-.Wednesday {
-	color: #f044b1;
-}
-
-.Thursday {
-	color: #1dba21;
-}
-
-.Friday {
-	color: #f43535;
-}
-
-.Saturday {
-	color: #ab6cec;
-}
-
-.Sunday {
-	color: #24cba6;
-}
-
-
-.writer b {
-
-	font-weight: 900;
-	
-	font-size: 11pt;
-}
-
-#searchbar {
-	background: rgba(36, 49, 53, 0.20);
-	
-	position: absolute;
-	
-	left: 0;
-	
-	top: 0;
-	
-	width: 100%;
-	
-	height: 40px;
-}
-
-#searchSearch {
-	opacity: 1.0;
-
-	height: 100%;
-	
-	width: 60%;
-	
-	padding: 0 0 0 20px;
-	
-	margin: 0 0 0 200px;
-	
-	border: none;
-	
-	background-color: transparent;
-	
-	color: #fff;
-	
-	font-size: 12pt;
-}
-
-#searchSearch:focus {
-	outline: 0;
-}
-
-.selectric-calendar .selectric {
-	width: 140px;
-}
-
-#dbdbox {
-	float: right;
-	background-color: #243135;
-	color: #fff;
-	height: 102px;
-	border-radius: 5px;
-	margin: 0 10px;
-	width: 120px;
-	text-align: center;
-	padding: 10px 0;
-}
-
-#dbdbox b {
-	font-weight: 700;
-}
-
-#dbdbox .calendarlarge {
-	background: url(../img/calendarlarge.png) no-repeat center top;
-	padding-top: 45px;
-	margin-top: 5px
-}
-
-#dbdbox:hover {
-	background-color: #45585e;
-}
-
-#calendarbuttons {
-	display: block;
-	margin-top: 170px;
-}
-
-#debug-kit-toolbar {
-	display: none;
-}
-
-#noaccount {
-	display: none;
-	background-color: #fff;
-	color: #243135;
-	padding: 20px;
-	margin: 180px 0 0 5%;
-	width: 900px;
-	text-align: center;
-	font-weight: 700;
-}
-
-/*======================================================================
-  Selectric
-======================================================================*/
-.selectricWrapper {
-  position: relative;
-  display: inline-block;
-}
-
-.selectricResponsive {
-  width: 100%;
-}
-
-.selectric {
-  border: 1px solid #DDD;
-  background: #F8F8F8;
-  position: relative;
-  border-radius: 2px;
-  display: inline-block;
-  margin: 0;
-  cursor: pointer;
-}
-.selectric .label {
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  margin: 0 30px 0 0;
-  padding: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  color: #444;
-  min-height: 18px;
-}
-.selectric .button {
-  display: block;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 30px;
-  height: 30px;
-  color: #BBB;
-  text-align: center;
-  font: 0/0 a;
-  /* IE Fix */
-  *font: 20px/30px Lucida Sans Unicode, Arial Unicode MS, Arial;
-}
-.selectric .button:after {
-  content: " ";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  margin: auto;
-  width: 0;
-  height: 0;
-  border: 4px solid transparent;
-  border-top-color: #BBB;
-  border-bottom: none;
-}
-
-.selectricHover .selectric {
-  border-color: #CCC;
-}
-.selectricHover .selectric .button {
-  color: #888;
-}
-.selectricHover .selectric .button:after {
-  border-top-color: #888;
-}
-
-.selectricOpen {
-  z-index: 9999;
-}
-.selectricOpen .selectric {
-  border-color: #CCC;
-  background: #F0F0F0;
-}
-.selectricOpen .selectricItems {
-  display: block;
-}
-
-.selectricDisabled {
-  filter: alpha(opacity=50);
-  opacity: 0.5;
-  cursor: default;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.selectricHideSelect {
-  position: relative;
-  overflow: hidden;
-  width: 0;
-  height: 0;
-  margin: 0;
-}
-.selectricHideSelect select {
-  position: absolute;
-  left: -100%;
-  display: none;
-}
-
-.selectricInput {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  overflow: hidden !important;
-  clip: rect(0, 0, 0, 0) !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 1px !important;
-  height: 1px !important;
-  outline: none !important;
-  border: none !important;
-  *font: 0/0 a !important;
-  background: none !important;
-}
-
-.selectricTempShow {
-  position: absolute !important;
-  visibility: hidden !important;
-  display: block !important;
-}
-
-/* Items box */
-.selectricItems {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: #F9F9F9;
-  border: 1px solid #CCC;
-  z-index: -1;
-  box-shadow: 0 0 10px -6px;
-}
-.selectricItems .selectricScroll {
-  height: 100%;
-  overflow: auto;
-  margin: 0;
-}
-.selectricAbove .selectricItems {
-  top: auto;
-  bottom: 100%;
-}
-.selectricItems ul, .selectricItems li {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  font-size: 12px;
-  line-height: 20px;
-  min-height: 20px;
-}
-.selectricItems li {
-  display: block;
-  padding: 5px;
-  border-top: 1px solid #FFF;
-  border-bottom: 1px solid #EEE;
-  color: #666;
-  cursor: pointer;
-}
-.selectricItems li.selected {
-  background: #EFEFEF;
-  color: #444;
-  border-top-color: #E0E0E0;
-}
-.selectricItems li:hover {
-  background: #F0F0F0;
-  color: #444;
-}
-.selectricItems li.disabled {
-  background: #F5F5F5;
-  color: #BBB;
-  border-top-color: #FAFAFA;
-  cursor: default;
-}
-.selectric-TwitterVerified1 .ico {
-  display: inline-block;
-  vertical-align: middle;
-  zoom: 1;
-  height: 12px;
-  width: 12px;
-  margin: 0 6px 0 0;
-}
-
-.selectric-TwitterVerified1 .ico-1 {
-	background: url(../img/radiogreen.png) no-repeat left center;
-}
-.selectric-TwitterVerified1 .ico-0 {
-
-	background: url(../img/radioamber.png) no-repeat left center;
-}
-.selectric-TwitterVerified1 .ico-2 {
-	background: url(../img/radiored.png) no-repeat left center;
-}
-
-#comment {
-	width: 296px;
-}
-
-form .submit #commentSaveButton {
-	background-color: #6ed3fd;
-	float: none;
-	margin: 0 0 0 -1px;
-	width: auto;
-	border: 1px solid #6ed3fd;
-	border-radius: 5px;
-	border-top-left-radius: 0;
-	border-bottom-left-radius: 0;
-	padding: 0 8px;
-	height: 26px;
-}
-
-#CommentBody {
-	width: 250px;
-	font-size: 11pt;
-	float: left;
-	border: 1px solid #aaa;
-	padding: 4px;
-	border-right: none;
-}
-
-.commentTable {
-	width: 296px;
-	font-size: 10pt;
-}
-
-.commentTable td {
-	border: 0;
-	text-align: left;
-	table-layout: fixed;
-}
-
-.commentTable .commentName {
-	width: 100px;
-	font-weight: bold;
-	background-color: #fff;
-}
-
-.commentTable .commentName span {
-	margin-top: 3px;
-	vertical-align: super;
-	padding-left: 5px;
-}
-
-.commentTable .commentName div {
-	width: 100px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-.commentTable .commentBody {
-	background-color: #fff;
-}
-
-.commentTable .commentBody div {
-	background-color: #dcdcdc;
-	border-radius: 4px;
-	padding: 6px 10px;
-	margin: 0;
-	float: left;
-	width: 150px;
-}
-
-#notificationbox {
-	background-color: #fff;
-	
-	position: absolute;
-	
-	width: 300px;
-	
-	top: 45px;
-	
-	right: 40px;
-	
-	z-index: 100;
-	
-	border-radius: 4px;
-	
-	padding: 0;
-	
-	font-size: 90%;
-	
-	overflow: hidden;
-	
-	display: none;
-}
-
-.arrowup {
-	height: 0;
-	width: 0;
-	border-left: 10px solid transparent;
-	border-right: 10px solid transparent;
-	border-bottom: 10px solid #fff;
-}
-
-.arrowdown {
-	height: 0;
-	width: 0;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	border-top: 5px solid #000;
-	display: inline;
-	position: relative;
-	top: 8px;
-	margin: 0 5px;
-}
-
-.notificationarrow {
-	position: absolute;
-	top: 35px;
-	right: 50px;
-	display: none;
-}
-
-.notificationImage {
-	width: 42px;
-}
-
-.notificationBody div {
-	height: 50px;
-	width: 246px;
-	overflow: hidden;
-	text-overflow: ellipsis;
-}
-
-#notificationTable {
-	border-spacing: 0;
-	margin-bottom: 0;
-}
-
-#notificationTable tr {
-	background: transparent;
-	border: none;
-}
-
-#notificationTable td {
-	border: none;
-	text-align: left;
-	padding: 6px;
-}
-
-#notificationTable .notification0 {
-	background: #efefef;
-	font-weight: bold;
-}
-
-#notificationTable .morenotifications {
-	text-align: center;
-	border-top: 1px solid #efefef;
-	padding: 10px
-}
-
-.recycleTweets {
-	background-color: #fff;
-	max-width: 600px;
-	padding-top: 5px;
-}
-
-.recycleHeader {
-	margin: 10px 5px 0 5px;
-}
-
-.recycleBody {
-	margin-left: 30px;
-	display: block;
-}
-
-.recycleBody div.rr1 {
-	margin: 5px;
-}
-
-.recycleBody .rr1 div {
-	padding: 4px;
-	background-color: #dcdcdc;
-	border-radius: 4px;
-	cursor: pointer;
-	margin: 2px;
-	display: inline-block;
-	max-width: 500px;
-}
-
-.recycleBody .rr1 div:hover {
-	background-color: #7CB4C5;
-}
-
-
-.recycleBodyImage {
-	vertical-align: middle;
-	margin: 4px 0 0 20px;
-	float: left;
-}
-
-.recycleHead {
-	font-size: 10pt;
-	background-color: #243135;
-	color: #fff;
-	display: block;
-	padding: 7px;
-	border-radius: 5px;
-	font-weight: bold;
-	text-align: center;
-	min-width: 200px;
-}
-
-.recycleHead b {
-	color: #21a750;
-}
-
-.recycleTweets b2 {
-	font-weight: bold;
-	color: #7CB4C5;
-}
-
-.recycleTweets span {
-	font-size: 10pt;
-}
-
-.fixedTwitterAccount {
-	position: fixed;
-	top: 0;
-	left: 250px;
-	background-color: #fff;
-	border-bottom-left-radius: 4px;
-	border-bottom-right-radius: 4px;
-	padding: 5px;
-	border: 1px solid #999;
-	border-top: none;
-}
-
-.fixedScroller {
-	position: fixed;
-	right: 0;
-	top: 0;
-	background-color: #fff;
-	border-radius: 6px 0 0 6px;
-	overflow: hidden;
-	opacity: 0.5;
-	display: none;
-	cursor: pointer;
-	transition: opacity 0.5s ease-in-out;
-}
-
-.fixedScroller:hover {
-	opacity: 1;
-}
-
-.fixedScroller table {
-	border-spacing: 0;
-	margin: 0;
-}
-
-.fixedScroller table td {
-	background: #fff;
-	font-size: 8pt;
-	padding: 3px;
-}
-
-.fixedScroller table td.allApproved {
-	background-color: #c5fbd8;
-}
-
-.fixedScroller table td.notAllApproved {
-	background-color: #fbeeb8;
-}
-
-.fixedScroller table td.improveApproved {
-	background-color: #fc8181;
-}
-
-
-.fixedScroller table td:hover {
-	background: #dcdcdc;
-}
-
-.fixedScroller table td.allApproved:hover {
-	background-color: #5ee18c;
-}
-
-.fixedScroller table td.notAllApproved:hover {
-	background-color: #efd35d;
-}
-
-.fixedScroller table td.improveApproved:hover {
-	background-color: #e73b3b;
-}
-
-.isTyping {
-	margin: 0;
-	border: 1px solid #939393;
-	float: right;
-	border-top: none;
-	padding: 5px;
-	padding-left: 20px;
-	border-radius: 4px;
-	border-top-right-radius: 0px;
-	border-top-left-radius: 0px;
-	background: url('../img/loader.gif') no-repeat 3px center;
-	display: none;
-}
-
-.teamsContainer {
-	background-color: #fff;
-	min-width: 400px;
-	margin: 15px;
-	float: left;
-}
-
-.teamsContainerHeader {
-	padding: 10px;
-	border-bottom: 1px solid #e4e4e4;
-	font-weight: bold;
-}
-
-.teamsContainerSpan {
-	padding: 10px;
-	padding-left: 20px;
-}
-
-.teamsContainerSpan b {
-	font-size: 30pt;
-}
-
-.teamsContainer small {
-	display: block;
-	padding: 10px;
-	padding-left: 20px;
-}
-
-.multiProgressBar {
-	width: 300px;
-	margin: 0;
-}
-
-.howManyWritten {
-	display: block;
-	text-align: right;
-	
-}
-
-.howManyWritten1 {
-	text-align: right;
-	margin-top: 15px;
-}
-
-.topTweeters {
-	float: left;
-	padding: 5px;
-}
-
-.topTweetersNumbers {
-	float: right;
-}
-
-.topTweetersName {
-	font-size: 12pt;
-	font-weight: bold;
-}
-
-.multiProgressBar hr {
-	margin: 0;
-	float:left;
-	height: 5px;
-}
-
-#howManyWrittenBlock1 {
-	height: 10px;
-	width: 10px;
-	background-color: #21a750;
-	float: right;
-}
-
-#howManyWrittenBlock0 {
-	height: 10px;
-	width: 10px;
-	background-color: #ffcc00;
-	float: right;
-}
-
-#howManyWrittenBlock2 {
-	height: 10px;
-	width: 10px;
-	background-color: #ff0000;
-	float: right;
-}
-
-.allApproved {
-	background-color: #21a750;
-}
-
-.notAllApproved {
-	background-color: #ffcc00;
-}
-
-.improveApproved {
-	background-color: #ff0000;
-}
-
-#teamOverview tbody tr td {
-	opacity: 0.3;
-}
-
-#teamOverview tbody tr td:hover {
-	cursor: pointer;
-}
-
-#teamOverview .screenName {
-	opacity: 1;
-}
-
-.myChart {
-	display: block;
-	margin: 0 auto;
-}
-
-.byAccount {
-	min-width: 380px;
-	padding:10px;
-}
-
-#editTeam {
-	list-style: none;
-	background-color: #fff;
-	padding: 10px;
-	margin-left: 20px;
-	float: left;
-}
-
-#editTeam:nth-child(2) {
-	float: right;
-}
-
-#editTeam .teamsContainerHeader {
-	margin-bottom: 20px;
-}
-
-.teamsRow {
-	width: 940px;
-	float: left;
-}
-
-#barChart {
-	padding: 15px;
-}
-
-.editTeamFilter .selectric {
-	width: 300px;
-}
-
-.editTeamFilter {
-	width: 760px;
-	margin: 50px auto;
-	height: auto;
-	padding: 20px;
-}
-
-#filterTeamEditForm .selectricWrapper {
-	float: right;
-}
-
-#UsersEditForm label,
-#UsersEditrefreshForm label {
-	display: inline;
-	padding: 5px;
-}
-
-.selectricWrapper.selectric-aCheckbox {
-	float: right;
-}
-
-.selectricWrapper.selectric-aCheckbox .selectric {
-	width: 100px;
-}
-
-#UsersEditForm .input.select,
-#UsersEditrefreshForm .input.select {
-	width: 300px;
-	display: inline-block;
-}
-
-#editTeamRow {
-	width: 800px;
-	margin: 0 auto;
-}
-
-#topManageTeams {
-	margin-top: 50px;
-}
-
-#TeamManageteamForm .submit input {
-	float: none;
-	margin: 5px 10px;
-}
-
-#TeamManageteamForm .selectric {
-	margin: 0 10px;
-}
-
-.tweetBank {
-	background-color: #fff;
-	padding: 10px;
-	width: 470px
-}
-
-textarea#TweetBankBody {
-	width: 450px;
-	border: 1px solid #dcdcdc;
-	height: 60px;
-	resize: none;
-	font-size: 9pt;
-}
-
-/*SVG LOADER*/
-.loader {
-  position: absolute;
-  width: 100px;
-  height: 100px;
-  left: 50%;
-
-  top: 20%;
-}
-
-.circular{
- animation: rotate 2s linear infinite;
- height: 100px;
- position: relative;
- width: 100px;
-}
-
-
-.path {
-  stroke-dasharray: 1,200;
-  stroke-dashoffset: 0;
-  animation: 
-   dash 1.5s ease-in-out infinite,
-   color 6s ease-in-out infinite
-  ;
-  stroke-linecap: round;
-}
-
-@keyframes rotate{
- 100%{
-  transform: rotate(360deg);
- }
-}
-@keyframes dash{
- 0%{
-  stroke-dasharray: 1,200;
-  stroke-dashoffset: 0;
- }
- 50%{
-  stroke-dasharray: 89,200;
-  stroke-dashoffset: -35;
- }
- 100%{
-  stroke-dasharray: 89,200;
-  stroke-dashoffset: -124;
- }
-}
-@keyframes color{
-  100%, 0%{
-    stroke: #d62d20;
-  }
-  40%{
-    stroke: #0057e7;
-  }
-  66%{
-    stroke: #008744;
-  }
-  80%, 90%{
-    stroke: #ffa700;
-  }
-}
+@charset "utf-8";/** * * Generic CSS for CakePHP * * CakePHP(tm) : Rapid Development Framework (http://cakephp.org) * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org) * * Licensed under The MIT License * For full copyright and license information, please see the LICENSE.txt * Redistributions of files must retain the above copyright notice. * * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org) * @link          http://cakephp.org CakePHP(tm) Project * @package       app.webroot.css * @license       http://www.opensource.org/licenses/mit-license.php MIT License */* {	margin:0;	padding:0;}/** Fonts **/@font-face {    font-family: nevis;    src: url(../files/nevis.ttf);}html {	height: 100%;	}/** General Style Info **/.empty {	margin: 0;	padding:0;}body {	background: url(/img/background.jpg) no-repeat fixed;	font-family: 'Lato', 'lucida grande',verdana,helvetica,arial,sans-serif;	font-size:90%;	margin: 0;		min-height: 100%;}a {	color: #999999;	text-decoration: none;	font-weight: none;}a:hover {	color: #fff;	text-decoration:none;}a img {	border:none;}h1, h2, h3, h4 {	font-weight: normal;	margin-bottom:0.5em;}h1 {	color: #773d8d;	font-size: 100%;	font-family: 'Lato';	margin: 28px 0 0 15px;	font-size: 20pt;}h2 {	background:#fff;	color: #a5a5a5;	font-size: 150%;	font-weight: bold;	margin-bottom: 10px;	margin-top: 50px;}h3 {	color: #2c6877;	font-family:'Gill Sans','lucida grande', helvetica, arial, sans-serif;	font-size: 165%;}h4 {	color: #993;	font-weight: normal;}h5 {	color: #999;	font-family: Helvetica;	font-weight: normal;	font-size: 110%;	margin: 5px 0;	cursor: pointer;	float: left}ul, li {	margin: 0 15px;}p {	margin: 0 0 1em 0;}/** Layout **/#container {	text-align: left;}#header{	background: rgba(36, 49, 53, 0.5);	height: 100%;	width: 200px;	box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, .75);		position: fixed;		left: 0;		top: 0;		z-index: 1;}#header h1 {	line-height:20px;	color: #fff;	display: inline;	float: left;		margin-top: 35px;}#header h1 a {	color: #fff;	font-weight: normal;	text-decoration: none;}#header h1 a:hover {	color: #fff;}#header img {	float: left}#headercontainer {	width: 200px;	margin: auto;}#headercontainer h1 a b {	color: #4ec3ff;}#headercontainer .inactive:hover {	background: rgba(36, 49, 53, 0.7);}.beta {	margin: 25px 0 0 -37px;}#logo {	background: #243135;	height: 90px;	}#content{	clear: both;	color: #333;	padding: 10px 20px 40px 20px;	overflow: auto;	min-height: 750px;	/**max-width: 1300px;**/	margin: 40px 0 0 200px;}#footer {	clear: both;	padding: 6px 10px;	text-align: right;	background-color: #2a2a2b;}/** containers **/div.form,div.index,div.view {	float:right;	width:76%;	border-left:1px solid #666;	padding:10px 2%;}div.actions {	float:left;	width:16%;	padding:10px 1.5%;}div.actions h3 {	padding-top:0;	color:#777;}/** Tables **/table {	border-right:0;	clear: both;	color: #333;	margin-bottom: 10px;	width: 100%;}th {	border:0;	text-align: left;	padding:4px;	font-weight: normal;}th a {	display: block;	padding: 2px 4px;	text-decoration: none;}/*th a.asc:after {	content: ' ⇣';}th a.desc:after {	content: ' ⇡';}  */table tr td {	padding: 6px;	vertical-align: top;}table tr:nth-child(even) {	background: #f9f9f9;}td.actions {	text-align: center;	white-space: nowrap;}table td.actions a {	margin: 0px 6px;	padding:2px 5px;}/* SQL log */.cake-sql-log {	background: #fff;}.cake-sql-log td {	padding: 4px 8px;	text-align: left;	font-family: Monaco, Consolas, "Courier New", monospaced;}.cake-sql-log caption {	color:#fff;}/** Paging **/.paging {	background:#fff;	color: #ccc;	margin-top: 1em;	clear:both;}.paging .current,.paging .disabled,.paging a {	text-decoration: none;	padding: 5px 8px;	display: inline-block}.paging > span {	display: inline-block;	border: 1px solid #ccc;	border-left: 0;}.paging > span:hover {	background: #efefef;}.paging .prev {	border-left: 1px solid #ccc;	-moz-border-radius: 4px 0 0 4px;	-webkit-border-radius: 4px 0 0 4px;	border-radius: 4px 0 0 4px;}.paging .next {	-moz-border-radius: 0 4px 4px 0;	-webkit-border-radius: 0 4px 4px 0;	border-radius: 0 4px 4px 0;}.paging .disabled {	color: #ddd;}.paging .disabled:hover {	background: transparent;}.paging .current {	background: #efefef;	color: #c73e14;}/** Scaffold View **/dl {	line-height: 2em;	margin: 0em 0em;	width: 60%;}dl dd:nth-child(4n+2),dl dt:nth-child(4n+1) {	background: #f4f4f4;}dt {	font-weight: bold;	padding-left: 4px;	vertical-align: top;	width: 10em;}dd {	margin-left: 10em;	margin-top: -2em;	vertical-align: top;}/** Forms **/form {	clear: both;	padding: 0;	display: inline;}fieldset {	border: none;	margin-bottom: 1em;	padding: 16px 10px;}fieldset legend {	color: #e32;	font-size: 160%;	font-weight: bold;}fieldset fieldset {	margin-top: 0;	padding: 10px 0 0;}fieldset fieldset legend {	font-size: 120%;	font-weight: normal;}fieldset fieldset div {	clear: left;	margin: 0 20px;}form div {	clear: both;	margin-bottom: 1em;	vertical-align: text-top;}form .input {	color: #444;}form .required {	font-weight: bold;}form .required label:after {	color: #e32;	content: '*';	display:inline;}form div.submit {	border: 0;	clear: both;		display: inline;}label {	display: block;	font-size: 110%;	margin-bottom:3px;}input, textarea {	clear: both;	font-size: 140%;	font-family: "frutiger linotype", "lucida grande", "verdana", sans-serif;	padding: 1%;	width:98%;}select {	clear: both;	font-size: 120%;	vertical-align: text-bottom;}select[multiple=multiple] {	width: 100%;}option {	font-size: 120%;	padding: 0 3px;}input[type=checkbox] {	clear: left;	float: left;	margin: 0px 6px 7px 2px;	width: auto;}div.checkbox label {	display: inline;}input[type=radio] {	float:left;	width:auto;	margin: 6px 0;	padding: 0;	line-height: 26px;		cursor: pointer;}.radio label {	line-height: 26px;}input[type=submit] {	display: inline;	font-size: 110%;	width: auto;}form .submit input[type=submit],.delete, .urlSubmit {	background:#243135;	border-color: #243135;	color: #fff;	padding: 8px 10px;	font-family: Arial;}form .submit input[type=submit]:hover {	background: #bd7fd5;	border-color: #bd7fd5;}/* Form errors */form .error {	background: #FFDACC;	-moz-border-radius: 4px;	-webkit-border-radius: 4px;	border-radius: 4px;	font-weight: normal;}form .error-message {	-moz-border-radius: none;	-webkit-border-radius: none;	border-radius: none;	border: none;	background: none;	margin: 0;	padding-left: 4px;	padding-right: 0;}form .error,form .error-message {	color: #9E2424;	-webkit-box-shadow: none;	-moz-box-shadow: none;	-ms-box-shadow: none;	-o-box-shadow: none;	box-shadow: none;	text-shadow: none;}/** Notices and Errors **/.message {	clear: both;	color: #fff;	font-size: 140%;	font-weight: bold;	margin: 0 0 1em 0;	padding: 5px;}.success,.message,.cake-error,.cake-debug,.notice,p.error,.error-message {	background: #ffcc00;	background-repeat: repeat-x;	border: 1px solid rgba(0, 0, 0, 0.2);	margin-bottom: 18px;	padding: 7px 14px;	color: #404040;	-webkit-border-radius: 4px;	-moz-border-radius: 4px;	border-radius: 4px;}.success,.message,.cake-error,p.error,.error-message {	clear: both;	color: #fff;	background: #c43c35;	border: 1px solid rgba(0, 0, 0, 0.5);	background-repeat: repeat-x;}.success {	clear: both;	color: #fff;	border: 1px solid rgba(0, 0, 0, 0.5);	background: #3B8230;	background-repeat: repeat-x;}p.error {	font-family: Monaco, Consolas, Courier, monospace;	font-size: 120%;	padding: 0.8em;	margin: 1em 0;}p.error em {	font-weight: normal;	line-height: 140%;}.notice {	color: #000;	display: block;	font-size: 120%;	padding: 0.8em;	margin: 1em 0;}.success {	color: #fff;}/**  Actions  **/.actions ul {	margin: 0;	padding: 0;}.actions li {	margin:0 0 0.5em 0;	list-style-type: none;	white-space: nowrap;	padding: 0;}.actions ul li a {	font-weight: normal;	display: block;	clear: both;}/* Buttons and button links */input[type=submit],.actions ul li a,.actions a,.delete,.urlSubmit,.urlSubmit1,.smallSaveButton {	font-weight: 400;		font-size: 10pt;	padding: 5px 8px;	background: #fff;	color:#333;	border:1px solid #bbb;	-webkit-border-radius: 4px;	-moz-border-radius: 4px;	border-radius: 4px;	text-decoration: none;	min-width: 0;	-webkit-user-select: none;	user-select: none;	float: right;		font-family: Lato;		margin: 2px;}.actions ul li a:hover,.actions a:hover,.delete:hover,.urlSubmit:hover,.urlSubmit1:hover,.smallSaveButton:hover {	background: #ddd;	border-color: #acacac;	text-decoration: none;}input[type=submit]:active,.actions ul li a:active,.actions a:active,.delete:active.urlSubmit:active,.smallSaveButton:active {	background: #eee;	border-color: #aaa;	text-decoration: none;}/** Related **/.related {	clear: both;	display: block;}/** Debugging **/pre {	color: #000;	background: #f0f0f0;	padding: 15px;	-moz-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);	-webkit-box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);}.cake-debug-output {	padding: 0;	position: relative;}.cake-debug-output > span {	position: absolute;	top: 5px;	right: 5px;	background: rgba(255, 255, 255, 0.3);	-moz-border-radius: 4px;	-webkit-border-radius: 4px;	border-radius: 4px;	padding: 5px 6px;	color: #000;	display: block;	float: left;	-moz-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);	-webkit-box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);	box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.25), 0 1px 0 rgba(255, 255, 255, 0.5);	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);}.cake-debug,.cake-error {	font-size: 16px;	line-height: 20px;	clear: both;}.cake-error > a {	text-shadow: none;}.cake-error {	white-space: normal;}.cake-stack-trace {	background: rgba(255, 255, 255, 0.7);	color: #333;	margin: 10px 0 5px 0;	padding: 10px 10px 0 10px;	font-size: 120%;	line-height: 140%;	overflow: auto;	position: relative;	-moz-border-radius: 4px;	-webkit-border-radius: 4px;	border-radius: 4px;}.cake-stack-trace a {	text-shadow: none;	background: rgba(255, 255, 255, 0.7);	padding: 5px;	-moz-border-radius: 10px;	-webkit-border-radius: 10px;	border-radius: 10px;	margin: 0px 4px 10px 2px;	font-family: sans-serif;	font-size: 14px;	line-height: 14px;	display: inline-block;	text-decoration: none;	-moz-box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);	-webkit-box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);	box-shadow: inset 0px 1px 0 rgba(0, 0, 0, 0.3);}.cake-code-dump pre {	position: relative;	overflow: auto;}.cake-context {	margin-bottom: 10px;}.cake-stack-trace pre {	color: #000;	background-color: #F0F0F0;	margin: 0px 0 10px 0;	padding: 1em;	overflow: auto;	text-shadow: none;}.cake-stack-trace li {	padding: 10px 5px 0px;	margin: 0 0 4px 0;	font-family: monospace;	border: 1px solid #bbb;	-moz-border-radius: 4px;	-wekbkit-border-radius: 4px;	border-radius: 4px;	background: #dcdcdc;	background-image: -webkit-gradient(linear, left top, left bottom, from(#fefefe), to(#dcdcdc));	background-image: -webkit-linear-gradient(top, #fefefe, #dcdcdc);	background-image: -moz-linear-gradient(top, #fefefe, #dcdcdc);	background-image: -ms-linear-gradient(top, #fefefe, #dcdcdc);	background-image: -o-linear-gradient(top, #fefefe, #dcdcdc);	background-image: linear-gradient(top, #fefefe, #dcdcdc);}/* excerpt */.cake-code-dump pre,.cake-code-dump pre code {	clear: both;	font-size: 12px;	line-height: 15px;	margin: 4px 2px;	padding: 4px;	overflow: auto;}.cake-code-dump .code-highlight {	display: block;	background-color: rgba(255, 255, 0, 0.5);}.code-coverage-results div.code-line {	padding-left:5px;	display:block;	margin-left:10px;}.code-coverage-results div.uncovered span.content {	background:#ecc;}.code-coverage-results div.covered span.content {	background:#cec;}.code-coverage-results div.ignored span.content {	color:#aaa;}.code-coverage-results span.line-num {	color:#666;	display:block;	float:left;	width:20px;	text-align:right;	margin-right:5px;}.code-coverage-results span.line-num strong {	color:#666;}.code-coverage-results div.start {	border:1px solid #aaa;	border-width:1px 1px 0px 1px;	margin-top:30px;	padding-top:5px;}.code-coverage-results div.end {	border:1px solid #aaa;	border-width:0px 1px 1px 1px;	margin-bottom:30px;	padding-bottom:5px;}.code-coverage-results div.realstart {	margin-top:0px;}.code-coverage-results p.note {	color:#bbb;	padding:5px;	margin:5px 0 10px;	font-size:10px;}.code-coverage-results span.result-bad {	color: #a00;}.code-coverage-results span.result-ok {	color: #fa0;}.code-coverage-results span.result-good {	color: #0a0;}/** Elements **/#url-rewriting-warning {	display:none;}/* Custom */span.counter.exceeded {	color: #ff0000;}#urls {	display: inline;	float: left;	width: 18%;}.counter {	display:block;}.counter1,.counter2 {	border: 1px solid #ffcc00;		border-top: none;	padding: 0 0 10px 10px;		margin-top: -3px;		font-weight: 700;		background: #fff;		text-align: left;}.urlSubmit {	margin-top: -15px;	display: block;	float: right;}#TweetBody {	overflow: auto;}#AddTweet:disabled {	opacity: .4}.tweetbody {	width: 40%;	height: auto;	padding: 0;	overflow: auto;}textarea.editing {	font-size: 95%;    height: 150px;    width: 700px;    padding: 6px 6px 0 6px;    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */       -moz-box-sizing: border-box; /* FF1+ */            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/                resize: none;        border-color: #ffcc00;        border-bottom: none;}.calendar.editing {	width: 100%;}.editing:focus {	outline: 0;}.schedule {	font-size: 95%;		width: 95px;		float: left;		margin-left: 10px;}.ttt {	margin-right: 10px;		clear: none;		float: right;		width: 225px;		height: 50px;}.color.verified {	width: 100%;}.fr {	float: right;		position: absolute;	font-size: 105%;		padding-bottom: 30px;		top: 25%;		right: 0;		color: #fff;		margin-right: 50px;		cursor: pointer;		height: 30px;}.fr div {	vertical-align: top;	padding-bottom: 30px;}.fr a {	color: #fff;}.fr a:hover {	color: #bd7fd5;}.fr img {	padding: 3px 10px 0 10px;	vertical-align: top;}#userlogout {		background-color: #fff;		position: absolute;		width: 170px;		margin-top: 30px;		top: 0;		z-index: 100;		border-bottom-left-radius: 4px;		border-bottom-right-radius: 4px;		padding: 0;		font-size: 90%;		display: none;}#userlogout ul {		list-style-type: none;		padding: 0;		margin: 0;}#userlogout ul li {		padding: 10px 10px;		margin: 5px 0;	}#userlogout ul li:hover {		background-color: #dedede;	}#userlogout ul a {	color: #243135;}#teamwrapper {	float: left;	right:0px;	position: fixed;}#team table {	display: inline;}#team table tbody {	background: #efefef;}#team table td {	width: 175px;	text-align: left;}#submitTweet {	width: 100%;	float: left;}#table tr {	height: 75px;}#table tr:first-child {	height: auto;}.nopadding {	width: 700px;		float: right;	clear: none;}.calendar.nopadding {	width: 55%;	float: none;}#table thead tr .asc {	background: url(../img/asc.gif) no-repeat right;}#table thead tr .desc {	background: url(../img/desc.gif) no-repeat right;}#table1 {	width:940px;	background-color: #fff;}.asc,.desc,#table a {	color: #fff;}#team {	width: 200px;	background: #efefef;	border-bottom-left-radius: 5px;	float: right;}label[for="TwitterAccountSelectAccount:"] {	display: inline;	margin-right: 10px;}label[for="monthSelector"] {	display: inline;	margin-right: 10px;}hr {	height: 1px;	background-color: #000;	margin: 30px 0;	border: none;	display: block;}#hide {	width: 100%;	margin-top: -50px;	padding: 0;}#hide button {	font-weight:bold;	padding: 4px 8px;	background: #773d8d;	color:#fff;    border: 1px solid #773d8d;	border-radius: 4px;	text-decoration: none;	min-width: 100%;	height: 50px;	font-size: 200%;}#hide button:hover {	background: #bd7fd5;}.input.select {	display: inline;}#monthForm {	display: inline;}#editinfobar {	margin-top: 20px;	display: inline;}#editinfobar img {	margin: 0 10px;}nav {	display: inline;	float: left;}nav ul {	margin: 0;}nav ul li {	font-family: 'Lato';	font-size: 11pt;		font-weight: 500;	/* background-color: #243135; */	/* padding: 5px 5px 5px 10px; */		list-style-type: none;		width: 200px;		height: 50px;		margin: 0}nav ul li a {	color: #fff;	text-align: left;		display: block;		height: 34px;		width: 155px;		padding-top: 16px;		opacity: 0.4;		padding-left: 45px}nav ul li.active {	background-color: #6ed3fd;}nav ul li.active a {	pointer-events: none;	cursor: default;		opacity: 1;}.managetweets {	background: url(/img/navtwitter.png) no-repeat 15px center}.manageteams {	background: url(/img/manageteams.png) no-repeat 15px center}.settings {	background: url(/img/settings.png) no-repeat 15px center}input[type='radio'] {	opacity: 0;	width: 10px;}input[type='radio'] + label {	padding: 0 0 0 20px;	background: url(../img/radio.png) left center no-repeat;	text-align: left;	font-size: 90%;		cursor: pointer;}input[type='radio'][value='0']:checked + label {	background: url(../img/radioamber.png) left center no-repeat;}input[type='radio'][value='1']:checked + label {	background: url(../img/radiogreen.png) left center no-repeat;}input[type='radio'][value='2']:checked + label {	background: url(../img/radiored.png) left center no-repeat;}.input.radio {	padding: 10px;		margin: 0}#teamicon {	float: left;	cursor: pointer;}#teambuttons img {	margin: 0 5px;}#loading {	position: fixed;	top: 50%;	left: 50%;}/* CSS from table from Manage Tweets and Write Tweets page */#table1 {    font-size: 100%;}.input.text {    font-size: 65%!important;        display: inline; }.mainheader {    background-color: #243135;    color: white;    height: 60px;}.mainheader th:first-child {	border-top-left-radius: 4px;}.mainheader th:last-child {	border-top-right-radius: 4px;}.mainheader th {    text-align: center;    padding: 10px;}#TweetBody {    font-size: 100%;}.day {    background: #dcdcdc;}.day b {	    margin-left: 150px;}.day.first {    border-top-left-radius: 8px;}.day.last {    border-top-right-radius: 8px;}#table tr {    height: 10px;}.writtenBy {    width: 10%;}.scheduled {    width: 15%;        float: left;        display: inline;        margin-left: 21px;        font-size: 9pt;}.calendar.scheduled {	float: none;	display: table-cell;	margin: 0;	font-size: 11pt;}.verified {    text-align: left;        float: right;}.calendar.verified {	float: none;}.topic {    width: 15%;}.topic div {		border-radius: 6px;}.divider {    margin: 10px 0;}#refresh,#table {    border-spacing: 0}#table {		margin: 30px 0 0 5%;	  	width: 940px;}#refresh {	background: #fff;	padding: 20px;	width: 900px;	float: left;	margin-top: 30px;}table#refresh {	padding: 0;	width: 940px;	border-radius: 4px;}#tweetsubmit {    font-weight:bold;    padding: 4px 8px;    background: #243135;    color:#fff;    border: 1px solid #243135;    border-radius: 4px;    text-decoration: none;    min-width: 940px;    height: 50px;    font-size: 150%;        float: left;        margin: 0;}#tweetsubmit1 {    font-weight:bold;    padding: 4px 8px;    background: #243135;    color: #fff;    border: 1px solid #243135;    border-radius: 4px;    text-decoration: none;    min-width: 150px;    height: 30px;    font-size: 150%;        float: left;       	margin-left: 115px;   	   	margin-bottom: 0;   	   	font-size: 10pt;}#tweetsubmit:hover {    background: #45585e;}td {    border: 1px solid #e4e4e4;    text-align: center;}.tweetButtons {	margin-top: 10px;}.awaitingProof {	padding: 18px;	background: url(../img/clock.png) left center no-repeat;}.queued {	padding: 18px;	background: url(../img/list.png) left center no-repeat;}.published {	padding: 18px;	background: url(../img/tick.png) left center no-repeat;}.needImproving {	padding: 18px;	background: url(../img/alert.png) left center no-repeat;}.daybyday {	padding: 18px;	background: url(../img/calendarsmall.png) left center no-repeat;}.notPublished {	padding: 18px;	background: url(../img/crosssmall.png) left center no-repeat;}#filterLinks {	display: block;	margin-top: 30px;}#filterLinks .active {	color: #bd7fd5;}/* End */#progress {	display: inline;	float: right;		width: 400px;		height: 122px;		background: #fff;		border-radius: 4px;}#progress h2 {	width: 105px;	margin: 5px auto 0 auto;	font-size: 120%;		color: #243135;}#progress table {	border-collapse:collapse;		margin-top: 5px;}#progress td {	border: none;	background: #fff;	padding: 5px 10px;}.progress {	font-family: nevis;		color: #243135;;}#addtweetprogress {		width: 940px;		margin-left: 5%;}.awaitingProofCount {	color: #ffcc00;}.queuedCount {	color: #21a750}.needImprovingCount {	color: #ff0000;}.progress.firstline {	font-size: 150%}#progress td.mid {	border-right: 1px solid #dcdcdc;	border-left: 1px solid #dcdcdc;}#filterAccountAccount {	margin: 10px 10px 10px 10px;}#filterTeamTeam, #filterUserUser {	margin: 10px 10px 10px 10px;}#leftpanel {	width: 250px;	float: left;}.selectimage {	margin: 10px 0; }.notediting {	margin: 10px 0;	font-size: 11pt;}.notediting b,.calendar.scheduled b {	font-weight: 900;		font-size: 14pt;	}table#table {	margin-top: 50px;	float: left;}.shortsingle {}input[type=file] {	opacity: 0;	padding-left: 100px;}.input.file {	background: url(../img/upload_image.png) left center no-repeat;	clear: none;	float: right;	width: 107px;		overflow: hidden;}.input.file:hover {	background: url(../img/upload_image_hover.png) left center no-repeat;}.input.file input {	width: 6px;}.permissionstable {	width: 240px;}.permissionstable tr td {	background-color: #fff;	border: none;	text-align: left;}.permissionstable tr td div.input.checkbox {	margin: 0;}#TeamsTwitterPermissions,#AccountsTwitterPermissions,#editTeam input[type=checkbox] {	opacity: 0;	float: right;	margin: 3px 11px 7px 2px;}#TeamsTwitterPermissions + label,#AccountsTwitterPermissions + label,#editTeam input[type=checkbox] + label {	background: url(../img/false1.png) right center no-repeat;	padding: 0 116px 0 0;	width: 100px;	display: block!important;	height: 22px;}#TeamsTwitterPermissions:checked + label,#AccountsTwitterPermissions:checked + label,#editTeam input[type=checkbox]:checked + label {	background: url(../img/true.png) right center no-repeat;}#manageteamtext {	font-size: 130%;	margin: 5px;	float: left;	width: 110px;}#manageteamtext1,#manageteamtext2 {	width: 110px}#rightpanel {	width: 74%;	float: right}#teamspanel {	border: 1px solid #dcdcdc;	float: left;}#teamcomparison {	width: auto;	margin: 10px 0;}#teamcomparison td {	border: none;	border-right: 1px solid #dcdcdc;}#teamcomparison td:last-child {	border: none;}#teamMembers td {	font-size: 110%;}.addteam {	display: block;	padding: 0;	color:#bbb;	border:1px solid #bbb;	width: 95%;	min-width: 50px;	margin: 10px auto;}.addteam p {	width: 80px;	background: url(../img/greyplus.png) right center no-repeat;	padding: 10px 70px;	margin: auto}.addteam .ta {	padding: 10px 27px;	width: 166px;	font-size: 90%;}.addteam .iu {	padding: 10px 60px;	width: 100px}.submit .addteam {	border-radius: 0;	display: block;	padding: 0;	color:#bbb;	border:1px solid #bbb;	width: 98%;	min-width: 50px;	margin: 10px auto;	background: #fff;	float: left}.smallerheader {	font-size: 130%;}#filterAccountManageteamForm select option,#filterTeamManageteamForm select option {	font-size: 90%;}#filterAccountManageteamForm select,#filterTeamManageteamForm select {	width: 90%;}.floatleft {	float: left;	margin: 5px 0;	color: #999;}#paginatorcontainer {	float: left;	background-color: #773d8d;	padding: 10px;	color: #fff;}#paginatorcontainer a {}#paginatorcontainer .current {	color: #999;	font-weight: bold;}.imagecontainer {	width: 500px;	margin: 0 auto;	position: relative;}.calendar_topic {	background-color: #88E3FF;	margin-top: 5px;	display: block;	padding:5px;	min-height: 30px;	overflow: hidden;	font-size: 90%;		cursor: pointer;}.calendar_topic:hover {	background-color: #7CB4C5;}.calendar_content_type {	background-color: #7CB4C5;	margin-top: 5px;	display: block;	padding:5px;	min-height: 30px;	overflow: hidden;	font-size: 90%;}.calendar_notes {	background-color: #2D5561;	margin-top: 5px;	display: block;	padding:5px;	min-height: 30px;	overflow: hidden;	font-size: 90%;		color: #fff;}#addTweetWrapper {	width: 380px;	float: left;	background: #fff;	padding: 10px 10px 0px 10px;	margin-bottom: 10px;	border-radius: 5px;		height: 112px;}.screenName {	padding-left: 21px;	background: url(../img/twitter19px.png) no-repeat left center;	color: #282828;		font-weight: 900;		display: inline;}.comments {	float: left;		font-weight: 900;		padding-left: 21px;		background: url(../img/comment0.png) no-repeat left center;		font-size: 10pt;		clear: none;		display: inline;		height: 18px;		margin-top: 8px;}.savetweet,.deletetweet {		font-size: 10pt;		float: left;		margin-left: 40px;		cursor: pointer;		margin-top: 8px;}.savetweet:hover,.deletetweet:hover {		font-weight: 900;}.filter {	width: 940px;	background: #243135;	margin: 60px 0 0 5%;	overflow: visible;	border-radius: 8px;	height: 105px;}.filter .selectric {	width: 350px;}.selectric-filterAccount {	margin: 10px 10px 10px 15px;	padding-left: 30px;	background: url(../img/twitter19px.png) no-repeat left center;	float: left;}.selectric-filterUser {	margin: 10px 10px 10px 15px;	padding-left: 30px;	background: url(../img/userblue.png) no-repeat left center;	clear: none;	float: right;}.selectric-filterStatus {	margin: 10px 10px 10px 15px;	padding-left: 30px;	background: url(../img/tickblue.png) no-repeat left center;	clear: none;	float: right;}.selectric-filterTeam {	margin: 10px 10px 10px 15px;	padding-left: 30px;	background: url(../img/groupblue.png) no-repeat left center;	clear: none;	float: left;}.Monday {	color: #36c2ff;}.Tuesday {	color: #efa802;}.Wednesday {	color: #f044b1;}.Thursday {	color: #1dba21;}.Friday {	color: #f43535;}.Saturday {	color: #ab6cec;}.Sunday {	color: #24cba6;}.writer b {	font-weight: 900;		font-size: 11pt;}#searchbar {	background: rgba(36, 49, 53, 0.20);		position: absolute;		left: 0;		top: 0;		width: 100%;		height: 40px;}#searchSearch {	opacity: 1.0;	height: 100%;		width: 60%;		padding: 0 0 0 20px;		margin: 0 0 0 200px;		border: none;		background-color: transparent;		color: #fff;		font-size: 12pt;}#searchSearch:focus {	outline: 0;}.selectric-calendar .selectric {	width: 140px;}#dbdbox {	float: right;	background-color: #243135;	color: #fff;	height: 102px;	border-radius: 5px;	margin: 0 10px;	width: 120px;	text-align: center;	padding: 10px 0;}#dbdbox b {	font-weight: 700;}#dbdbox .calendarlarge {	background: url(../img/calendarlarge.png) no-repeat center top;	padding-top: 45px;	margin-top: 5px}#dbdbox:hover {	background-color: #45585e;}#calendarbuttons {	display: block;	margin-top: 170px;}#debug-kit-toolbar {	display: none;}#noaccount {	display: none;	background-color: #fff;	color: #243135;	padding: 20px;	margin: 180px 0 0 5%;	width: 900px;	text-align: center;	font-weight: 700;}/*======================================================================  Selectric======================================================================*/.selectricWrapper {  position: relative;  display: inline-block;}.selectricResponsive {  width: 100%;}.selectric {  border: 1px solid #DDD;  background: #F8F8F8;  position: relative;  border-radius: 2px;  display: inline-block;  margin: 0;  cursor: pointer;}.selectric .label {  display: block;  white-space: nowrap;  overflow: hidden;  margin: 0 30px 0 0;  padding: 6px;  font-size: 12px;  line-height: 18px;  color: #444;  min-height: 18px;}.selectric .button {  display: block;  position: absolute;  right: 0;  top: 0;  width: 30px;  height: 30px;  color: #BBB;  text-align: center;  font: 0/0 a;  /* IE Fix */  *font: 20px/30px Lucida Sans Unicode, Arial Unicode MS, Arial;}.selectric .button:after {  content: " ";  position: absolute;  top: 0;  right: 0;  bottom: 0;  left: 0;  margin: auto;  width: 0;  height: 0;  border: 4px solid transparent;  border-top-color: #BBB;  border-bottom: none;}.selectricHover .selectric {  border-color: #CCC;}.selectricHover .selectric .button {  color: #888;}.selectricHover .selectric .button:after {  border-top-color: #888;}.selectricOpen {  z-index: 9999;}.selectricOpen .selectric {  border-color: #CCC;  background: #F0F0F0;}.selectricOpen .selectricItems {  display: block;}.selectricDisabled {  filter: alpha(opacity=50);  opacity: 0.5;  cursor: default;  -webkit-touch-callout: none;  -webkit-user-select: none;     -moz-user-select: none;      -ms-user-select: none;          user-select: none;}.selectricHideSelect {  position: relative;  overflow: hidden;  width: 0;  height: 0;  margin: 0;}.selectricHideSelect select {  position: absolute;  left: -100%;  display: none;}.selectricInput {  position: absolute !important;  top: 0 !important;  left: 0 !important;  overflow: hidden !important;  clip: rect(0, 0, 0, 0) !important;  margin: 0 !important;  padding: 0 !important;  width: 1px !important;  height: 1px !important;  outline: none !important;  border: none !important;  *font: 0/0 a !important;  background: none !important;}.selectricTempShow {  position: absolute !important;  visibility: hidden !important;  display: block !important;}/* Items box */.selectricItems {  display: none;  position: absolute;  top: 100%;  left: 0;  background: #F9F9F9;  border: 1px solid #CCC;  z-index: -1;  box-shadow: 0 0 10px -6px;}.selectricItems .selectricScroll {  height: 100%;  overflow: auto;  margin: 0;}.selectricAbove .selectricItems {  top: auto;  bottom: 100%;}.selectricItems ul, .selectricItems li {  list-style: none;  padding: 0;  margin: 0;  font-size: 12px;  line-height: 20px;  min-height: 20px;}.selectricItems li {  display: block;  padding: 5px;  border-top: 1px solid #FFF;  border-bottom: 1px solid #EEE;  color: #666;  cursor: pointer;}.selectricItems li.selected {  background: #EFEFEF;  color: #444;  border-top-color: #E0E0E0;}.selectricItems li:hover {  background: #F0F0F0;  color: #444;}.selectricItems li.disabled {  background: #F5F5F5;  color: #BBB;  border-top-color: #FAFAFA;  cursor: default;}.selectric-TwitterVerified1 .ico {  display: inline-block;  vertical-align: middle;  zoom: 1;  height: 12px;  width: 12px;  margin: 0 6px 0 0;}.selectric-TwitterVerified1 .ico-1 {	background: url(../img/radiogreen.png) no-repeat left center;}.selectric-TwitterVerified1 .ico-0 {	background: url(../img/radioamber.png) no-repeat left center;}.selectric-TwitterVerified1 .ico-2 {	background: url(../img/radiored.png) no-repeat left center;}#comment {	width: 296px;}form .submit #commentSaveButton {	background-color: #6ed3fd;	float: none;	margin: 0 0 0 -1px;	width: auto;	border: 1px solid #6ed3fd;	border-radius: 5px;	border-top-left-radius: 0;	border-bottom-left-radius: 0;	padding: 0 8px;	height: 26px;}#CommentBody {	width: 250px;	font-size: 11pt;	float: left;	border: 1px solid #aaa;	padding: 4px;	border-right: none;}.commentTable {	width: 296px;	font-size: 10pt;}.commentTable td {	border: 0;	text-align: left;	table-layout: fixed;}.commentTable .commentName {	width: 100px;	font-weight: bold;	background-color: #fff;}.commentTable .commentName span {	margin-top: 3px;	vertical-align: super;	padding-left: 5px;}.commentTable .commentName div {	width: 100px;	white-space: nowrap;	overflow: hidden;	text-overflow: ellipsis;}.commentTable .commentBody {	background-color: #fff;}.commentTable .commentBody div {	background-color: #dcdcdc;	border-radius: 4px;	padding: 6px 10px;	margin: 0;	float: left;	width: 150px;}#notificationbox {	background-color: #fff;		position: absolute;		width: 300px;		top: 45px;		right: 40px;		z-index: 100;		border-radius: 4px;		padding: 0;		font-size: 90%;		overflow: hidden;		display: none;}.arrowup {	height: 0;	width: 0;	border-left: 10px solid transparent;	border-right: 10px solid transparent;	border-bottom: 10px solid #fff;}.arrowdown {	height: 0;	width: 0;	border-left: 5px solid transparent;	border-right: 5px solid transparent;	border-top: 5px solid #000;	display: inline;	position: relative;	top: 8px;	margin: 0 5px;}.notificationarrow {	position: absolute;	top: 35px;	right: 50px;	display: none;}.notificationImage {	width: 42px;}.notificationBody div {	height: 50px;	width: 246px;	overflow: hidden;	text-overflow: ellipsis;}#notificationTable {	border-spacing: 0;	margin-bottom: 0;}#notificationTable tr {	background: transparent;	border: none;}#notificationTable td {	border: none;	text-align: left;	padding: 6px;}#notificationTable .notification0 {	background: #efefef;	font-weight: bold;}#notificationTable .morenotifications {	text-align: center;	border-top: 1px solid #efefef;	padding: 10px}.recycleTweets {	background-color: #fff;	max-width: 600px;	padding-top: 5px;}.recycleHeader {	margin: 10px 5px 0 5px;}.recycleBody {	margin-left: 30px;	display: block;}.recycleBody div.rr1 {	margin: 5px;}.recycleBody .rr1 div {	padding: 4px;	background-color: #dcdcdc;	border-radius: 4px;	cursor: pointer;	margin: 2px;	display: inline-block;	max-width: 500px;}.recycleBody .rr1 div:hover {	background-color: #7CB4C5;}.recycleBodyImage {	vertical-align: middle;	margin: 4px 0 0 20px;	float: left;}.recycleHead {	font-size: 10pt;	background-color: #243135;	color: #fff;	display: block;	padding: 7px;	border-radius: 5px;	font-weight: bold;	text-align: center;	min-width: 200px;}.recycleHead b {	color: #21a750;}.recycleTweets b2 {	font-weight: bold;	color: #7CB4C5;}.recycleTweets span {	font-size: 10pt;}.fixedTwitterAccount {	position: fixed;	top: 0;	left: 250px;	background-color: #fff;	border-bottom-left-radius: 4px;	border-bottom-right-radius: 4px;	padding: 5px;	border: 1px solid #999;	border-top: none;}.fixedScroller {	position: fixed;	right: 0;	top: 0;	background-color: #fff;	border-radius: 6px 0 0 6px;	overflow: hidden;	opacity: 0.5;	display: none;	cursor: pointer;	transition: opacity 0.5s ease-in-out;}.fixedScroller:hover {	opacity: 1;}.fixedScroller table {	border-spacing: 0;	margin: 0;}.fixedScroller table td {	background: #fff;	font-size: 8pt;	padding: 3px;}.fixedScroller table td.allApproved {	background-color: #c5fbd8;}.fixedScroller table td.notAllApproved {	background-color: #fbeeb8;}.fixedScroller table td.improveApproved {	background-color: #fc8181;}.fixedScroller table td:hover {	background: #dcdcdc;}.fixedScroller table td.allApproved:hover {	background-color: #5ee18c;}.fixedScroller table td.notAllApproved:hover {	background-color: #efd35d;}.fixedScroller table td.improveApproved:hover {	background-color: #e73b3b;}.isTyping {	margin: 0;	border: 1px solid #939393;	float: right;	border-top: none;	padding: 5px;	padding-left: 20px;	border-radius: 4px;	border-top-right-radius: 0px;	border-top-left-radius: 0px;	background: url('../img/loader.gif') no-repeat 3px center;	display: none;}.teamsContainer {	background-color: #fff;	min-width: 400px;	margin: 15px;	float: left;}.teamsContainerHeader {	padding: 10px;	border-bottom: 1px solid #e4e4e4;	font-weight: bold;}.teamsContainerSpan {	padding: 10px;	padding-left: 20px;}.teamsContainerSpan b {	font-size: 30pt;}.teamsContainer small {	display: block;	padding: 10px;	padding-left: 20px;}.multiProgressBar {	width: 300px;	margin: 0;}.howManyWritten {	display: block;	text-align: right;	}.howManyWritten1 {	text-align: right;	margin-top: 15px;}.topTweeters {	float: left;	padding: 5px;}.topTweetersNumbers {	float: right;}.topTweetersName {	font-size: 12pt;	font-weight: bold;}.multiProgressBar hr {	margin: 0;	float:left;	height: 5px;}#howManyWrittenBlock1 {	height: 10px;	width: 10px;	background-color: #21a750;	float: right;}#howManyWrittenBlock0 {	height: 10px;	width: 10px;	background-color: #ffcc00;	float: right;}#howManyWrittenBlock2 {	height: 10px;	width: 10px;	background-color: #ff0000;	float: right;}.allApproved {	background-color: #21a750;}.notAllApproved {	background-color: #ffcc00;}.improveApproved {	background-color: #ff0000;}#teamOverview tbody tr td {	opacity: 0.3;}#teamOverview tbody tr td:hover {	cursor: pointer;}#teamOverview .screenName {	opacity: 1;}.myChart {	display: block;	margin: 0 auto;}.byAccount {	min-width: 380px;	padding:10px;}#editTeam {	list-style: none;	background-color: #fff;	padding: 10px;	margin-left: 20px;	float: left;}#editTeam:nth-child(2) {	float: right;}#editTeam .teamsContainerHeader {	margin-bottom: 20px;}.teamsRow {	width: 940px;	float: left;}#barChart {	padding: 15px;}.editTeamFilter .selectric {	width: 300px;}.editTeamFilter {	width: 760px;	margin: 50px auto;	height: auto;	padding: 20px;}#filterTeamEditForm .selectricWrapper {	float: right;}#UsersEditForm label,#UsersEditrefreshForm label {	display: inline;	padding: 5px;}.selectricWrapper.selectric-aCheckbox {	float: right;}.selectricWrapper.selectric-aCheckbox .selectric {	width: 100px;}#UsersEditForm .input.select,#UsersEditrefreshForm .input.select {	width: 300px;	display: inline-block;}#editTeamRow {	width: 800px;	margin: 0 auto;}#topManageTeams {	margin-top: 50px;}#TeamManageteamForm .submit input {	float: none;	margin: 5px 10px;}#TeamManageteamForm .selectric {	margin: 0 10px;}.tweetBank {	background-color: #fff;	padding: 10px;	width: 470px}textarea#TweetBankBody {	width: 450px;	border: 1px solid #dcdcdc;	height: 60px;	resize: none;	font-size: 9pt;}/*SVG LOADER*/.loader {  position: absolute;  width: 100px;  height: 100px;  left: 50%;  top: 20%;}.circular{ animation: rotate 2s linear infinite; height: 100px; position: relative; width: 100px;}.path {  stroke-dasharray: 1,200;  stroke-dashoffset: 0;  animation:    dash 1.5s ease-in-out infinite,   color 6s ease-in-out infinite  ;  stroke-linecap: round;}@keyframes rotate{ 100%{  transform: rotate(360deg);   }}@keyframes dash{ 0%{  stroke-dasharray: 1,200;  stroke-dashoffset: 0; }  50%{  stroke-dasharray: 89,200;  stroke-dashoffset: -35; } 100%{  stroke-dasharray: 89,200;  stroke-dashoffset: -124; }}@keyframes color{  100%, 0%{    stroke: #d62d20;    }  40%{    stroke: #0057e7;    }  66%{    stroke: #008744;  }  80%, 90%{    stroke: #ffa700;  }}
