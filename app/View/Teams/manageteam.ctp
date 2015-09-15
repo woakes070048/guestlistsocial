@@ -1,31 +1,23 @@
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
+
 <?
 echo $this->Html->script('Chart.min');
-echo $this->Html->script('jquery.qtip.min');
-echo $this->Html->css('jquery.qtip.min');
-echo $this->Html->script('jquery.selectric.min');
 ?>
-<div id='topManageTeams'>
-<?
-$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
-echo $this->Form->create('Team');
-echo $this->Form->input('id', array('type' => 'select', 'options' => $ddTeams, 'empty' => 'Select Team', 'label' => false));
-echo $this->Form->input('Select Month', array(
-    'options' => array(
+<div class='slick'>
+    <?
+    $base = strtotime(date('Y-m',time()) . '-01 00:00:01'); 
+    $monthsarray = array(
         0 => date('F Y', strtotime('+0 month', $base)),
         1 => date('F Y', strtotime('+1 month', $base)),
         2 => date('F Y', strtotime('+2 month', $base)),
         3 => date('F Y', strtotime('+3 month', $base)),
         4 => date('F Y', strtotime('+4 month', $base)),
         5 => date('F Y', strtotime('+5 month', $base))
-        ),
-    'selected' => $months,
-    'id' => 'monthSelector',
-    'onchange' => 'this.form.submit()',
-    'label' => false,
-    ));
-echo $this->Form->end('Go');
-echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'urlSubmit', 'style' => 'display: inline; float: none'));?>
+        );
+    foreach ($monthsarray as $key => $value) {?>
+        <div data-month=<?echo $key;?>>
+            <?echo $value;?>
+        </div>
+    <?}?>
 </div>
 <?if (!empty($totalCount1)) {
 	foreach ($totalCount1 as $key => $value) {
@@ -101,13 +93,13 @@ echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'url
 		<b>Team Overview:</b>
 		</div>
 
-		<small style='float:left'>(Click a box to be redirected to the day-by-day view for that day)</small>
-		<div style='float: right; padding: 10px;'>
+		<div style='float: right; padding: 10px; font-size: 12px; padding-left: 0;'>
 			<div id="howManyWrittenBlock1" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>All Approved
 			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some still to be Approved
 			<div id="howManyWrittenBlock2" style='float: none; display: inline-block; margin: 0 5px 0 10px;'></div>Some need Improving
 			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing<br />
 		</div>
+		<small style='float:right; font-size: 10px;'>(Click a box to be redirected to the day-by-day view for that day)</small>
 			<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
 				<tr>
 					<th>
@@ -118,7 +110,7 @@ echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'url
 				</tr>
 				<?foreach ($tableTweets1 as $key => $value) {?>
 					<tr>
-						<td class='screenName' style='display:block'><?echo $totalCount1[$key]['screen_name'];?></td>
+						<td style='display:block' data-scroll='0' data-account-id='<?echo $key;?>'><?echo $this->Html->image($totalCount1[$key]['profile_pic'], array('width' => '30px', 'style' => 'border-radius: 15px;', 'data-name' => $totalCount1[$key]['screen_name']));?></td>
 						<?for ($i=1; $i <= date('t'); $i++) {?>
 								<?
 								if (empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
@@ -176,7 +168,7 @@ echo $this->Html->link('Edit/Create Teams', '/teams/edit', array('class' => 'url
 			<div class='teamsContainerHeader'>
 			<b>User's Performance</b>
 			</div>
-			<canvas id="barChart" width="940" height="300"></canvas>
+			<canvas id="barChart" width="660" height="200"></canvas>
 		</div>
 	</div>
 <?}?>
@@ -300,7 +292,34 @@ $(document).ready(function() {
 		});
 	<?}?>
 
-	$('select').selectric();
+	$('#teamOverview img').qtip({
+		content: {
+			text: function(event, api) {
+				name = $(this).attr('data-name');
+				return name;
+			}
+		},
+        position: {
+            my: 'bottom center',
+            at: 'top center', 
+            target: 'event'
+        }
+	});
 
+	$('.slick').slick({
+        prevArrow: "<div class='slick-arrowleft'></div>",
+        nextArrow: "<div class='slick-arrowright'></div>",
+        initialSlide: <? echo $this->Session->read('Auth.User.monthSelector');?>
+    });
+
+    $('.slick-arrowright, .slick-arrowleft').click(function () {
+        $('#table').css('opacity', '.4');
+        $('#loading').show();
+        var month = $(this).closest('.slick').find('.slick-current').attr('data-month');
+        $('#table').load('/teams/manageteam?m=' + month, function () {
+            $('#table').css('opacity', '1');
+            $('#loading').hide();
+        });
+    });
 });
 </script>

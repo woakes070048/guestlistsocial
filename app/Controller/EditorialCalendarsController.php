@@ -1,10 +1,13 @@
 <?php
+
 class EditorialCalendarsController extends AppController {
-    public $components = array('Session', 'Auth', 'Pusher.Pusher');
+    public $components = array('Session', 'Auth', 'Pusher.Pusher', 'Cookie');
     public $helpers =  array('Html' , 'Form', 'Session', 'Pusher.Pusher');
     var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Editor', 'TeamsUser', 'BankCategory', 'TweetBank');
 
+
     //saving editorial calendars
+
     public function calendarsave() {
         debug($this->request->data);
         $data = $this->request->data;
@@ -32,6 +35,7 @@ class EditorialCalendarsController extends AppController {
                         $x['EditorialCalendar']['day'] = $key['day'];
                     }
 
+
                     if (is_int($id)) {
                         $x['EditorialCalendar']['id'] = $id;
                         $tweets = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $id, 'timestamp >' => time())));
@@ -40,14 +44,19 @@ class EditorialCalendarsController extends AppController {
                                 $x1 = array();
                                 $id = $key1['Tweet']['id'];
 
+
                                 $newtime = date('d-m-Y', $key1['Tweet']['timestamp']) . " " . $key['time'];
                                 $newtime = date('d-m-Y H:i', strtotime($newtime)); //this line corrects formatting issues with $key['time']
 
+
+
                                 $newtimestamp = strtotime($newtime);
+
 
                                 $x1['Tweet']['id'] = $id;
                                 $x1['Tweet']['time'] = $newtime;
                                 $x1['Tweet']['timestamp'] = $newtimestamp;
+
 
                                 $saveTweets[] = $x1;
                                 if ($key1['Tweet']['verified'] == 1) {
@@ -58,7 +67,9 @@ class EditorialCalendarsController extends AppController {
                         }
                     }
 
+
                     $saveCalendars[] = $x;  
+
                 }
             }
             debug($saveCalendars);
@@ -78,7 +89,9 @@ class EditorialCalendarsController extends AppController {
         $this->redirect(Controller::referer());
     }
 
+
     //old save process that had a lot of errors
+
     /*public function editcalendartweet() {
         foreach ($this->request->data['Tweet'] as $key) {
             if (!empty($key['id']) || !empty($key['body'])) {
@@ -91,6 +104,7 @@ class EditorialCalendarsController extends AppController {
                     $key['first_name'] = $this->Session->read('Auth.User.first_name');
                 }
     
+
                 if ($key['timestamp']) {
                     $key['time'] = $key['timestamp'];
                     $key['timestamp'] = strtotime($key['timestamp']);
@@ -98,14 +112,18 @@ class EditorialCalendarsController extends AppController {
                     $key['timestamp'] = 0;
                 }
     
+
                     //if (!isset($key['verified'])) {
                     //    $key['verified'] = 0;
                     //}
     
+
     
+
                             //debug($tweet);
                             //debug($key);
                     //if tweet is set to 'needs improving' and body has been changed, set back to 'awaiting proof'
+
                     if (!empty($tweet)) {
                         if ($tweet['Tweet']['verified'] == 2 && $key['verified'] == 2) {
                             if ($tweet['Tweet']['body'] != $key['body']) {
@@ -114,24 +132,31 @@ class EditorialCalendarsController extends AppController {
                         }
                     }
     
+
                     //If it's a new tweet OR if you've altered the tweet body
+
                     if (empty($tweet) || $tweet['Tweet']['body'] != $key['body']) {
                         $key['user_id'] = $this->Session->read('Auth.User.id');
                         $key['verified'] = 0;
                     }
 
+
                     if (empty($key['verified'])) {
                         $key['verified'] = 0;
                     }
     
+
                     $key['account_id'] = $this->Session->read('access_token.account_id');
     
+
                     //Handling images
+
                 if ($key['img_url1']['error'] == 0) {
                     $z = explode(".", $key['img_url1']['name']);
                     $extension = end($z);
                     $allowed_extensions = array("gif", "jpeg", "jpg", "png");
     
+
                     if (in_array($extension, $allowed_extensions)) {
                         $newFileName = $this->Session->read('Auth.User.id') . md5(mt_rand(1000000000,9999999999)) . "." . $extension;
                         move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
@@ -140,10 +165,12 @@ class EditorialCalendarsController extends AppController {
                         $this->Session->setFlash('You can only upload images.');
                     }
 
+
                 } elseif ($key['img_url1']['error'] == 1) {
                     $this->Session->setFlash('Image too large, please try another image (Max 2MB)');
                 }
                 
+
                 if ($key['body']) {
                     if ($this->Tweet->save($key)) {
                         if ($key['verified'] == 1) {
@@ -158,12 +185,16 @@ class EditorialCalendarsController extends AppController {
                     $this->CronTweet->delete($key['id']);
                 }
 
+
             }
             unset($key);
         }
 
+
         $this->redirect(Controller::referer());
     }*/
+
+
 
     public function editcalendartweet1() {
         $test = array();
@@ -185,8 +216,10 @@ class EditorialCalendarsController extends AppController {
         }
         foreach ($this->request->data['Tweet'] as $value => $key) {
             if (empty($key['body']) && empty($key['id'])) { //Empty Tweets
+
                 unset($this->request->data['Tweet'][$value]);
             } elseif (!empty($key['id'])) { //Edited Tweets
+
                 if (!empty($key['body'])) {
                     $key['body'] = trim($key['body']);
                 }
@@ -210,10 +243,16 @@ class EditorialCalendarsController extends AppController {
                     if ($original['Tweet']['verified'] == $key['verified'] && empty($key['img_url1']['name'])) {
                         $uneditedTweet = 1;
                     } elseif ($original['Tweet']['verified'] == $key['verified'] && !empty($key['img_url1']['name'])) {//only changed image
+
+                        $key['verified'] = 0;
+                        $edited = true;
+                    } elseif ($original['Tweet']['verified'] == $key['verified'] && !empty($key['img_url'])) {//only changed image
+
                         $key['verified'] = 0;
                         $edited = true;
                     }
                 }
+
 
                 if ($key['verified'] == 2) {
                     $improve = true;
@@ -221,22 +260,26 @@ class EditorialCalendarsController extends AppController {
                     $improve = false;
                 }
 
+
                 if ($original['Tweet']['verified'] != $key['verified'] && $key['verified'] == 1) {
                     $proofed = true;
                 } else {
                     $proofed = false;
                 }
 
+
                 if (!isset($key['verified'])) {
                     $key['verified'] = $original['Tweet']['verified'];
                 }
+
 
                 if (empty($key['img_url'])) {
                     unset($key['img_url']);
                 }
 
                 //Image Handling
-                if (!empty($key['img_url1']['name'])) {
+
+                if (!empty($key['img_url1']['name']) && empty($key['img_url'])) {
                     if ($x = $this->imageHandling($key)) {
                         $key['img_url'] = $x;
                     } else {
@@ -244,8 +287,11 @@ class EditorialCalendarsController extends AppController {
                     }
                     $edited = true;
                 } else {
-                    $key['img_url'] = $original['Tweet']['img_url'];
+                    if (empty($key['img_url'])) {
+                        $key['img_url'] = $original['Tweet']['img_url'];
+                    }
                 }
+
 
                 if (!empty($key['img_url'])) {
                     if (strlen($key['body']) > 117 && $key['verified'] == 1) {
@@ -257,6 +303,7 @@ class EditorialCalendarsController extends AppController {
                     }
                 }
 
+
                 $toSave = array();
                 $toSave['Tweet']['id'] = $key['id'];
                 $toSave['Tweet']['body'] = $key['body'];
@@ -265,13 +312,16 @@ class EditorialCalendarsController extends AppController {
                 $toSave['Tweet']['timestamp'] = $key['timestamp'];
                 $toSave['Tweet']['time'] = $key['time'];
 
+
                 if (!empty($key['img_url'])) {
                     $toSave['Tweet']['img_url'] = $key['img_url'];
                 }
                 
+
                 if (!empty($key['first_name'])) {
                     $toSave['Tweet']['first_name'] = $key['first_name'];
                 }
+
 
                 foreach ($original['Editor'] as $editor) {
                     if ($editor['type'] == 'written') {
@@ -279,9 +329,11 @@ class EditorialCalendarsController extends AppController {
                     }
                 }
                 
+
                 if ($improve) {
                     $toSave['Editor'][] = array('type' => 'improve', 'user_id' => $this->Session->read('Auth.User.id'));
                 }
+
 
                 if ($edited) {
                     if ($written_by != $this->Session->read('Auth.User.id')) {
@@ -289,10 +341,13 @@ class EditorialCalendarsController extends AppController {
                     }
                 } 
 
+
+
                 if ($proofed) {
                     $toSave['Editor'][] = array('type' => 'proofed', 'user_id' => $this->Session->read('Auth.User.id'));
                 }
                 
+
                 if (!empty($newTweetBank)) {
                     if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
                         $toSave['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
@@ -302,6 +357,9 @@ class EditorialCalendarsController extends AppController {
                         }
                     }
                 }
+
+
+
 
 
 
@@ -326,21 +384,28 @@ class EditorialCalendarsController extends AppController {
                 }
                 //}
 
+
             } else { //New Tweets
+
                 $key['body'] = trim($key['body']);
                 $key['first_name'] = $this->Session->read('Auth.User.first_name');
+
 
                 $key['time'] = $key['timestamp'];
                 $key['timestamp'] = strtotime($key['timestamp']);
                 $key['user_id'] = $this->Session->read('Auth.User.id');
                 $key['account_id'] = $this->Session->read('access_token.account_id');
 
+
                 $key['Editor']['user_id'] = $this->Session->read('Auth.User.id');
                 $key['Editor']['type'] = 'written';
+
 
                 if (empty($key['verified'])) {
                     $key['verified'] = 0;
                 }
+
+
 
 
                 if (empty($key['verified_by'])) {
@@ -348,22 +413,28 @@ class EditorialCalendarsController extends AppController {
                 }
 
 
+
+
                 if ($key['verified'] == 1) {
                     $key['verified_by'] = $this->Session->read('Auth.User.first_name');
                 }
+
 
                 if (empty($key['img_url'])) {
                     unset($key['img_url']);
                 }
 
+
                 //Image Handling
-                if (!empty($key['img_url1']['name'])) {
+
+                if (!empty($key['img_url1']['name']) && empty($key['img_url'])) {
                     if ($x = $this->imageHandling($key)) {
                         $key['img_url'] = $x;
                     } else {
                         //$this->Session->setFlash('There was an error processing your image, please try again.');
                     }
                 }
+
 
                 if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
                     $key['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
@@ -372,6 +443,7 @@ class EditorialCalendarsController extends AppController {
                         $key['TweetBank']['img_url'] = $key['img_url'];
                     }
                 }
+
 
                 $toSave = array();
                 $toSave['Tweet']['body'] = $key['body'];
@@ -388,6 +460,7 @@ class EditorialCalendarsController extends AppController {
                 $toSave['Editor'] = array($key['Editor']);
                 $toSave['TweetBank'] = $key['TweetBank'];
 
+
                 if ($key['body']) {
                     //$this->Tweet->create();
                     //$this->Tweet->save($toSave);
@@ -402,8 +475,10 @@ class EditorialCalendarsController extends AppController {
             unset($key);
         }
 
+
         if (!empty($test)) {
             if ($this->Tweet->saveAll($test, array('deep' => true))) {
+
 
             } else {
                 $errors = $this->Tweet->invalidFields();
@@ -412,6 +487,7 @@ class EditorialCalendarsController extends AppController {
                         if (!empty($value['TweetBank']['body'])) {
                             unset($test[$key]['TweetBank']);
                         }
+
 
                         if ($this->Tweet->saveAll($test, array('deep' => true))) {
                         } else {
@@ -422,15 +498,18 @@ class EditorialCalendarsController extends AppController {
             }
         }
 
+
         if (!empty($verified)) {
             if ($this->CronTweet->saveAll($verified)) {
             
+
             } else {
                 $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again1');
             }
         }
         $this->redirect(Controller::referer());
     }
+
 
     private function imageHandling($key) {
         debug($key['img_url1']['name']);
@@ -439,15 +518,19 @@ class EditorialCalendarsController extends AppController {
             $extension = end($z);
             $allowed_extensions = array("gif", "jpeg", "jpg", "png");
         
+
             if (in_array(strtolower($extension), $allowed_extensions)) {
                 $newFileName = $this->Session->read('Auth.User.id') . "-" . $key['account_id'] . "-" . $key['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
                 move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
 
+
                 //delete current image
+
                 /*if (!empty($key['img_url'])) {
                     $toDelete = str_replace("http://social.guestlist.net/", '', $key['img_url']);
                     unlink($toDelete);
                 }*/
+
                 $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
                 return $key['img_url'];
             } else {
@@ -455,6 +538,7 @@ class EditorialCalendarsController extends AppController {
                 return false;
             }
     
+
         } elseif ($key['img_url1']['error'] == 1) {
             $this->Session->setFlash('Image too large, please try another image (Max 2MB)');
             return false;
@@ -462,7 +546,9 @@ class EditorialCalendarsController extends AppController {
             return false;
         }
 
+
     }
+
 
     public function addCalendar() {
         $this->EditorialCalendar->create();
@@ -470,6 +556,7 @@ class EditorialCalendarsController extends AppController {
         $this->EditorialCalendar->saveField('team_id', $this->Session->read('Auth.User.Team.id'));
         $this->redirect(Controller::referer());
     }
+
 
     public function deleteCalendar($account_id, $time) {
         $teamIDs = $this->TeamsUser->find('list', array('fields' => 'team_id', 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1)));
@@ -493,7 +580,8 @@ class EditorialCalendarsController extends AppController {
         $this->redirect(Controller::referer());
     }
 
-    public function calendarRefresh ($months) {
+
+    public function calendarRefresh ($months) {        $this->Session->write('Auth.User.monthSelector', $months);
         $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC'), 'contain' => array('TwitterAccount', 'BankCategory', 'Tweet' => array('conditions' => array('timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'Comment', 'Editor' => array('User')))));
         $calendarx = array();
         $c = array();
@@ -503,6 +591,7 @@ class EditorialCalendarsController extends AppController {
         }
         $calendar = $calendarx;
         
+
         $tweets = array();
         //foreach ($calendar as $key) {
         //    $tweets[$key['EditorialCalendar']['id']] = $this->Tweet->find('all', array('conditions' => array('calendar_id' => $key['EditorialCalendar']['id'], 'timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'recursive' => 2));
@@ -511,40 +600,57 @@ class EditorialCalendarsController extends AppController {
         /*foreach ($tweets as $key) {
             $tweetsx[$key['EditorialCalendar']['id']][] = $key;
 
+
         }
         $tweets = $tweetsx;
         $this->set('tweets', $tweets);*/
+
         $this->set('calendar', $calendar);
         
+
         if (isset($months)) {
             $this->set('months', $months);
+        }
+
+        $team = $this->Cookie->read('currentTeam');
+        if ($this->TeamsUser->hasAny(array('team_id' => $team, 'user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1))) {
+            $this->set('isTeamAdmin', 1);
+        } else {
+            $this->set('isTeamAdmin', 0);
         }
         $this->layout = '';
     }
     
+
     public function editorialRefresh() {
         $calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
         $this->set('calendar', $calendar);
         $this->layout = '';
     }
 
+
     public function hideCalendar() {
         $this->Session->write('Auth.User.show_calendar', 0);
     }
+
 
     public function showCalendar() {
         $this->Session->write('Auth.User.show_calendar', 1);
     }
 
-    public function recycle($calendar_id) {
+
+    public function recycle($calendar_id = null) {
         $teamIDs = array();
         foreach ($this->Session->read('Auth.User.Team') as $key) {
             $teamIDs[] = $key['id'];
         }
         $accounts = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $teamIDs)));
         $screen_names = $this->TwitterAccount->find('list', array('fields' => 'screen_name', 'conditions' => array('account_id' => $accounts), 'order' => array('screen_name' => 'ASC')));
+        $all_accounts = $this->TwitterAccount->find('list', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('account_id' => $accounts), 'order' => array('screen_name' => 'ASC')));
         $this->set('accounts', $screen_names);
+        $this->set('all_accounts', $all_accounts);
         
+
         if (isset($this->request->data['accountSubmit'])) {
             $screen_name = $this->request->data['accountSubmit'];
             $new_oauth_tokens = $this->TwitterAccount->find('first', array('conditions' => array('screen_name' => $screen_name)));
@@ -554,6 +660,7 @@ class EditorialCalendarsController extends AppController {
             $account_id = $this->Session->read('access_token.account_id');
             $this->set('selected', $this->Session->read('access_token.screen_name'));
         }
+
 
         $categories = $this->BankCategory->find('all', array('conditions' => array('account_id' => $account_id)));
         if (!empty($categories)) {
@@ -565,15 +672,31 @@ class EditorialCalendarsController extends AppController {
         }
         $this->set('categories', $categoriesx);
         if (!empty($this->request->data['BankCategory'])) {
-            $this->set('selectedCategories', $this->request->data['BankCategory']);
-            $tweetBanks = $this->TweetBank->find('all', array('conditions' => array('bank_category_id' => $this->request->data['BankCategory'])));
-
+            if (!empty($categoriesx[$calendar_id])) {
+                $this->set('selectedCategories', $this->request->data['BankCategory']);
+                $tweetBanks = $this->TweetBank->find('all', array('conditions' => array('bank_category_id' => $this->request->data['BankCategory'])));
+            } else {
+                $this->set('selectedCategories', $categories[0]['BankCategory']['id']);
+                $tweetBanks = $this->TweetBank->find('all', array('conditions' => array('bank_category_id' => $categories[0]['BankCategory']['category'])));
+            }
+            
         } else {
-            $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('EditorialCalendar.id' => $calendar_id)));
-            $bank_category_id = $calendar['BankCategory']['id'];
-            $this->set('selectedCategories', $bank_category_id);
-            $tweetBanks = $this->TweetBank->find('all', array('conditions' => array('bank_category_id' => $bank_category_id)));
+            if (!empty($calendar_id)) {
+                $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('EditorialCalendar.id' => $calendar_id)));
+                if (!empty($calendar)) {
+                    $bank_category_id = $calendar['BankCategory']['id'];
+                    $this->set('selectedCategories', $bank_category_id);
+                    $tweetBanks = $this->TweetBank->find('all', array('conditions' => array('bank_category_id' => $bank_category_id)));
+                } else {
+                    $this->set('selectedCategories', '');
+                    $tweetBanks = array();
+                }
+            } else {
+                $this->set('selectedCategories', '');
+                $tweetBanks = array();
+            }
         }
+
 
         $this->set('tweetBanks', $tweetBanks);
         $this->layout = '';

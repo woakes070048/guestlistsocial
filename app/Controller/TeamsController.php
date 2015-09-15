@@ -2,11 +2,11 @@
 class TeamsController extends AppController {
     var $uses = array('User', 'Team', 'TwitterAccount', 'TwitterPermission', 'TeamsUser', 'Ticket', 'Tweet', 'EditorialCalendar');
     public $helpers =  array('Html' , 'Form');
-    public $components = array('Tickets');
+    public $components = array('Tickets', 'Cookie');
     
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('test', 'edit', 'users', 'permissionSave1', 'editrefresh');
+        $this->Auth->allow('test', 'edit', 'users', 'permissionSave1', 'editrefresh', 'editTeam', 'deleteTeam');
     }
 
 
@@ -14,22 +14,24 @@ class TeamsController extends AppController {
 		$data = $this->request->data;
 		if (isset($data['name'])) {
 			$data['hash'] = substr(md5(rand()), 0, 20);
+			$data['group_id'] = 1;
+			$data['user_id'] = $this->Session->read('Auth.User.id');
 			$this->Team->save($data);
 			$id = $this->Team->getLastInsertId();
 			
 			$teamHash = $this->Tickets->set($id);
 
-			$this->addtoTeam($teamHash);
-			$this->User->id = $this->Session->read('Auth.User.id');
-			$this->User->saveField('group_id', 1);
-			$this->Session->write('Auth.User.Group.id', 1);
-			$this->Session->write('Auth.User.group_id', 1);
+			$groupHash = $this->Tickets->set(1);
 
-		$this->redirect('/twitter/admin');
+			$this->addtoTeam($teamHash, $groupHash);
+			$this->User->id = $this->Session->read('Auth.User.id');
+			$this->refreshUser();
+		$this->redirect('/tweets');
 		}
 	}
 
-	public function manageteam() {
+	public function manageteam($team_id = null) {
+		$this->layout='';
 		$base = strtotime(date('Y-m-d',time()) . '-01 00:00:01');
 		$myTeamIDs = array();
 		$ddTeams = array();
@@ -38,13 +40,26 @@ class TeamsController extends AppController {
 			$ddTeams[$key['id']] = $key['name'];
 		}
 		$this->set('ddTeams', $ddTeams);
-		if ($this->request->data) {
+		if (empty($team_id)) {
+			if (!empty($this->Cookie->read('currentTeam'))) {
+				$team_id = $this->Cookie->read('currentTeam');
+			}
+		}
+		if (!empty($team_id)) {
 			//monthselector
-			$months = $this->request->data['Team']['Select Month'];
+			//$months = $this->request->data['Team']['Select Month'];
+			if (isset($this->request->query['m'])) {
+				$months = $this->request->query['m'];
+			} elseif (!empty($this->Session->read('Auth.User.monthSelector'))) {
+				$months = $this->Session->read('Auth.User.monthSelector');
+			} else {
+				$months = 0;
+			}
 			$this->set('months', $months);
 
 
-			$team_id = $this->request->data['Team']['id'];
+			//$team_id = $this->request->data['Team']['id'];
+			//$team_id = 29;
 			$twitter_accounts = $this->TwitterPermission->find('all', array('conditions' => array('team_id' => $team_id)));
 			$query_twitter_accounts = array();
 			$screen_names = array();
@@ -52,6 +67,7 @@ class TeamsController extends AppController {
 				array_push($query_twitter_accounts, $key['TwitterPermission']['twitter_account_id']);
 			}
 			$screen_names = $this->TwitterAccount->find('list', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('account_id' => $query_twitter_accounts)));
+			$profile_pics = $this->TwitterAccount->find('list', array('fields' => array('account_id', 'profile_pic'), 'conditions' => array('account_id' => $query_twitter_accounts)));
 				
 			$query_twitter_accounts1 = join(',', $query_twitter_accounts);
 
@@ -110,6 +126,7 @@ class TeamsController extends AppController {
 				if (!empty($totalCount1[$key1['editorial_calendars']['twitter_account_id']])) {
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'] / 7;
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key1['editorial_calendars']['twitter_account_id']];
+					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['profile_pic'] = $profile_pics[$key1['editorial_calendars']['twitter_account_id']];
 				}
 			}
 			unset($calendarCount);
@@ -184,18 +201,14 @@ class TeamsController extends AppController {
 		$this->redirect('/teams/manageteam');
 	}
 
-	public function addtoTeam($teamHash, $group = null, $permissions = null) {
+	public function addtoTeam($teamHash, $groupHash = null, $permissions = null) {
 		$team = $this->Team->find('first', array('fields' => array('id', 'name', 'hash'), 'conditions' => array('id' => $this->Tickets->get($teamHash))));
-
-		if ($this->referer() === 'http://social.guestlist.net/teams/manage') {
-			$group = 1;
-		}
 
 		$save = array(
 					'TeamsUser' => array (
 						'user_id' => $this->Session->read('Auth.User.id'),
 						'team_id' => $this->Tickets->get($teamHash),
-						'group_id' => $this->Tickets->get($group)
+						'group_id' => $this->Tickets->get($groupHash)
 					)
 				);
 		$this->TeamsUser->save($save);
@@ -220,7 +233,7 @@ class TeamsController extends AppController {
 
 		$this->refreshGroup($user_id);
 
-		$this->redirect('/teams/manageteam');
+		$this->redirect('/');
 	}
 
 	public function makeadmin($user_id, $team_id) {
@@ -350,7 +363,7 @@ class TeamsController extends AppController {
 			$accountPermissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $this->request->data['filterTeam']['team'])));
 			
 			$users = $this->User->find('all', array('conditions' => array('User.id' => $usersPermissions1)));
-			$this->Session->write('Auth.User.currentTeamId');
+			$this->Session->write('Auth.User.currentTeamId', $this->request->data['filterTeam']['team']);
 			$this->set('users', $users);
 			$this->set('usersPermissions', $usersPermissions);
 			$this->set('accountPermissions', $accountPermissions);
@@ -491,5 +504,33 @@ class TeamsController extends AppController {
 			}
 		}
 		$this->layout = '';
+	}
+
+	public function editTeam() {
+		$data = $this->request->data;
+
+		foreach ($data as $key => $value) {
+			$data[$key]['Team']['id'] = $key;
+		}
+
+		$this->Team->saveAll($data);
+		
+		$this->refreshUser();
+		
+		$this->redirect('/');
+	}
+
+	public function deleteTeam($team_id) {
+		if ($this->TeamsUser->hasAny(array('team_id' => $team_id, 'user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1))) {
+			$this->Team->delete($team_id);
+			$this->TeamsUser->deleteAll(array('team_id' => $team_id));
+			$this->TwitterPermission->deleteAll(array('team_id' => $team_id));
+		} else {
+			$this->Session->setFlash('You do no have permission to edit this team');
+		}
+
+		$this->refreshUser();
+
+		$this->redirect('/');
 	}
 }

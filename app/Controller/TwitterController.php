@@ -2,9 +2,9 @@
 App::import('Vendor', 'OAuth/OAuthClient');
 
 class TwitterController extends AppController {
-    public $components = array('Session', 'Auth', 'Paginator', 'Tickets');
+    public $components = array('Session', 'Auth', 'Paginator', 'Tickets', 'Stripe.Stripe', 'Cookie');
     public $helpers =  array('Html' , 'Form');
-    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification', 'Editor', 'TweetBank', 'BankCategory');
+    var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Ticket', 'TeamsUser', 'Team', 'Notification', 'Editor', 'TweetBank', 'BankCategory', 'Statistic');
 
     public function index() {
         if (!empty($this->request->query['s'])) {
@@ -21,6 +21,14 @@ class TwitterController extends AppController {
             $this->set('scroll', 0);
         }
 
+        if (!empty($this->request->query['q'])) {
+            $this->set('manageTeamActive', true);
+            if (!empty($this->request->data['filter']['team'])) {
+                $this->set('manageTeamFilter', $this->request->data['filter']['team']);
+                $this->Cookie->write('currentTeam', $this->request->data['filter']['team'], $encrypt = false, $expires = null);
+            }
+        }
+
         if (isset($this->request->data['currentmonth'])) {
             $this->Session->write('Auth.User.monthSelector', $this->request->data['currentmonth']['Select Month']);
             $this->set('scroll', 0);
@@ -29,17 +37,34 @@ class TwitterController extends AppController {
         }
 
         $permissions = array();
+        $allTeams = array();
         foreach ($this->Session->read('Auth.User.Team') as $key) {
             $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
             $permissions = array_merge($permissionsx, $permissions);
             $myteam[$key['id']] = $key['name'];
+            $allTeams[] = $key['id'];
+            if ($key['TeamsUser']['group_id'] == 1) {
+                $adminTeams[$key['id']] = $key['id'];
+            }
         }
         $conditions = array('TwitterAccount.account_id' => $permissions);
         $this->set('myteam', $myteam);
+        $this->set('adminTeams', $adminTeams);
 
-        $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('screen_name'), 'conditions' => $conditions, 'order' => array('screen_name' => 'ASC')));
-        $dropdownaccounts = array(0 => 'All Accounts') + $dropdownaccounts;
+        $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('TwitterAccount.account_id', 'screen_name'), 'conditions' => $conditions, 'order' => array('screen_name' => 'ASC')));
         $this->set('dropdownaccounts', $dropdownaccounts);
+        $stats = $this->Statistic->find('all', array('conditions' => array('twitter_account_id' => $permissions), 'recursive' => -1, 'fields' => array('id', 'twitter_account_id', 'MAX(timestamp) as timestamp', 'time', 'followers_count', 'following_count', 'favourites_count'), 'group' => 'twitter_account_id'));
+        $stats = Hash::combine($stats, '{n}.Statistic.twitter_account_id', '{n}');
+        foreach ($stats as $value => $key) {
+            $key['Statistic']['followers_count'] = $this->abreviateTotalCount($key['Statistic']['followers_count']);
+            $key['Statistic']['following_count'] = $this->abreviateTotalCount($key['Statistic']['following_count']);
+            $key['Statistic']['favourites_count'] = $this->abreviateTotalCount($key['Statistic']['favourites_count']);
+            $stats[$value] = $key;
+        }
+        $allaccounts = $this->TwitterAccount->find('all', array('conditions' => array('TwitterAccount.account_id' => $permissions), 'recursive' => -1));
+        $allaccounts = Hash::combine($allaccounts, '{n}.TwitterAccount.account_id', '{n}');
+        $this->set('stats', $stats);
+        $this->set('allaccounts', $allaccounts);
 
         //Setting Dropdown Users
         //Getting array of all users across all teams that user has access to
@@ -134,7 +159,11 @@ class TwitterController extends AppController {
         $this->set('status', $this->Session->read('filter.status'));
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
-        $this->set('team', $this->Session->read('filter.team'));
+        if (!empty($this->Cookie->read('currentTeam'))) {
+            $this->set('team', $this->Cookie->read('currentTeam'));
+        } else {
+            $this->set('team', $this->Session->read('filter.team'));
+        }
         if (!empty($this->request->query['h'])) {
             if ($this->request->query['h'] == 'nocalendar') {
                 $this->set('params', 'h:nocalendar');
@@ -145,19 +174,29 @@ class TwitterController extends AppController {
 
         $filter = $this->Session->read('filter');
 
+        if(!empty($this->Cookie->read('currentTeam'))) {
+            $filter['team'] = $this->Cookie->read('currentTeam');
+        }
+
+        if(!empty($this->Cookie->read('currentAccount'))) {
+            $filter['account'] = $this->Cookie->read('currentAccount');
+            $this->Session->write('access_token.account_id', $this->Cookie->read('currentAccount'));
+            $this->Session->write('access_token.screen_name', $this->Cookie->read('currentAccountScreenName'));
+        }
+
         if (!empty($this->request->data['filter'])) {
             $filter1 = $this->request->data['filter'];
             $this->set('scroll', 0);
-            if ($filter1['status']) {
+            if (!empty($filter1['status'])) {
                 $filter['status'] = $filter1['status'];
             }
-            if ($filter1['user']) {
+            if (!empty($filter1['user'])) {
                 $filter['user'] = $filter1['user'];
             }
-            if ($filter1['account']) {
+            if (!empty($filter1['account'])) {
                 $filter['account'] = $filter1['account'];
             }
-            if ($filter1['team']) {
+            if (!empty($filter1['team'])) {
                 $filter['team'] = $filter1['team'];
             }
         }
@@ -202,22 +241,37 @@ class TwitterController extends AppController {
 
         if (!empty($filter['account'])) {
             if (!empty($filter1['account'])) {
-                $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
+                $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('TwitterAccount.account_id' => $filter['account'])));
                 if ($filter['account'] == 'All Accounts') {
                     $twitter_account_id['TwitterAccount']['account_id'] = $permissions;
                 } else {
                     $this->Session->write('access_token.account_id', $twitter_account_id['TwitterAccount']['account_id']);
                     $this->Session->write('access_token.screen_name', $twitter_account_id['TwitterAccount']['screen_name']);
+                    $this->Cookie->write('currentAccount', $filter['account'], $encrypt = false, $expires = null);
+                    $this->Cookie->write('currentAccountScreenName', $twitter_account_id['TwitterAccount']['screen_name'], $encrypt = false, $expires = null);
                 }
-                $this->set('account', $filter['account']);
-                $this->Session->write('filter.account', $filter['account']);
             }
+            $this->set('account', $filter['account']);
+        } else {            
+            $this->set('account', 0);
         }
 
         if (!empty($filter['team'])) {
             $twitter_account_id['TwitterAccount']['account_id'] = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $filter['team'])));
             $this->set('team', $filter['team']);
             $this->Session->write('filter.team', $filter['team']);
+
+            $permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $filter['team'])));
+            $conditions = array('TwitterAccount.account_id' => $permissions);
+            $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('TwitterAccount.account_id', 'screen_name'), 'conditions' => $conditions, 'order' => array('screen_name' => 'ASC')));
+            $this->set('dropdownaccounts', $dropdownaccounts);
+
+            $this->set('teamPermissions', $permissions);
+
+
+            $this->Cookie->write('currentTeam', $filter['team'], $encrypt = false, $expires = null);
+        } else {
+            $this->set('team', 0);
         }
 
         if (!empty($user_id)) {
@@ -267,6 +321,77 @@ class TwitterController extends AppController {
             $i++;
         }
         $this->set('tweets', $toCheck);
+
+        $manageTeam = $this->TeamsUser->find('list', array('conditions' => array('team_id' => $filter['team']), 'fields' => array('user_id', 'group_id')));
+        $user_ids = array();
+        foreach ($manageTeam as $key => $value) {
+            $user_ids[] = $key;
+        }
+        $manageTeamUsers = $this->User->find('all', array('conditions' => array('User.id' => $user_ids), 'recursive' => -1));
+        $this->set('manageTeamUsers', $manageTeamUsers);
+        $this->set('manageTeam', $manageTeam);
+
+        $usersPermissions = $this->TeamsUser->find('all', array('fields' => array('user_id', 'group_id', 'id'), 'conditions' => array('team_id' => $filter['team'])));
+        $usersPermissions = Hash::combine($usersPermissions, '{n}.TeamsUser.user_id', '{n}');
+
+        $this->set('usersPermissions', $usersPermissions);
+
+        //Check if you are allowed to add more twitter accounts or not
+        if ($team_id = $this->Cookie->read('currentTeam')) {
+            $owner = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id)));
+            $owner = $owner['Team']['user_id'];
+            $ownerGroup = $this->User->find('first', array('conditions' => array('User.id' => $owner)));
+            $group_id = $ownerGroup['User']['group_id'];
+            $accounts_count = $this->TwitterPermission->find('count', array('conditions' => array('team_id' => $team_id)));
+            switch ($group_id) {
+                case 1:
+                    $accounts_allowed = 1;
+                    $teams_allowed = 1;
+                    $users_allowed = 2;
+                    break;
+                case 2:
+                    $accounts_allowed = 3;
+                    $teams_allowed = 3;
+                    $users_allowed = 2;
+                    break;
+                case 3:
+                    $accounts_allowed = 10;
+                    $teams_allowed = 10;
+                    $users_allowed = 10;
+                    break;
+                default:
+                    $accounts_allowed = 1;
+                    $teams_allowed = 1;
+                    $users_allowed = 2;
+                    break;
+            }
+
+            if ($accounts_count >= $accounts_allowed) {
+                $this->set('allowed_more_accounts', false);
+            } else {
+                $this->set('allowed_more_accounts', true);
+            }
+
+            //Check if you are allowed to add more teams
+            $teams_count = $this->Team->find('count', array('user_id' => $this->Session->read('Auth.User.id')));
+            if ($teams_count >= $teams_allowed) {
+                $this->set('allowed_more_teams', false);
+            } else {
+                $this->set('allowed_more_teams', true);
+            }
+
+            //Check if you are allowed to add more users
+            $users_count = $this->TeamsUser->find('count', array('conditions' => array('team_id' => $team_id)));
+            if ($users_count >= $users_allowed) {
+                $this->set('allowed_more_users', false);
+            } else {
+                $this->set('allowed_more_users', true);
+            }
+        } else {
+            $this->set('noTeam', true);
+        }
+        $this->set('session_teams', Hash::combine($this->Session->read('Auth.User.Team'), '{n}.id', '{n}'));
+
     }
 
     //not used anymore
@@ -318,30 +443,43 @@ class TwitterController extends AppController {
         $this->set('accounts', $accounts);
     }*/
 
-    public function calendar($months) {
+    private function abreviateTotalCount($value) {
+        $abbreviations = array(12 => 'T', 9 => 'B', 6 => 'M', 3 => 'K', 0 => '');
+        foreach ($abbreviations as $exponent => $abbreviation) {
+            if ($value >= pow(10, $exponent)) {
+                return round(floatval($value / pow(10, $exponent)), 1).$abbreviation;
+            }
+        }
+    }
+
+    public function calendar($months, $bank_category_id = null) {
         if (isset($this->request->data['calendar_activated']['calendar_activated'])) {
             $this->activateCalendar($this->request->data['calendar_activated']['calendar_activated']);
         }
         if (isset($this->request->data['accountSubmit'])) {
             $screen_name = $this->request->data['accountSubmit'];
-            $new_oauth_tokens = $this->TwitterAccount->find('all', array('conditions' => array('screen_name' => $screen_name)));
+            $new_oauth_tokens = $this->TwitterAccount->find('all', array('conditions' => array('TwitterAccount.account_id' => $screen_name)));
             $this->Session->write('access_token.oauth_token', $new_oauth_tokens[0]['TwitterAccount']['oauth_token']);
             $this->Session->write('access_token.oauth_token_secret', $new_oauth_tokens[0]['TwitterAccount']['oauth_token_secret']);
             $this->Session->write('access_token.account_id', $new_oauth_tokens[0]['TwitterAccount']['account_id']);
             $this->Session->write('access_token.screen_name', $new_oauth_tokens[0]['TwitterAccount']['screen_name']);
-            $this->set('selected', $this->Session->read('access_token.screen_name'));
+            $this->set('selected', $this->Session->read('access_token.account_id'));
         } else {
-            $this->set('selected', $this->Session->read('access_token.screen_name'));
+            $this->set('selected', $this->Session->read('access_token.account_id'));
         }
 
         if ($this->Session->read('Auth.User.Team.0.id') !== 0) {
-            $permissions = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'))));
+            $permissions = array();
+            foreach ($this->Session->read('Auth.User.Team') as $key) {
+                $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
+                $permissions = array_merge($permissionsx, $permissions);
+            }
             $conditions = array('team_id' => $this->Session->read('Auth.User.Team.0.id'));
         } else {
             $conditions = array('TwitterAccount.user_id' => $this->Session->read('Auth.User.id'));
         }
         //$calendar = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
-        $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
+        $calendar = $this->EditorialCalendar->find('all', array('recursive' => 0, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC')));
         $calendarx = array();
         foreach ($calendar as $key) {
             $calendarx[$key['EditorialCalendar']['time']][$key['EditorialCalendar']['day']] = $key;
@@ -353,9 +491,12 @@ class TwitterController extends AppController {
         $bank_categories = $this->BankCategory->find('all', array('conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
         foreach ($bank_categories as $key) {
             $bank_categoriesx[$key['BankCategory']['id']] = $key['BankCategory']['category'];
+            $bank_category_colors[$key['BankCategory']['id']] = $key['BankCategory']['color'];
         }
         $bank_categoriesx = array(0 => 'Select Category') + $bank_categoriesx + array('New' => 'Add New Category...');
+        $bank_category_colors = $bank_category_colors + array('New' => '#202020');
         $this->set('bank_categories', $bank_categoriesx);
+        $this->set('bank_category_colors', $bank_category_colors);
 
         $info = $this->TwitterAccount->find('all', array('fields' => array('infolink'), 'conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
         $this->set('info', $info);
@@ -377,14 +518,46 @@ class TwitterController extends AppController {
     }
 
     public function connect() {
-        $client = $this->createClient();
-        $requestToken = $client->getRequestToken('https://api.twitter.com/oauth/request_token', 'http://' . $_SERVER['HTTP_HOST'] . '/twitter/twitterredirect');
+        if ($team_id = $this->Cookie->read('currentTeam')) {
+            $owner = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id)));
+            $owner = $owner['Team']['user_id'];
+            $ownerGroup = $this->User->find('first', array('conditions' => array('User.id' => $owner)));
+            $group_id = $ownerGroup['User']['group_id'];
+            $accounts_count = $this->TwitterPermission->find('count', array('conditions' => array('team_id' => $team_id)));
+            switch ($group_id) {
+                case 1:
+                    $accounts_allowed = 1;
+                    break;
+                case 2:
+                    $accounts_allowed = 3;
+                    break;
+                case 3:
+                    $accounts_allowed = 10;
+                    break;
+                default:
+                    $accounts_allowed = 1;
+                    break;
+            }
 
-        if ($requestToken) {
-            $this->Session->write('twitter_request_token', $requestToken);
-            $this->redirect('https://api.twitter.com/oauth/authorize?force_login=true&oauth_token=' . $requestToken->key);
+            if ($accounts_count >= $accounts_allowed) {
+                $allowed_more_accounts = false;
+            } else {
+                $allowed_more_accounts = true;
+            }
+        }
+
+        if (!empty($allowed_more_accounts)) {
+            $client = $this->createClient();
+            $requestToken = $client->getRequestToken('https://api.twitter.com/oauth/request_token', 'http://' . $_SERVER['HTTP_HOST'] . '/twitter/twitterredirect');
+
+            if ($requestToken) {
+                $this->Session->write('twitter_request_token', $requestToken);
+                $this->redirect('https://api.twitter.com/oauth/authorize?force_login=true&oauth_token=' . $requestToken->key);
+            } else {
+                echo 'HELLO';
+            }
         } else {
-            echo 'HELLO';
+            $this->Session->setFlash('You have reached the maximum allowed twitter accounts for this team. The owner of the team must upgrade their account to be able to add more twitter accounts.');
         }
     }
 
@@ -392,7 +565,6 @@ class TwitterController extends AppController {
         $requestToken = $this->Session->read('twitter_request_token');
         $client = $this->createClient();
         $accessToken = $client->getAccessToken('https://api.twitter.com/oauth/access_token', $requestToken);
-        debug($accessToken);
 
         $this->Session->write('access_token.oauth_token', $accessToken['oauth_token']);
         $this->Session->write('access_token.oauth_token_secret', $accessToken['oauth_token_secret']);
@@ -404,17 +576,17 @@ class TwitterController extends AppController {
             $this->TwitterAccount->save($accessToken);
             $this->TwitterAccount->saveField('user_id', $this->Session->read('Auth.User.id'));
             $this->TwitterAccount->saveField('team_id', $this->Session->read('Auth.User.Team.0.id'));
+            $twitter_account_id = $this->TwitterAccount->getLastInsertId();
         } else {
             $id = $account[0]['TwitterAccount']['account_id'];
             unset($accessToken['user_id']);
             $this->TwitterAccount->id = $id;
             $this->TwitterAccount->save($accessToken);
+            $twitter_account_id = $id;
         }
         
-            $twitter_account_id = $this->TwitterAccount->getLastInsertId();
             
             $this->Session->write('access_token.account_id', $account[0]['TwitterAccount']['account_id']);
-            $twitter_account_id = $account[0]['TwitterAccount']['account_id'];
 
             $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId'))));
 
@@ -457,6 +629,24 @@ class TwitterController extends AppController {
             $this->$modeldate->save($save);
 
         $this->redirect('/twitter/');*/
+
+        $details = json_decode($client->get($oauth_token, $oauth_token_secret, "https://api.twitter.com/1.1/users/show.json?screen_name=$name"), true);
+        
+        if (!empty($details['errors'])) {
+            echo $details['errors'][0]['code'];
+            echo $key['TwitterAccount']['account_id'];
+        } else {
+            $x1['TwitterAccount']['account_id'] = $twitter_account_id;
+            $x1['TwitterAccount']['profile_pic'] = $details['profile_image_url'];
+            $x1['Statistic']['twitter_account_id'] = $twitter_account_id;
+            $x1['Statistic']['time'] = date('d-m-Y H:i', time());
+            $x1['Statistic']['timestamp'] = time();
+            $x1['Statistic']['followers_count'] = $details['followers_count'];
+            $x1['Statistic']['following_count'] = $details['friends_count'];
+            $x1['Statistic']['favourites_count'] = $details['favourites_count'];
+            $this->Statistic->save($x1, array('deep' => true));
+        }
+        $this->redirect('/');
 
     }
 
@@ -542,12 +732,13 @@ class TwitterController extends AppController {
     }
 
     public function emptySave() {
+        debug($this->request->data);
         foreach ($this->request->data['Tweet'] as $key) {
             if ($key['id']) {
             $id = $key['id'];
             $this->Tweet->id = $id;
             $this->CronTweet->id = $id;
-            $tweet = $this->Tweet->find('first', array('conditions' => array('id' => $id)));
+            $tweet = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $id)));
             }
 
             if ($key['timestamp']) {
@@ -588,7 +779,6 @@ class TwitterController extends AppController {
 
             if ($this->Tweet->saveField('body', $key['body'])) {
                 $this->Tweet->saveField('verified', $key['verified']);
-                $this->Tweet->saveField('comments', $key['comments']);
                 if (isset($key['img_url'])) {
                     $this->Tweet->saveField('img_url', $key['img_url']);
                 }
@@ -725,10 +915,10 @@ class TwitterController extends AppController {
             }
 
             if (!empty($filter['account'])) {
-                $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('screen_name' => $filter['account'])));
+                $twitter_account_id =  $this->TwitterAccount->find('first', array('fields' => array('account_id', 'screen_name'), 'conditions' => array('TwitterAccount.account_id' => $filter['account'])));
                 $this->Session->write('access_token.account_id', $twitter_account_id['TwitterAccount']['account_id']);
                 $this->Session->write('access_token.screen_name', $twitter_account_id['TwitterAccount']['screen_name']);
-                $this->set('account', $filter['account']);
+                $this->set('account', $twitter_account_id['TwitterAccount']['screen_name']);
             }
 
             if (!empty($filter['team'])) {
@@ -746,7 +936,8 @@ class TwitterController extends AppController {
         $this->Paginator->settings = array(
         'conditions' => $c,
         'limit' => 10,
-        'order' => array('timestamp' => $order)
+        'order' => array('timestamp' => $order),
+        'recursive' => 2
         );
 
         
@@ -884,6 +1075,163 @@ class TwitterController extends AppController {
         $Email->to("sharif9876@hotmail.com");
         $Email->subject('TEST');
         debug($Email->send('THIS IS A TEST'));*/
-        debug($this->EditorialCalendar->find('all', array('conditions' => array('EditorialCalendar.id' => 1))));
+        /*$accounts = $this->TwitterAccount->find('all', array('recursive' => 0));
+        $client = $this->createClient();
+        $toSave = array();
+        $toSave1 = array();
+        $i = 0;
+        foreach ($accounts as $key) {
+            $i++;
+            $x = array();
+            $x1 = array();
+            $name = $key['TwitterAccount']['screen_name'];
+            $oauth_token = null;
+            $oauth_token_secret = null;
+            $details = json_decode($client->get($oauth_token, $oauth_token_secret, "https://api.twitter.com/1.1/users/show.json?screen_name=$name"), true);
+            $x1['TwitterAccount']['account_id'] = $key['TwitterAccount']['account_id'];
+            $x1['TwitterAccount']['profile_pic'] = $details['profile_image_url'];
+            $x1['Statistic']['twitter_account_id'] = $key['TwitterAccount']['account_id'];
+            $x1['Statistic']['time'] = date('d-m-Y H:i', time());
+            $x1['Statistic']['timestamp'] = time();
+            $x1['Statistic']['followers_count'] = $details['followers_count'];
+            $x1['Statistic']['following_count'] = $details['friends_count'];
+            $x1['Statistic']['favourites_count'] = $details['favourites_count'];
+            if (!empty($details['errors'])) {
+                echo $details['errors'][0]['code'];
+                echo $key['TwitterAccount']['account_id'];
+            } else {
+                $toSave1[] = $x1;
+            }
+            if (!empty($details['errors']) && $details['errors'][0]['code'] == 88) {
+                break;
+            }
+
+        }debug($i);
+
+        debug($details);
+        $this->Statistic->saveAll($toSave1, array('deep' => true));*/
+        //STRIPE
+        debug($this->request->data);
+        /*if ($this->request->data) {
+            $token = $this->request->data['stripeToken'];
+            $email = $this->request->data['stripeEmail'];
+            $r = $this->Stripe->customerCreate(array(
+                "source" => $token,
+                "plan" => "30",
+                "email" => $email));
+            debug($r);
+        }*/
+        $cu = $this->Stripe->customerRetrieve('cus_6zISy1EzR4QGKe');
+        $sub_id = $cu->subscriptions['data'][0]['id'];
+        $subscription = $cu->subscriptions->retrieve($sub_id);
+        $subscription->plan = "100";
+        $subscription->save();
+
+        /*$client = $this->createClient();
+        $name = '1tayyabs';
+            $oauth_token = null;
+            $oauth_token_secret = null;
+            $details = json_decode($client->get($oauth_token, $oauth_token_secret, "https://api.twitter.com/1.1/users/show.json?screen_name=$name"), true);
+            $x1['TwitterAccount']['account_id'] = 181;
+            $x1['TwitterAccount']['profile_pic'] = $details['profile_image_url'];
+
+            $this->TwitterAccount->save($x1);*/
+    }
+
+    public function moreaccounts($type="accounts") {
+        $this->layout = "";
+        $this->set('type', $type);
+        $team_id = $this->Cookie->read('currentTeam');
+        $team = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id), 'recursive' => -1));
+        $owner = $team['Team']['user_id'];
+        if ($owner !== $this->Session->read('Auth.User.id')) {
+            $this->set('owner', false);
+        } else {
+            $this->set('owner', true);
+        }
+
+        
+        if ($this->request->data) {
+            $token = $this->request->data['stripeToken'];
+            $email = $this->request->data['stripeEmail'];
+            $plan = $this->request->data['stripePlan'];
+            $user = $this->User->find('first', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id')), 'recursive' => -1));
+            if (!empty($user['User']['customer_id'])) {
+                $customer_id = $user['User']['customer_id'];
+                $cu = $this->Stripe->customerRetrieve($customer_id);
+                $sub_id = $cu->subscriptions['data'][0]['id'];
+                $subscription = $cu->subscriptions->retrieve($sub_id);
+                $subscription->plan = $plan;
+                $subscription->save();
+            } else {
+                $r = $this->Stripe->customerCreate(array(
+                    "source" => $token,
+                    "plan" => $plan,
+                    "email" => $email));
+            }
+
+            switch ($plan) {
+                case 30:
+                    $group_id = 2;
+                    break;
+                case 100:
+                    $group_id = 3;
+                    break;
+            }
+            
+            if (!empty($r)) {
+                $save = array('User' => 
+                            array('id' => $this->Session->read('Auth.User.id'),
+                                    'customer_id' => $r['stripe_id'],
+                                    'group_id' => $group_id
+                            )
+                        );
+            } elseif (!empty($subscription)) {
+                $save = array('User' => 
+                            array('id' => $this->Session->read('Auth.User.id'),
+                                    'group_id' => $group_id
+                            )
+                        );
+            }
+
+            $this->User->save($save);
+            $this->refreshUser();
+        }
+    }
+
+    public function uploadimage() {
+        debug($this->request->data);
+        /*if ($key['img_url1']['error'] == 0) {
+            $z = explode(".", $key['img_url1']['name']);
+            $extension = end($z);
+            $allowed_extensions = array("gif", "jpeg", "jpg", "png");
+        
+
+            if (in_array(strtolower($extension), $allowed_extensions)) {
+                $newFileName = $this->Session->read('Auth.User.id') . "-" . $key['account_id'] . "-" . $key['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
+
+
+                //delete current image
+
+                *//*if (!empty($key['img_url'])) {
+                    $toDelete = str_replace("http://social.guestlist.net/", '', $key['img_url']);
+                    unlink($toDelete);
+                }*//*
+
+                $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
+                return $key['img_url'];
+            } else {
+                $this->Session->setFlash('You can only upload images.');
+                return false;
+            }
+    
+
+        } elseif ($key['img_url1']['error'] == 1) {
+            $this->Session->setFlash('Image too large, please try another image (Max 2MB)');
+            return false;
+        } else {
+            return false;
+        }*/
     }
 }

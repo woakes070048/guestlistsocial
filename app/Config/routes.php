@@ -35,10 +35,14 @@
 	Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
 	Router::connect('/forgot_password', array('controller' => 'users', 'action' => 'forgotpw'));
 	Router::connect('/logout', array('controller' => 'users', 'action' => 'logout'));
+<<<<<<< HEAD
+=======
+	Router::connect('/landing', array('controller' => 'pages', 'action' => 'landing'));
+>>>>>>> 70b717e6c94326c8c3f7a39fe7b108defa23ec60
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
-	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+	//Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on

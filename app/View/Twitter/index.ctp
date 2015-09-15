@@ -10,12 +10,22 @@ echo $this->Html->script('jquery.qtip.min');
 echo $this->Html->script('jquery.selectric.min');
 echo $this->Html->script('jquery.timeago');
 echo $this->Html->script('toastr.min');
+echo $this->Html->script('jquery.scrollbar');
+echo $this->Html->script('jquery.hideseek');
+echo $this->Html->script('slick.min');
+echo $this->Html->script('jquery.selectBoxIt');
 echo $this->Html->css('jquery.qtip.min');
 echo $this->Html->css('calendar');
-echo $this->Html->css('toastr.min')?>
+echo $this->Html->css('toastr.min');
+echo $this->Html->css('jquery.scrollbar');
+echo $this->Html->css('slick');
+echo $this->Html->css('jquery.selectBoxIt');?>
 <?php
 echo $this->Session->flash('auth');
 ?>
+<link href="//cdn.rawgit.com/noelboss/featherlight/1.3.3/release/featherlight.min.css" type="text/css" rel="stylesheet" />
+<script src="//cdn.rawgit.com/noelboss/featherlight/1.3.3/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://checkout.stripe.com/checkout.js"></script>
 <!--<?
 echo $this->Form->create('filterAccount');
 echo $this->Html->image('twitter19px.png', array('class' => 'selectimage'));
@@ -68,23 +78,245 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
 ?>
 </div>
 -->
-
-<div class='filter'>
+<div class='left'>
+<div class='selectTeam selectedTeam'>
+<div class='selectTeamText'>
     <?
-    echo $this->Form->create('filter');
-    echo $this->Form->input('account', array(
-        'label' => false,
-        'onchange' => 'this.form.submit()',
-        'options' => array('' => 'Select by Twitter Account', array_combine($dropdownaccounts,$dropdownaccounts)),
-        'selected' => $account,
-        'class' => 'filterAccount'));
-    ?>
-
-    <? if ($this->Session->read('access_token.account_id')) {
-        echo $this->Html->image('calendar.png', array('url' => '/twitter/calendar/0', 'title' => 'Editorial Calendar', 'style' => 'margin: 10px 50px 10px 10px'));
+    if ($team == 0) {
+        $myteam[0] = 'Select Team';
     }
+    echo $this->Form->input('team', array(
+        'type' => 'radio',
+        'legend' => false,
+        'onchange' => 'this.form.submit()',
+        'options' => array($team => $myteam[$team]),
+        'default' => $team,
+        'class' => 'filterTeam',
+        'separator' => '</div><div>',
+        'div' => false,
+        'disabled'
+    ));?>
+</div>
+<i class="fa fa-chevron-down"></i>
+</div>
+<div class='filter scrollbar-macosx filterTeamScroll'>
+<div class='searchContainer'>
+<input id="search" name="search" placeholder="Search..." type="alt" data-list=".input.radio.filter1" class="inputFilter">
+<i class="fa fa-search"></i>
+</div>
+    <?echo $this->Form->create('filter');?>
+    <div class="input radio filter1">
+    <?
+    foreach ($myteam as $key => $value) {?>
+        <?if ($key == $team) {
+            $class = 'checked';
+        } else {
+            $class = '';
+        }?>
+        <div class="selectTeam <?echo $class;?>" alt="<?echo$value;?>">
+            
+            <div class='selectTeamText'>
+                <?
+                echo $this->Form->input('team', array(
+                    'type' => 'radio',
+                    'legend' => false,
+                    'onchange' => 'this.form.submit()',
+                    'options' => array($key => $value),
+                    'default' => $team,
+                    'class' => 'filterTeam',
+                    'separator' => '</div><div>',
+                    'div' => false));?>
+            </div>
+        </div>
+    <?
+    }
+    ?>
+    </div><?
+    echo $this->Form->end();
+    ?>
+</div>
+<div class="filter-buttons">
+    <i class="fa fa-pencil fa-fw" id="pencilIcon"></i>
+    <i class="fa fa-bar-chart fa-fw" id="chartIcon"></i>
+    <?
+    if ($session_teams[$team]['TeamsUser']['group_id'] == 1) {?>
+        <i class="fa fa-users fa-fw" id="teamIcon"></i>
+    <?}
+    ?>
+    <i class="fa fa-cog fa-fw" id="cogIcon"></i>
+</div>
+<?if (!empty($team)) {?>
+<div id="manageTeam">
+<ul id='editTeam'>
+                <!--<div class='teamsContainerHeader'>
+                    Users
+                </div>-->
+            <? echo $this->Form->create('Users', array('url' => array('controller' => 'teams', 'action' => 'permissionSave1')));?>
+            <? foreach ($manageTeamUsers as $key) {?>
+                <? if ($this->Session->read('Auth.User.id') == $key['User']['id']) {
+                    $disabled = 'disabled';
+                } else {
+                    $disabled = '';
+                }?>
+                <li>
+                    <?echo $this->Form->input('user_permissions', array('type' => 'select', 'class' => 'aCheckbox', 'label' => "<img src='" . $key['User']['profile_pic'] . "' width=25px style='margin: 0 10px 0 0; vertical-align:middle '>" . $key['User']['first_name'] . ' ' . $key['User']['last_name'], 'name' => 'data[Users]['.$usersPermissions[$key['User']['id']]['TeamsUser']['id'].'][permissions]['.$key['User']['id'].']', 'options' => array(1 => 'Admin', 2 => 'Team Member', 7 => 'Proofer'), 'selected' => $usersPermissions[$key['User']['id']]['TeamsUser']['group_id'], 'id' => 'UsersUserPermissions' . $key['User']['id'], $disabled));
+                    echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $team, 'name' => 'data[Users]['.$usersPermissions[$key['User']['id']]['TeamsUser']['id'].'][team_id]', $disabled));?>
+                    <a href="/teams/removeFromTeam/<?echo $key['User']['id'];?>/<?echo $team;?>">
+                    <i class="fa fa-trash removeFromTeam" style="margin-left: 5px; vertical-align: middle; line-height: 32px;" title="Remove from Team" onclick='confirm("Are you sure you want to remove this person from your team?");'></i>
+                    </a>
 
-    echo $this->Form->input('user', array(
+                </li>
+            <?}?>
+            <? echo $this->Form->submit('Save');?>
+            <? echo $this->Form->end();?>
+            </ul>
+            <div class="manageTeamInvite">
+                <? echo $this->Form->create('invite', array('url' => array('controller' => 'teams', 'action' => 'invite')));?>
+                <? echo $this->Form->input('team', array('type' => 'hidden', 'value' => $team));?>
+                <? echo $this->Form->input('email', array('label' => false, 'class' => 'inputBox', 'type' => 'text', 'placeholder' => 'email'));?>
+                <? echo $this->Form->input('group', array('label' => false, 'options' => array(2 => 'Team Member', 7 => 'Proofer', 1 => 'Admin'), 'selected' => 2));?>
+                <!--<span class="inputBoxButton">Invite</span>--><?echo $this->Form->submit('Invite', array('class' => 'inputBoxButton'));?>
+                <? echo $this->Form->end();?>
+            </div>
+</div>
+<?}?>
+<?if (!empty($account)) {?>
+<div id="twitterManage">
+            <? echo $this->Form->create('Accounts', array('url' => array('controller' => 'teams', 'action' => 'permissionSave1')));?>
+<ul id='editTeam' class="scrollbar-macosx">
+            <? foreach ($allaccounts as $key) {
+                if (in_array($key['TwitterAccount']['account_id'], $teamPermissions)) {
+                    $checked = 'checked';
+                } else {
+                    $checked = '';
+                }?>
+                <li>
+                    <?echo $this->Html->image($allaccounts[$key['TwitterAccount']['account_id']]['TwitterAccount']['profile_pic'], array('width' => '30px'));?>
+                    <?echo $this->Form->input('twitter_permissions', array('type' => 'checkbox', 'class' => 'aCheckbox', $checked, 'label' => "@" . $key['TwitterAccount']['screen_name'], 'name' => 'data[Accounts]['.$key['TwitterAccount']['account_id'].'][permissions]['.$key['TwitterAccount']['account_id'].']', 'id' => 'AccountsTwitterPermissions' . $key['TwitterAccount']['account_id']));
+                    echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $team, 'name' => 'data[Accounts]['.$key['TwitterAccount']['account_id'].'][team_id]'));?>
+                </li>
+            <?}?>
+            </ul>
+            <? echo $this->Form->submit('Save');?>
+            <? echo $this->Form->end();?>
+</div>
+<?}?>
+<div id="createTeam">
+    <?
+    echo $this->Form->create('editTeam', array('url' => array('controller' => 'teams', 'action' => 'editTeam')));
+    foreach ($myteam as $key => $value) {
+        if (!empty($adminTeams[$key])) {?>
+        <div style="margin: 0">
+            <?
+            echo $this->Form->input('name', array('label' => false, 'name' => 'data[' . $key . '][Team][name]', 'value' => $value, 'class' => 'inputBox'));?>
+            <i class="fa fa-pencil fa-fw"></i>
+            <a href="/teams/deleteTeam/<?echo $key;?>"><i class="fa fa-trash fa-fw" style='margin-left: 40px' onclick='confirm("Are you sure you want to delete this team?");'></i></a>
+        </div>
+    <?  }
+    }
+    echo $this->Form->end('Submit Changes');?>
+    <hr style="border: none; background-color: #ccc; width: 220px; height: 1px; margin: 25px 0">
+    <?
+        echo $this->Form->create('createTeam', array('url' => array('controller' => 'teams', 'action' => 'manage')));
+        echo $this->Form->input('Team name', array('name' => 'name', 'label' => false, 'placeholder' => 'team name', 'class' => 'inputBox fullBox'));
+        echo $this->Form->end('Create Team');
+    ?>
+</div>
+
+
+<div class='selectTwitterAccount selectedAccount'>
+<? if ($account == 0) {?>
+    <?echo $this->Html->image('/img/allaccounts.jpg', array('width' => '50px'));?>
+    <?$allaccounts[0]['TwitterAccount']['screen_name'] = 'All Accounts';
+    $class = 'dn';?>
+<?} else {?>
+    <?echo $this->Html->image($allaccounts[$account]['TwitterAccount']['profile_pic'], array('width' => '50px'));
+    $class = '';}?>
+<div class='selectTwitterAccountText <?echo $class;?>'>
+    <?echo $this->Form->input('account', array(
+        'type' => 'radio',
+        'legend' => false,
+        'onchange' => 'this.form.submit()',
+        'options' => array($account => $allaccounts[$account]['TwitterAccount']['screen_name']),
+        'default' => $account,
+        'class' => 'filterAccount',
+        'separator' => '</div><div>',
+        'div' => false,
+        'disabled'
+    ));?>
+    <?if (empty($stats[$account]['Statistic']['followers_count'])) {
+        $stats[$account]['Statistic']['followers_count'] = 0;
+    }
+    if (empty($stats[$account]['Statistic']['following_count'])) {
+        $stats[$account]['Statistic']['following_count'] = 0;
+    }?>
+    <? if ($account != 0) {?>
+        <div><span class='followersCount'><? echo $stats[$account]['Statistic']['followers_count'];?></span> followers</div>
+    <?}?>
+</div>
+<i class="fa fa-chevron-down"></i>
+</div>
+<div class='filter scrollbar-macosx filterAccountScroll'>
+<div class='searchContainer'>
+<input id="search" name="search" placeholder="Search..." type="alt" data-list=".input.radio.filter2" class="inputFilter">
+<i class="fa fa-search"></i>
+</div>
+    <?
+    echo $this->Form->create('filter');?>
+    <div class="input radio filter2">
+        <!--<div>
+            <?
+            echo $this->Form->input('account', array(
+                        'type' => 'radio',
+                        'legend' => false,
+                        'onchange' => 'this.form.submit()',
+                        'options' => array(0 => 'All Accounts'),
+                        'default' => $account,
+                        'class' => 'filterAccount',
+                        'separator' => '</div><div>',
+                        'div' => false));?>
+        </div>-->
+    <?
+    foreach ($dropdownaccounts as $key => $value) {?>
+        <?if ($key == $account) {
+            $class = 'checked';
+        } else {
+            $class = '';
+        }?>
+        <div class="selectTwitterAccount <?echo $class;?>" alt="<?echo$value;?>">
+            <?echo $this->Html->image($allaccounts[$key]['TwitterAccount']['profile_pic'], array('width' => '50px'));?>
+            
+            <div class='selectTwitterAccountText'>
+                <?
+                echo $this->Form->input('account', array(
+                    'type' => 'radio',
+                    'legend' => false,
+                    'onchange' => 'this.form.submit()',
+                    'options' => array($key => $value),
+                    'default' => $account,
+                    'class' => 'filterAccount',
+                    'separator' => '</div><div>',
+                    'div' => false));?>
+                <?if (empty($stats[$key]['Statistic']['followers_count'])) {
+                    $stats[$key]['Statistic']['followers_count'] = 0;
+                }
+                if (empty($stats[$key]['Statistic']['following_count'])) {
+                    $stats[$key]['Statistic']['following_count'] = 0;
+                }?>
+                <div><span class='followersCount'><? echo $stats[$key]['Statistic']['followers_count'];?></span> followers</div>
+                <!--<div><span class='followingCount'><? echo $stats[$key]['Statistic']['following_count'];?></span> following</div>-->
+            </div>
+        </div>
+    <?
+    }
+    ?>
+    </div>
+
+    <? /*if ($this->Session->read('access_token.account_id')) {
+        echo $this->Html->image('calendar.png', array('url' => '/twitter/calendar/0', 'title' => 'Editorial Calendar', 'style' => 'margin: 10px 50px 10px 10px'));
+    }*/
+
+    /*echo $this->Form->input('user', array(
         'label' => false,
         'onchange' => 'this.form.submit()',
         'options' => array('' => 'Select by User', $dropdownusers),
@@ -112,14 +344,43 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
             '' => 'Select by Team',
             $myteam),
         'selected' => $team,
-        'class' => 'filterTeam'));
+        'class' => 'filterTeam'));*/
     echo $this->Form->end();
     ?>
 </div>
+<div class="filter-buttons">
+    <!--<i class="fa fa-twitter"></i>-->
+    <?
+    if (!empty($noTeam)) {
 
-<hr>
+    } else {
+        if (empty($allowed_more_accounts)) {
+            echo $this->Html->link($this->Form->button('Add', array('class' => 'inputBoxButton addTwitterAccount feather')), "#", array('escape' => false,
+        "data-featherlight" => "/twitter/moreaccounts"));
+        } else {
+            echo $this->Html->link($this->Form->button('Add', array('class' => 'inputBoxButton addTwitterAccount')), "/twitter/connect", array('escape' => false));
+        }
+    }
+    ?>
+    <a href="/twitter/calendar/0"><i class="fa fa-calendar fa-fw"></i></a>
+    <i class="fa fa-cog fa-fw"></i>
+</div>
+    <footer>
+        <ul>
+            <li>Support</li>
+            <li>FAQ</li>
+            <li>Upgrade</li>
+            <li>More</li>
+        </ul>
+        <div>
+            <? echo $this->Html->image('/img/logogrey.png', array('height' => '20px'));?>
+            <i class='fa fa-copyright'></i> 2015
+        </div>
+    </footer>
+</div>
 
-<div id='addtweetprogress'>
+
+<!--<div id='addtweetprogress'>
 
 <? if ($params == 'h:nocalendar' && $account) {?>
     <div id='addTweetWrapper'>
@@ -173,32 +434,51 @@ echo $text;
 </div>
 </a>
 
+</div>-->
+<div id="tableContainer">
+    <div class='switchContainer'>
+    Calendar View:
+        <div class="onoffswitch">
+            <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" <?echo ($params != 'h:nocalendar')? 'checked' : ''?>>
+            <label class="onoffswitch-label" for="myonoffswitch">
+                <span class="onoffswitch-inner"></span>
+                <span class="onoffswitch-switch"></span>
+            </label>
+        </div>
+    </div>
+    <div id="table" style="float: right;">
+
+    </div>
+    <div id='noaccount' style="display: none;">
+    <?echo $this->Html->image('/img/logogrey.png', array('width' => '35px'));?>
+    Please select an account from above to see the day-by-day view
+    </div>
 </div>
 
-<div id="table">
-
-
-</div>
-
-<div id='noaccount'>
-Please select an account from above to see the day-by-day view
-</div>
 <?php //echo $this->Html->link('Add Twitter Account', '/twitter/connect');?> <br />
 <?php //echo $this->Html->link('Logout', '/users/logout');?>
 <?php //echo $this->Paginator->next();?>
 <script>
 $(document).ready(function() {
         <? if ($params == 'h:nocalendar' && $this->Session->read('access_token.account_id')) {?>
-        $('#table').css('opacity', '.4');
-        $('#loading').show();
-        $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function () {
-            $('#table').css('opacity', '1');
-            $('#loading').hide();
-            $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
-        });
+            $('#table').css('opacity', '.4');
+            $('#loading').show();
+            $('#table').load('/twitter/indexrefresh/<?php echo $params; ?>', function () {
+                $('#table').css('opacity', '1');
+                $('#loading').hide();
+                $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
+            });
         <? } elseif ($params != 'h:nocalendar' && !$this->Session->read('access_token.account_id')) {?>
-        $('#table').hide();
-        $('#noaccount').show();
+            $('#table').hide();
+            $('#noaccount').show();
+        <?} elseif (!empty($manageTeamActive)) {?>
+            $('#table').css('opacity', '.4');
+            $('#loading').show();
+            $('#table').load('/teams/manageteam/<?echo (!empty($manageTeamFilter))? $manageTeamFilter : "";?>', function () {
+                $('#table').css('opacity', '1');
+                $('#loading').hide();
+                $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
+            });
         <?} else {?>
             $('#table').css('opacity', '.4');
             $('#loading').show();
@@ -215,11 +495,11 @@ $(document).ready(function() {
 
         $(".TwitterVerified1").each( function() {
             if ($(this).val() == 0) {
-                color = '#ffcc00';
+                color = '#f0ad4e';
             } else if ($(this).val() == 1) {
-                color = '#21a750';
+                color = '#5cb85c';
             } else if ($(this).val() == 2) {
-                color = '#ff0000';
+                color = '#d9534f';
             }
             $(this).closest("#refresh").find('#TweetBody').css("border", "1px solid" + color);
             $(this).closest("#refresh").find('#TweetBody').css("border-bottom", "none");
@@ -255,13 +535,13 @@ $(document).ready(function() {
 
                 $('#progress table').load('/twitter/progressrefresh');
                 <? } else {?>
-                    $(this).closest("tr").find('input[name=tosubmit]').val(true);
+                    $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                     $("#table").css('opacity', '.4');
                     $('#loading').show();
                     var dat = new FormData();
                     $('input[name=tosubmit][value=true]').each(function () {
                         //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
-                        $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                        $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
                             if ($(this).attr('type') == 'file') {
                                 dat.append($(this).attr('name'), this.files[0]);
                             } else {
@@ -419,7 +699,7 @@ $(document).ready(function() {
         });
         //})
 
-        $('select').selectric({
+        /*$('select').selectric({
             optionsItemBuilder: function(itemData, element, index) {
                 return element.val().length ? '<span class="ico ico-' + element.val() +  '"></span>' + itemData.text : itemData.text;
             }
@@ -427,7 +707,7 @@ $(document).ready(function() {
 
         $('.selectric .label:contains("AWAITING APPROVAL")').css({'background': 'url("../img/radioamber.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
         $('.selectric .label:contains("APPROVED")').css({'background': 'url("../img/radiogreen.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
-        $('.selectric .label:contains("IMPROVE")').css({'background': 'url("../img/radiored.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});
+        $('.selectric .label:contains("IMPROVE")').css({'background': 'url("../img/radiored.png") no-repeat left center', 'padding-left': '18px', 'margin-left': '5px'});*/
 
         /*$("#refresh").infinitescroll({
             navSelector  : '.next',    // selector for the paged navigation
@@ -436,5 +716,116 @@ $(document).ready(function() {
         }, function() {
             $('.editing').charCount({css: 'counter counter1'});
         });*/
+
+        $('.selectTwitterAccount:not(.selectedAccount)').click(function () {
+            $(this).find('input').attr("checked", "checked");
+            $(this).closest('#filterIndexForm').submit();
+        });
+
+        $('.scrollbar-macosx').scrollbar();
+
+        /*$('input[name="onoffswitch"]').change(function() {
+            if ($(this).attr('checked') == 'checked') {
+                window.location.href = "/tweets";
+            } else {
+                window.location.href = "/tweets?h=nocalendar";
+            }
+            return false;
+        });*/
+
+        $('#myonoffswitch + label').click(function () {
+            if ($('#myonoffswitch').attr('checked') == 'checked') {
+                $('#myonoffswitch').removeAttr('checked');
+                window.location.replace("/tweets?h=nocalendar");
+            } else {
+                $('#myonoffswitch').attr('checked', 'checked');
+                window.location.replace("/tweets");
+            }
+            return false;
+        });
+
+        $('.selectedAccount').click(function () {
+            $('.filter.filterAccountScroll').toggle();
+            if ($('.filter.filterAccountScroll').css('display') == 'none') {
+                $(this).find('i').css('transform', 'rotate(0deg)');
+                $(this).removeClass('clicked');
+            } else {
+                $(this).find('i').css('transform', 'rotate(180deg)');
+                $(this).addClass('clicked');
+                $('.filter.filterTeamScroll').hide();
+                $('.selectTeam.selectedTeam').removeClass('clicked');
+                $('.selectTeam.selectedTeam').find('i').css('transform', 'rotate(0deg)');
+            }
+        });
+
+        $('.selectedTeam').click(function () {
+            $('.filter.filterTeamScroll').toggle();
+            if ($('.filter.filterTeamScroll').css('display') == 'none') {
+                $(this).find('i').css('transform', 'rotate(0deg)');
+                $(this).removeClass('clicked');
+            } else {
+                $(this).find('i').css('transform', 'rotate(180deg)');
+                $(this).addClass('clicked');
+                $('.filter.filterAccountScroll').hide();
+                $('.selectTwitterAccount.selectedAccount').removeClass('clicked');
+                $('.selectTwitterAccount.selectedAccount').find('i').css('transform', 'rotate(0deg)');
+            }
+        });
+
+        
+        $('.inputFilter').hideseek({
+            nodata: "<h3>HEY</h3>"
+        });
+
+        $('select').selectBoxIt({
+        });
+
+        $('.filter-buttons #teamIcon').click(function () {
+            $('#manageTeam').toggle();
+        });
+
+        $('.filter-buttons #cogIcon').click(function () {
+            $('#twitterManage').toggle();
+        });
+
+        $('.filter-buttons #pencilIcon').click(function () {
+            $('#createTeam').toggle();
+        });
+
+        $('.filter-buttons #chartIcon').click(function () {
+            $('#table').css('opacity', '.4');
+            $('#loading').show();
+            $('#table').load('/teams/manageteam', function () {
+                $('#table').css('opacity', '1');
+                $('#loading').hide();
+                $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
+            });
+            window.history.pushState("object or string", "TweetProof", "/tweets?q=1");
+        });
+
+        $('.addTwitterAccount.feather').featherlight('/twitter/moreaccounts/accounts', {
+            otherClose: ".stripe-button-el, .stripe-button"
+        });
+
+        <? if (empty($allowed_more_teams)) {?>
+
+        $('#createTeamIndexForm').submit(function (e) {
+            e.preventDefault();
+            $.featherlight('/twitter/moreaccounts/teams', {
+                otherClose: ".stripe-button-el, .stripe-button"
+            });
+        })
+
+        <?}?>
+
+
+        <? if (empty($allowed_more_users)) {?>
+        $('#inviteIndexForm').submit(function (e) {
+            e.preventDefault();
+            $.featherlight('/twitter/moreaccounts/users', {
+                otherClose: ".stripe-button-el, .stripe-button"
+            });
+        });
+        <?}?>
 });
 </script>
