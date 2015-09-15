@@ -6,8 +6,8 @@ class UsersController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-		//$this->Auth->allow(array('action' => 'logout'));
-		$this->Auth->allow('initDB', 'verify', 'manage');
+		$this->Auth->allow(array('action' => 'logout'));
+		$this->Auth->allow('login', 'initDB', 'verify', 'manage');
     }
 
 	public function register() {
