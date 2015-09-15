@@ -159,7 +159,8 @@ class TwitterController extends AppController {
         $this->set('status', $this->Session->read('filter.status'));
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
-        if (!empty($this->Cookie->read('currentTeam'))) {
+        $currentTeam = $this->Cookie->read('currentTeam');
+        if (!empty($currentTeam)) {
             $this->set('team', $this->Cookie->read('currentTeam'));
         } else {
             $this->set('team', $this->Session->read('filter.team'));
