@@ -41,7 +41,8 @@ class TeamsController extends AppController {
 		}
 		$this->set('ddTeams', $ddTeams);
 		if (empty($team_id)) {
-			if (!empty($this->Cookie->read('currentTeam'))) {
+			$currentTeamCookie = $this->Cookie->read('currentTeam');
+			if (!empty($currentTeamCookie)) {
 				$team_id = $this->Cookie->read('currentTeam');
 			}
 		}
