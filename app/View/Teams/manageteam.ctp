@@ -100,12 +100,12 @@ echo $this->Html->script('Chart.min');
 			<div id="howManyWrittenBlock0" style='float: none; display: inline-block; margin: 0 5px 0 10px; background: none; border: 1px solid #e4e4e4;'></div>Some Tweets missing<br />
 		</div>
 		<small style='float:right; font-size: 10px;'>(Click a box to be redirected to the day-by-day view for that day)</small>
-			<table id='teamOverview' style='border-spacing: 0; padding: 10px;'>
+			<table id='teamOverview' style='border-spacing: 1; padding: 10px;'>
 				<tr>
 					<th>
 					</th>
 					<?for ($i=1; $i <= date('t'); $i++) {?>
-						<th style='font-size: 8pt;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?></th>
+						<th style='font-size: 7pt;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?></th>
 					<?}?>
 				</tr>
 				<?foreach ($tableTweets1 as $key => $value) {?>
