@@ -324,7 +324,7 @@ $(document).ready(function() {
 });
 </script>
 <style>
-hr {
+th {
 	display: grid;
 }
 </style>
