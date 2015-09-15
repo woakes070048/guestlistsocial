@@ -1077,7 +1077,7 @@ class TwitterController extends AppController {
         $Email->to("sharif9876@hotmail.com");
         $Email->subject('TEST');
         debug($Email->send('THIS IS A TEST'));*/
-        /*$accounts = $this->TwitterAccount->find('all', array('recursive' => 0));
+        $accounts = $this->TwitterAccount->find('all', array('recursive' => 0));
         $client = $this->createClient();
         $toSave = array();
         $toSave1 = array();
@@ -1111,7 +1111,7 @@ class TwitterController extends AppController {
         }debug($i);
 
         debug($details);
-        $this->Statistic->saveAll($toSave1, array('deep' => true));*/
+        $this->Statistic->saveAll($toSave1, array('deep' => true));
         //STRIPE
         debug($this->request->data);
         /*if ($this->request->data) {
@@ -1123,11 +1123,11 @@ class TwitterController extends AppController {
                 "email" => $email));
             debug($r);
         }*/
-        $cu = $this->Stripe->customerRetrieve('cus_6zISy1EzR4QGKe');
+        /*$cu = $this->Stripe->customerRetrieve('cus_6zISy1EzR4QGKe');
         $sub_id = $cu->subscriptions['data'][0]['id'];
         $subscription = $cu->subscriptions->retrieve($sub_id);
         $subscription->plan = "100";
-        $subscription->save();
+        $subscription->save();*/
 
         /*$client = $this->createClient();
         $name = '1tayyabs';
