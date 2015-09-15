@@ -32,10 +32,10 @@
 	Router::connect('/tweets/*', array('controller' => 'twitter', 'action' => 'index'));
 	Router::connect('/teams/add', array('controller' => 'teams', 'action' => 'manage'));
 	Router::connect('/teams', array('controller' => 'teams', 'action' => 'manageteam'));
-	Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
+	//Router::connect('/login', array('controller' => 'users', 'action' => 'login'));
 	Router::connect('/forgot_password', array('controller' => 'users', 'action' => 'forgotpw'));
 	Router::connect('/logout', array('controller' => 'users', 'action' => 'logout'));
-	Router::connect('/landing', array('controller' => 'pages', 'action' => 'landing'));
+	Router::connect('/landing', array('controller' => 'users', 'action' => 'login'));
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

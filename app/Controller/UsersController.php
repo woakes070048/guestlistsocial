@@ -143,7 +143,16 @@ class UsersController extends AppController {
             
         }
 
-        $this->layout = 'loginlayout';
+        $this->layout = 'landing';
+        $this->loadModel('TwitterAccount');
+        $this->loadModel('Statistic');
+        $topAccountIDs = $this->Statistic->find('all', array('fields' => array('twitter_account_id', 'MAX(followers_count) as followers_count'), 'order' => array('followers_count' => 'DESC'), 'group' => 'twitter_account_id', 'limit' => 10, 'recursive' => -1));
+        foreach ($topAccountIDs as $key) {
+            $x[] = $key['Statistic']['twitter_account_id'];
+        }
+        $topAccounts = $this->TwitterAccount->find('all', array('conditions' => array('account_id' => $x), 'recursive' => -1, 'fields' => array('screen_name', 'profile_pic')));
+
+        $this->set('topAccounts', $topAccounts);
 	}
 
 	public function logout() {
