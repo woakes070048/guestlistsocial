@@ -1,11 +1,12 @@
+<div id="register">
+<h2>Sign up to TweetProof</h2>
+<hr />
 <?php echo $this->Form->create('User'); ?>
-    <fieldset>
-        <legend><?php echo __('Add User'); ?></legend>
-        <?php echo $this->Form->input('first_name', array('label' => 'First name'));
-        echo $this->Form->input('last_name', array('label' => 'Last name'));
-        echo $this->Form->input('email', array('value' => $email));
-        echo $this->Form->input('password', array('type' => 'password'));
-        echo $this->Form->input('password2', array('type' => 'password', 'label' => 'Confirm Password'));
+        <?php echo $this->Form->input('first_name', array('placeholder' => 'First name', 'label' => false));
+        echo $this->Form->input('last_name', array('placeholder' => 'Last name', 'label' => false));
+        echo $this->Form->input('email', array('value' => $email, 'label' => false, 'placeholder' => 'E-mail'));
+        echo $this->Form->input('password', array('type' => 'password', 'label' => false, 'placeholder' => 'Password'));
+        echo $this->Form->input('password2', array('type' => 'password', 'label' => false, 'placeholder' => 'Confirm Password'));
         echo $this->Form->input('GMT_offset', array(
     	'options' => array(
     		  '-12.0' => '(GMT -12:00) Eniwetok, Kwajalein',
@@ -40,8 +41,16 @@
 		      '11.0' => '(GMT +11:00) Magadan, Solomon Islands, New Caledonia',
 		      '12.0' => '(GMT +12:00) Auckland, Wellington, Fiji, Kamchatka',),
     	'empty' => 'Select Timezone...',
-    	'label' => 'Timezone'
+    	'label' => false,
+    	'default' => '0.0',
+    	'type' => 'select',
 ));
-    ?>
-    </fieldset>
+    ?><br />
+    <h1>By clicking submit you agree to our <a href="https://docs.google.com/document/d/1A8d9CURdtyMaj77xbQ_Dux2vuOGSIB4h-qjSynP74Hc/pub">terms and conditions</a></h1><br />
 <?php echo $this->Form->end(__('Submit')); ?>
+<script>
+$(document).ready(function() {
+	$('select').dropdown();
+});
+</script>
+</div>

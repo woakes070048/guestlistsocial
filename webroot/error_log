@@ -1,0 +1,214 @@
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  set_error_handler() expects the argument (ErrorHandler::handleError) to be a valid callback in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/Configure.php on line 443
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  set_exception_handler() expects the argument (ErrorHandler::handleException) to be a valid callback in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/Configure.php on line 446
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Core/CakePlugin.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Core/CakePlugin.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Fatal error:  Class 'CakePlugin' not found in /home/tweetpro/public_html/dev/app/Config/bootstrap.php on line 74
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:20 GMT] PHP Fatal error:  Class 'ErrorHandler' not found in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 918
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  set_error_handler() expects the argument (ErrorHandler::handleError) to be a valid callback in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/Configure.php on line 443
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  set_exception_handler() expects the argument (ErrorHandler::handleException) to be a valid callback in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/Configure.php on line 446
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Core/CakePlugin.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Core/CakePlugin.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Fatal error:  Class 'CakePlugin' not found in /home/tweetpro/public_html/dev/app/Config/bootstrap.php on line 74
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php): failed to open stream: No such file or directory in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Warning:  include(): Failed opening '/var/www/clients/client1/web8/web/app/vendor/cakephp/cakephp/lib/Cake/Error/ErrorHandler.php' for inclusion (include_path='.:/opt/php54/lib/php') in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 547
+[29-Apr-2015 18:45:37 GMT] PHP Fatal error:  Class 'ErrorHandler' not found in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Core/App.php on line 918
+[30-Apr-2015 20:56:41 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 332
+[30-Apr-2015 21:04:29 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 336
+[01-May-2015 07:09:13 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/String.php on line 240
+[01-May-2015 07:13:38 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 339
+[06-May-2015 20:02:32 GMT] PHP Fatal error:  Cannot redeclare class Ticket in /home/tweetpro/public_html/dev/app/Model/Comment.php on line 5
+[10-May-2015 18:59:29 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 337
+[10-May-2015 19:00:12 GMT] PHP Parse error:  syntax error, unexpected ')' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 337
+[13-May-2015 18:50:12 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 383
+[17-May-2015 00:12:51 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 10
+[17-May-2015 19:21:29 GMT] PHP Fatal error:  Call to undefined method CommentsController::layout() in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 10
+[17-May-2015 19:23:21 GMT] PHP Parse error:  syntax error, unexpected ''<br />;' (T_ENCAPSED_AND_WHITESPACE) in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 3
+[29-May-2015 12:03:34 GMT] PHP Fatal error:  Call to a member function saveAll() on a non-object in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 16
+[30-May-2015 16:45:51 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 20
+[30-May-2015 16:46:25 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 20
+[30-May-2015 16:55:39 GMT] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 17
+[30-May-2015 16:55:42 GMT] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 17
+[31-May-2015 01:02:58 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 2
+[31-May-2015 01:03:04 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/View/Comments/commentrefresh.ctp on line 2
+[23-Jun-2015 10:01:22 GMT] PHP Parse error:  syntax error, unexpected 'bootstrap' (T_STRING), expecting ')' in /home/tweetpro/public_html/dev/app/Config/bootstrap.php on line 78
+[23-Jun-2015 10:13:15 GMT] PHP Fatal error:  Call to a member function subscribe() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 344
+[23-Jun-2015 10:14:06 GMT] PHP Fatal error:  Call to a member function subscribe() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 344
+[26-Jun-2015 20:54:12 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 21
+[26-Jun-2015 20:57:34 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 9
+[26-Jun-2015 20:59:09 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 21
+[26-Jun-2015 21:00:48 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 21
+[26-Jun-2015 21:02:01 GMT] PHP Fatal error:  Call to a member function add() on a non-object in /home/tweetpro/public_html/dev/app/Controller/CommentsController.php on line 26
+[27-Jun-2015 11:53:09 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/Layouts/default.ctp on line 87
+[27-Jun-2015 11:53:09 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/AppController.php on line 53
+[27-Jun-2015 11:55:36 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/Layouts/default.ctp on line 87
+[27-Jun-2015 11:55:36 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/Layouts/default.ctp on line 87
+[06-Jul-2015 11:45:32 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 225
+[06-Jul-2015 12:44:29 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 72 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Model.php on line 1437
+[06-Jul-2015 13:53:46 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 818
+[06-Jul-2015 14:20:06 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 197
+[06-Jul-2015 14:20:17 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 197
+[06-Jul-2015 14:20:25 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 197
+[06-Jul-2015 14:22:32 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 226
+[06-Jul-2015 15:14:18 GMT] PHP Fatal error:  Cannot access empty property in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Model.php on line 1077
+[06-Jul-2015 15:16:18 GMT] PHP Fatal error:  Cannot access empty property in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Model.php on line 1077
+[06-Jul-2015 17:09:01 GMT] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 824
+[06-Jul-2015 17:09:37 GMT] PHP Parse error:  syntax error, unexpected ''<br />'' (T_CONSTANT_ENCAPSED_STRING), expecting ',' or ';' in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 824
+[07-Jul-2015 12:03:43 GMT] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO) in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/recycle.ctp on line 9
+[07-Jul-2015 12:08:26 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/recycle.ctp on line 9
+[07-Jul-2015 12:08:37 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/recycle.ctp on line 9
+[07-Jul-2015 12:09:11 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/recycle.ctp on line 9
+[07-Jul-2015 14:03:52 GMT] PHP Parse error:  syntax error, unexpected ')' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 419
+[07-Jul-2015 15:37:45 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 145
+[08-Jul-2015 12:29:38 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 127
+[08-Jul-2015 12:30:36 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 127
+[08-Jul-2015 12:31:44 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 127
+[08-Jul-2015 12:31:49 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 127
+[08-Jul-2015 12:40:34 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 558
+[08-Jul-2015 12:40:52 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 558
+[08-Jul-2015 15:57:19 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 236
+[08-Jul-2015 15:57:48 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 236
+[08-Jul-2015 15:58:21 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 236
+[08-Jul-2015 16:00:57 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 236
+[08-Jul-2015 16:27:14 GMT] PHP Parse error:  syntax error, unexpected 'debug' (T_STRING) in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 241
+[08-Jul-2015 16:40:40 GMT] PHP Parse error:  syntax error, unexpected ';', expecting ']' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 237
+[08-Jul-2015 18:30:31 GMT] PHP Parse error:  syntax error, unexpected '{' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 253
+[08-Jul-2015 18:30:40 GMT] PHP Parse error:  syntax error, unexpected '{' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 253
+[08-Jul-2015 18:30:54 GMT] PHP Parse error:  syntax error, unexpected '{' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 253
+[08-Jul-2015 18:31:03 GMT] PHP Parse error:  syntax error, unexpected '{' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 253
+[08-Jul-2015 18:38:21 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 261
+[08-Jul-2015 18:38:28 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 261
+[08-Jul-2015 18:38:35 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 261
+[09-Jul-2015 08:58:00 GMT] PHP Fatal error:  Can't use method return value in write context in /home/tweetpro/public_html/dev/app/Controller/UsersController.php on line 123
+[10-Jul-2015 17:44:00 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 32
+[13-Jul-2015 11:35:19 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 47
+[13-Jul-2015 12:22:21 GMT] PHP Fatal error:  Call to a member function combine() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 245
+[13-Jul-2015 13:19:51 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 72 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Model.php on line 1437
+[13-Jul-2015 13:20:19 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 72 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Model.php on line 1437
+[13-Jul-2015 13:21:17 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 26993356 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 562
+[13-Jul-2015 13:42:42 GMT] PHP Parse error:  syntax error, unexpected '?' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 283
+[13-Jul-2015 13:46:08 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 285
+[13-Jul-2015 13:51:37 GMT] PHP Fatal error:  Call to undefined method TeamsController::debug() in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 277
+[13-Jul-2015 14:00:43 GMT] PHP Parse error:  syntax error, unexpected ',' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 8
+[13-Jul-2015 14:01:11 GMT] PHP Parse error:  syntax error, unexpected ')', expecting ';' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 8
+[13-Jul-2015 14:52:47 GMT] PHP Parse error:  syntax error, unexpected ')' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 23
+[13-Jul-2015 14:57:12 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 46
+[13-Jul-2015 16:22:33 GMT] PHP Parse error:  syntax error, unexpected ')' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 440
+[14-Jul-2015 10:56:27 GMT] PHP Fatal error:  Call to undefined function random_bytes() in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 152
+[14-Jul-2015 10:56:37 GMT] PHP Fatal error:  Call to undefined function random_bytes() in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/calendarrefresh.ctp on line 152
+[14-Jul-2015 13:36:52 GMT] PHP Warning:  Unterminated comment starting line 47 in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 47
+[14-Jul-2015 13:36:52 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 54
+[14-Jul-2015 14:34:09 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 280
+[14-Jul-2015 16:45:29 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Datasource/DboSource.php on line 1494
+[14-Jul-2015 16:46:38 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Datasource/DboSource.php on line 1512
+[14-Jul-2015 16:47:22 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Datasource/DboSource.php on line 1494
+[15-Jul-2015 16:53:08 GMT] PHP Parse error:  syntax error, unexpected ':' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 465
+[15-Jul-2015 16:53:34 GMT] PHP Parse error:  syntax error, unexpected ':' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 465
+[16-Jul-2015 17:10:55 GMT] PHP Parse error:  syntax error, unexpected '=' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 516
+[16-Jul-2015 17:11:35 GMT] PHP Parse error:  syntax error, unexpected '=' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 516
+[20-Jul-2015 12:20:47 GMT] PHP Fatal error:  Call to undefined method Controller::referrer() in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 266
+[20-Jul-2015 16:28:05 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 461
+[21-Jul-2015 11:36:07 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 517
+[21-Jul-2015 13:43:47 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Layouts/default.ctp on line 37
+[21-Jul-2015 13:43:47 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Layouts/default.ctp on line 37
+[21-Jul-2015 14:44:00 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Teams/edit.ctp on line 21
+[21-Jul-2015 15:25:57 GMT] PHP Parse error:  syntax error, unexpected ')' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 530
+[21-Jul-2015 16:25:37 GMT] PHP Parse error:  syntax error, unexpected 'Save' (T_STRING), expecting ')' in /home/tweetpro/public_html/dev/app/View/Teams/edit.ctp on line 74
+[21-Jul-2015 17:07:34 GMT] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ',' or ';' in /home/tweetpro/public_html/dev/app/View/Teams/test.ctp on line 28
+[22-Jul-2015 11:33:01 GMT] PHP Parse error:  syntax error, unexpected '{' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 454
+[22-Jul-2015 11:35:44 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 491
+[22-Jul-2015 14:56:03 GMT] PHP Parse error:  syntax error, unexpected '$conditions' (T_VARIABLE), expecting function (T_FUNCTION) in /home/tweetpro/public_html/dev/app/Controller/TeamsController.php on line 421
+[22-Jul-2015 18:15:26 GMT] PHP Parse error:  syntax error, unexpected '.' in /home/tweetpro/public_html/dev/app/View/Teams/manageteam.ctp on line 125
+[27-Jul-2015 15:02:27 GMT] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE), expecting function (T_FUNCTION) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 6
+[27-Jul-2015 15:03:26 GMT] PHP Parse error:  syntax error, unexpected 'as' (T_AS) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 13
+[27-Jul-2015 15:03:46 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 16
+[27-Jul-2015 16:04:39 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 28
+[27-Jul-2015 16:05:41 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Model/Datasource/DboSource.php on line 1495
+[27-Jul-2015 16:09:49 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 33
+[27-Jul-2015 17:16:33 GMT] PHP Parse error:  syntax error, unexpected '[', expecting ']' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 36
+[27-Jul-2015 17:16:55 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 41
+[28-Jul-2015 15:19:28 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 80
+[28-Jul-2015 15:34:49 GMT] PHP Parse error:  syntax error, unexpected 'foreach' (T_FOREACH) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 82
+[28-Jul-2015 15:35:05 GMT] PHP Parse error:  syntax error, unexpected '$x' (T_VARIABLE) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 84
+[29-Jul-2015 11:03:47 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 137
+[29-Jul-2015 11:16:58 GMT] PHP Parse error:  syntax error, unexpected 'debug' (T_STRING), expecting ')' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 68
+[29-Jul-2015 11:17:08 GMT] PHP Parse error:  syntax error, unexpected ';', expecting ')' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 67
+[29-Jul-2015 11:31:38 GMT] PHP Fatal error:  Call to a member function saveAll() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 149
+[29-Jul-2015 11:35:04 GMT] PHP Fatal error:  Call to a member function saveAll() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 149
+[29-Jul-2015 16:29:38 GMT] PHP Parse error:  syntax error, unexpected 'debug' (T_STRING) in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 358
+[31-Jul-2015 10:52:26 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 87
+[31-Jul-2015 11:20:18 GMT] PHP Fatal error:  Call to a member function saveAll() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 45
+[31-Jul-2015 11:23:08 GMT] PHP Fatal error:  Call to a member function saveAll() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 47
+[31-Jul-2015 11:26:19 GMT] PHP Fatal error:  Function name must be a string in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 45
+[31-Jul-2015 11:36:15 GMT] PHP Parse error:  syntax error, unexpected 'foreach' (T_FOREACH) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 416
+[31-Jul-2015 15:35:33 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 126
+[31-Jul-2015 15:42:43 GMT] PHP Parse error:  syntax error, unexpected 'uniqid' (T_STRING), expecting ')' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 123
+[31-Jul-2015 15:44:17 GMT] PHP Parse error:  syntax error, unexpected 'uniqid' (T_STRING), expecting ')' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 123
+[31-Jul-2015 15:45:26 GMT] PHP Parse error:  syntax error, unexpected 'echo' (T_ECHO), expecting ')' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 123
+[03-Aug-2015 10:58:04 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 357
+[03-Aug-2015 11:15:49 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 440
+[03-Aug-2015 11:15:59 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 440
+[03-Aug-2015 11:16:24 GMT] PHP Parse error:  syntax error, unexpected ';' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 440
+[03-Aug-2015 11:16:44 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 437
+[03-Aug-2015 11:19:40 GMT] PHP Parse error:  syntax error, unexpected 'if' (T_IF) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 439
+[03-Aug-2015 11:39:11 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 0
+[03-Aug-2015 11:40:17 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 824
+[03-Aug-2015 11:41:03 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/View/Helper/FormHelper.php on line 651
+[03-Aug-2015 11:41:47 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 562
+[03-Aug-2015 11:42:26 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 494
+[03-Aug-2015 11:43:07 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 237
+[03-Aug-2015 11:44:01 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 536
+[03-Aug-2015 11:45:33 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 70314802 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/View/View.php on line 964
+[03-Aug-2015 11:45:33 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Cache/Engine/FileEngine.php on line 130
+[03-Aug-2015 11:48:34 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/View/ViewBlock.php on line 182
+[03-Aug-2015 11:52:46 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 69747458 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/View/View.php on line 964
+[03-Aug-2015 11:52:46 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Cache/Engine/FileEngine.php on line 130
+[03-Aug-2015 11:53:28 GMT] PHP Fatal error:  Allowed memory size of 268435456 bytes exhausted (tried to allocate 69180114 bytes) in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/View/View.php on line 964
+[03-Aug-2015 11:53:29 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Cache/Engine/FileEngine.php on line 130
+[03-Aug-2015 11:56:44 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/View/ViewBlock.php on line 182
+[03-Aug-2015 11:59:40 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/app/View/Layouts/default.ctp on line 105
+[03-Aug-2015 12:01:02 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/Debugger.php on line 483
+[03-Aug-2015 12:22:32 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 195
+[03-Aug-2015 12:22:51 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 193
+[03-Aug-2015 12:27:58 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 235
+[03-Aug-2015 12:28:39 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 256
+[03-Aug-2015 12:49:11 GMT] PHP Parse error:  syntax error, unexpected end of file in /home/tweetpro/public_html/dev/app/View/Twitter/calendar.ctp on line 209
+[03-Aug-2015 13:34:43 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:35:13 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:35:39 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:37:30 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:41:43 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:42:37 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:43:25 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 13:44:45 GMT] PHP Parse error:  syntax error, unexpected '=>' (T_DOUBLE_ARROW) in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 451
+[03-Aug-2015 16:28:31 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 17
+[03-Aug-2015 16:46:21 GMT] PHP Parse error:  syntax error, unexpected '}' in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 41
+[03-Aug-2015 16:58:07 GMT] PHP Parse error:  syntax error, unexpected ''access_token.account_id'' (T_CONSTANT_ENCAPSED_STRING) in /home/tweetpro/public_html/dev/app/View/TweetBank/index.ctp on line 10
+[03-Aug-2015 16:58:44 GMT] PHP Fatal error:  Can't use method return value in write context in /home/tweetpro/public_html/dev/app/View/TweetBank/index.ctp on line 10
+[03-Aug-2015 16:59:11 GMT] PHP Fatal error:  Can't use method return value in write context in /home/tweetpro/public_html/dev/app/View/TweetBank/index.ctp on line 10
+[03-Aug-2015 16:59:51 GMT] PHP Parse error:  syntax error, unexpected ';', expecting ')' in /home/tweetpro/public_html/dev/app/View/TweetBank/index.ctp on line 17
+[04-Aug-2015 10:42:44 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 357
+[04-Aug-2015 11:17:28 GMT] PHP Parse error:  syntax error, unexpected '<' in /home/tweetpro/public_html/dev/app/View/TweetBank/index.ctp on line 28
+[04-Aug-2015 12:49:30 GMT] PHP Fatal error:  Can't use method return value in write context in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 397
+[04-Aug-2015 13:52:29 GMT] PHP Parse error:  syntax error, unexpected 'debug' (T_STRING) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 198
+[04-Aug-2015 14:42:42 GMT] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE), expecting function (T_FUNCTION) in /home/tweetpro/public_html/dev/app/Controller/TweetBankController.php on line 221
+[06-Aug-2015 11:06:47 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 540
+[06-Aug-2015 11:07:18 GMT] PHP Fatal error:  Call to a member function find() on a non-object in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 540
+[06-Aug-2015 12:11:57 GMT] PHP Parse error:  syntax error, unexpected ')' in /home/tweetpro/public_html/dev/app/Controller/EditorialCalendarsController.php on line 549
+[06-Aug-2015 12:40:15 GMT] PHP Parse error:  syntax error, unexpected '$this' (T_VARIABLE) in /home/tweetpro/public_html/dev/app/View/EditorialCalendars/recycle.ctp on line 1
+[06-Aug-2015 16:37:04 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 357
+[08-Aug-2015 16:08:39 GMT] PHP Parse error:  syntax error, unexpected ''before'' (T_CONSTANT_ENCAPSED_STRING), expecting ')' in /home/tweetpro/public_html/dev/app/View/Twitter/index.ctp on line 83
+[08-Aug-2015 16:16:38 GMT] PHP Fatal error:  Unsupported operand types in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 357
+[08-Aug-2015 16:29:48 GMT] PHP Parse error:  syntax error, unexpected '$details' (T_VARIABLE) in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 888
+[09-Aug-2015 17:18:02 GMT] PHP Parse error:  syntax error, unexpected 'debug' (T_STRING), expecting function (T_FUNCTION) in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 912
+[09-Aug-2015 17:32:04 GMT] PHP Parse error:  syntax error, unexpected '{' in /home/tweetpro/public_html/dev/app/Controller/TwitterController.php on line 907
+[09-Aug-2015 17:34:37 GMT] PHP Fatal error:  Maximum execution time of 30 seconds exceeded in /home/tweetpro/public_html/dev/vendor/cakephp/cakephp/lib/Cake/Utility/String.php on line 240

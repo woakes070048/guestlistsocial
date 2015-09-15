@@ -2,15 +2,16 @@
 class UsersController extends AppController {
     public $helpers = array('Html','Form');
     public $components = array('Tickets');
-    var $uses = array('Team', 'User', 'Ticket', 'TeamsUser', 'Group');
+    var $uses = array('Team', 'User', 'Ticket', 'TeamsUser', 'Group', 'FirstLogin');
 
     public function beforeFilter() {
         parent::beforeFilter();
 		$this->Auth->allow(array('action' => 'logout'));
-		$this->Auth->allow('initDB', 'verify');
+		$this->Auth->allow('initDB', 'verify', 'manage');
     }
 
 	public function register() {
+        $this->layout= "";
 	        if ($this->request->is('post')) {
                 $hash=sha1($this->request->data['User']['first_name'].rand(0,100));
                 $this->User->data['User']['registration_hash'] = $hash;
@@ -36,13 +37,13 @@ class UsersController extends AppController {
                                     )
                                 );
                             $this->TeamsUser->save($save);
-                            $calendar_activated = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->Tickets->get($teamHash))));
-                            $this->User->saveField('calendar_activated', $calendar_activated[0]['User'][0]['calendar_activated']);
+                            //$calendar_activated = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->Tickets->get($teamHash))));
+                            //$this->User->saveField('calendar_activated', $calendar_activated[0]['User'][0]['calendar_activated']);
                             $this->User->saveField('group_id', $group);
-                            $this->Session->setFlash('You have successfully been registered and added to team ' . $team[0]['Team']['name'] . '. Please log in. Note: You will not have access to any of your team\'s twitter accounts until the team admin gives you permissions');
+                            $this->Session->setFlash('You have successfully been registered and added to team ' . $team[0]['Team']['name']);
                             $this->Tickets->del($this->passedArgs['h']);
                             $this->Tickets->del($this->passedArgs['g']);
-                            $this->redirect(array('controller' => 'users', 'action' => 'login'));
+                            $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
                         }
                     $msg = "Please click on the link below to activate you account with Guestlist Social:
 
@@ -53,7 +54,7 @@ class UsersController extends AppController {
                     $Email->subject('Confirm Registration for Guestlist Social');
                     $Email->send($msg);
 	                $this->Session->setFlash(__('Please check your email to complete registration.'));
-	                $this->redirect(array('controller' => 'users', 'action' => 'login'));
+	                $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
 	            } else {
 	                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
 	            }
@@ -78,22 +79,30 @@ class UsersController extends AppController {
             //check the token
                 if($results[0]['User']['registration_hash'] == $hash) {
                     debug($id);
+                    //create team and add to team
+                    $team = array('name' => $results[0]['User']['first_name'] . "'s team", 'hash' => substr(md5(rand()), 0, 20));
+                    $this->Team->save($team);
+                    $id = $this->Team->getLastInsertId();
+                    $teamHash = $this->Tickets->set($id);
+                    $adminHash = $this->Tickets->set(1);
+                    $this->addtoTeam($teamHash, $adminHash);
                     $this->User->id = $id;
-                    $this->User->saveField('group_id', 2);
+                    $this->User->saveField('group_id', 1);
+                    $this->FirstLogin->save(array('user_id' => $id, 'stage' => 1));
                     $this->Session->setFlash('Your registration is complete. Please log in.');
-                    $this->redirect('/users/login');
+                    $this->redirect('/landing');
                     exit;
                 } else { //hashes don't match
                     $this->Session->setFlash('Your registration failed please try again');
-                    $this->redirect('/users/register');
+                    $this->redirect('/landing');
                 }
             } else { // activated = 1
                 $this->Session->setFlash('Token has alredy been used');
-                $this->redirect('/users/register');
+                $this->redirect('/landing');
             }
         } else { //empty arguments
             $this->Session->setFlash('Token corrupted. Please re-register');
-            $this->redirect('/users/register');
+            $this->redirect('/landing');
         }
             
     } 

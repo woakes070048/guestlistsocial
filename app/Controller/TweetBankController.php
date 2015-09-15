@@ -1,4 +1,5 @@
 <?php
+
 class TweetBankController extends AppController {
 	public $components = array('Session', 'Auth');
     public $helpers =  array('Html' , 'Form', 'Session');
@@ -7,6 +8,7 @@ class TweetBankController extends AppController {
         parent::beforeFilter();
         $this->Auth->allow('*');
     }
+
 
     public function index() {
     	$teamIDs = array();
@@ -17,6 +19,7 @@ class TweetBankController extends AppController {
     	$screen_names = $this->TwitterAccount->find('list', array('fields' => 'screen_name', 'conditions' => array('account_id' => $accounts), 'order' => array('screen_name' => 'ASC')));
     	$this->set('accounts', $screen_names);
         
+
         if (isset($this->request->data['accountSubmit'])) {
             $screen_name = $this->request->data['accountSubmit'];
             $new_oauth_tokens = $this->TwitterAccount->find('all', array('conditions' => array('screen_name' => $screen_name)));
@@ -28,6 +31,7 @@ class TweetBankController extends AppController {
         } else {
             $this->set('selected', $this->Session->read('access_token.screen_name'));
         }
+
 
     	$categories = $this->BankCategory->find('all', array('conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
     	if (!empty($categories)) {
@@ -42,13 +46,16 @@ class TweetBankController extends AppController {
     		$this->set('selectedCategories', $this->request->data['BankCategory']);
 	    	$tweets = $this->TweetBank->find('all', array('conditions' => array('account_id' => $this->Session->read('access_token.account_id'), 'bank_category_id' => $this->request->data['BankCategory'])));
 
+
     	} else {
     		$this->set('selectedCategories', '');
 	    	$tweets = $this->TweetBank->find('all', array('conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
     	}
 
+
 	   	$this->set('tweets', $tweets);
     }
+
 
     public function index3($account_id) {
     	/*$teamIDs = array();
@@ -69,7 +76,11 @@ class TweetBankController extends AppController {
     	}*/
 
 
+
+
+
     	//create new editorial calendars by account id
+
     	$toSave = array();
     	$calendars = $this->EditorialCalendar1->find('all', array('conditions' => array('twitter_account_id' => array($account_id))));
     	foreach ($calendars as $key) {
@@ -89,7 +100,10 @@ class TweetBankController extends AppController {
     	unset($key);
 
 
+
+
     	//create new bank categories for an account_id
+
     	$calendars = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => array($account_id))));
     	foreach ($calendars as $key) {
     			if (!empty($key['EditorialCalendar']['category'])) {
@@ -111,7 +125,11 @@ class TweetBankController extends AppController {
 
 
 
+
+
+
     	//grab bank_category_id for new editorial calendars
+
     	$calendars = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => array($account_id))));
     	$toSave = array();
     	foreach ($calendars as $key) {
@@ -137,7 +155,10 @@ class TweetBankController extends AppController {
     	unset($bankcategories);
 
 
+
+
     	//get new calendar_ids for tweets given account and dates
+
     	$months = 0;
     	$firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');
     	$seconddate = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
@@ -151,6 +172,7 @@ class TweetBankController extends AppController {
     		$day = strtolower(date('l', $key['Tweet']['timestamp']));
     		$time = date('H:i', $key['Tweet']['timestamp']);
 
+
     		$accounts[] = $account;
     		$days[] = $day;
     		$times[] = $time;
@@ -163,8 +185,10 @@ class TweetBankController extends AppController {
     		$time = $key['EditorialCalendar']['time'];
     		$account_id = $key['EditorialCalendar']['twitter_account_id'];
 
+
     		$calendarscomparison[$account_id . $day . $time] = $id;
     	}
+
 
     	$toSave = array();
     	foreach ($tweets as $key) {
@@ -185,7 +209,9 @@ class TweetBankController extends AppController {
     	unset($tweets);
     	unset($key);
 
+
     	//create tweet_banks for tweets for a given month an given account
+
     	$months = 0;
     	$firstdate = strtotime(date('M Y') . ' + ' . ($months) . 'months');
     	$seconddate = strtotime(date('M Y') . ' + ' . ($months + 1) . 'months');
@@ -205,6 +231,7 @@ class TweetBankController extends AppController {
     	debug($this->TweetBank->validationErrors);
     }
 
+
     public function save() {
     	$toSave = array();
     	debug($this->request->data);
@@ -219,6 +246,7 @@ class TweetBankController extends AppController {
     			$x['TweetBank']['id'] = $key;
     		}
 
+
     		if (!empty($value['img_url1'])) {
     			if ($xx = $this->imageHandling($value)) {
                         $value['img_url'] = $xx;
@@ -228,12 +256,14 @@ class TweetBankController extends AppController {
                     }
     		}
 
+
     		if (!empty($x)) {
 				$toSave[] = $x;
 				unset($x);
     		}
     	}
     	
+
     	if ($this->TweetBank->saveAll($toSave)) {
     		$this->response->statusCode(200);
     	} else {
@@ -243,6 +273,7 @@ class TweetBankController extends AppController {
     	$this->redirect(Controller::referer());
     }
 
+
     private function imageHandling($key) {
         debug($key['img_url1']['name']);
         if ($key['img_url1']['error'] == 0) {
@@ -250,15 +281,19 @@ class TweetBankController extends AppController {
             $extension = end($z);
             $allowed_extensions = array("gif", "jpeg", "jpg", "png");
         
+
             if (in_array(strtolower($extension), $allowed_extensions)) {
                 $newFileName = $this->Session->read('Auth.User.id') . "-" . $this->Session->read('access_token.account_id') . "-" . $key['bank_category_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
                 move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
 
+
                 //delete current image
+
                 /*if (!empty($key['img_url'])) {
                     $toDelete = str_replace("http://social.guestlist.net/", '', $key['img_url']);
                     unlink($toDelete);
                 }*/
+
                 $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
                 return $key['img_url'];
             } else {
@@ -266,6 +301,7 @@ class TweetBankController extends AppController {
                 return false;
             }
     
+
         } elseif ($key['img_url1']['error'] == 1) {
             $this->Session->setFlash('Image too large, please try another image (Max 2MB)');
             return false;
@@ -273,7 +309,9 @@ class TweetBankController extends AppController {
             return false;
         }
 
+
     }
+
 
     public function delete($id) {
     	$tweet = $this->TweetBank->find('first', array('conditions' => array('TweetBank.id' => $id)));
@@ -306,7 +344,18 @@ class TweetBankController extends AppController {
     		$this->response->statusCode(500);
     	}
 
+
 		return $this->response;
     	$this->redirect(Controller::referer());
+    }
+
+    public function calendarRefresh($bank_category_id) {
+        $this->layout = '';
+        $twitter_account_id = $this->Session->read('access_token.account_id');
+        $tweets = $this->TweetBank->find('all', array('conditions' => array('bank_category_id' => $bank_category_id), 'contain' => array('BankCategory' => array('conditions' => array('account_id' => $this->Session->read('access_token.account_id'))))));
+        $this->set('tweets', $tweets);
+        $category = $this->BankCategory->find('all', array('conditions' => array('BankCategory.id' => $bank_category_id)));
+        $this->set('category', $category);
+        $this->set('bank_category_id', $bank_category_id);
     }
 }
