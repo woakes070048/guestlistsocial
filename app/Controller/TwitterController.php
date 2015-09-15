@@ -269,7 +269,6 @@ class TwitterController extends AppController {
 
             $this->set('teamPermissions', $permissions);
 
-
             $this->Cookie->write('currentTeam', $filter['team'], $encrypt = false, $expires = null);
         } else {
             $this->set('team', 0);
@@ -337,6 +336,7 @@ class TwitterController extends AppController {
 
         $this->set('usersPermissions', $usersPermissions);
         //Check if you are allowed to add more twitter accounts or not
+        $currentTeamCookie = $this->Cookie->read('currentTeam');
         if (!empty($currentTeamCookie)) {
             $team_id = $currentTeamCookie;
             $owner = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id)));

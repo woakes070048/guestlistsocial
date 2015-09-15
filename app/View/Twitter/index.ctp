@@ -139,10 +139,11 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
     <i class="fa fa-pencil fa-fw" id="pencilIcon"></i>
     <i class="fa fa-bar-chart fa-fw" id="chartIcon"></i>
     <?
-    if ($session_teams[$team]['TeamsUser']['group_id'] == 1) {?>
-        <i class="fa fa-users fa-fw" id="teamIcon"></i>
-    <?}
-    ?>
+    if (!empty($team)) {
+        if ($session_teams[$team]['TeamsUser']['group_id'] == 1) {?>
+            <i class="fa fa-users fa-fw" id="teamIcon"></i>
+        <?}
+    }?>
     <i class="fa fa-cog fa-fw" id="cogIcon"></i>
 </div>
 <?if (!empty($team)) {?>
