@@ -46,12 +46,13 @@ class TeamsController extends AppController {
 				$team_id = $this->Cookie->read('currentTeam');
 			}
 		}
+		$monthselector = $this->Session->read('Auth.User.monthSelector');
 		if (!empty($team_id)) {
 			//monthselector
 			//$months = $this->request->data['Team']['Select Month'];
 			if (isset($this->request->query['m'])) {
 				$months = $this->request->query['m'];
-			} elseif (!empty($this->Session->read('Auth.User.monthSelector'))) {
+			} elseif (!empty($monthselector)) {
 				$months = $this->Session->read('Auth.User.monthSelector');
 			} else {
 				$months = 0;
