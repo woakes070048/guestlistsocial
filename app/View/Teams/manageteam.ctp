@@ -105,7 +105,7 @@ echo $this->Html->script('Chart.min');
 					<th>
 					</th>
 					<?for ($i=1; $i <= date('t'); $i++) {?>
-						<th style='font-size: 7pt; display: block;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?></th>
+						<th style='font-size: 7pt;'><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?><div></div></th>
 					<?}?>
 				</tr>
 				<?foreach ($tableTweets1 as $key => $value) {?>
@@ -321,7 +321,5 @@ $(document).ready(function() {
             $('#loading').hide();
         });
     });
-
-    $('th').css('display', 'table-cell');
 });
 </script>
