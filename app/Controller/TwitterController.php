@@ -360,6 +360,11 @@ class TwitterController extends AppController {
                     $teams_allowed = 10;
                     $users_allowed = 10;
                     break;
+                case 9:
+                    $accounts_allowed = 1000000;
+                    $teams_allowed = 10000000;
+                    $users_allowed = 1000000;
+                    break;
                 default:
                     $accounts_allowed = 1;
                     $teams_allowed = 1;

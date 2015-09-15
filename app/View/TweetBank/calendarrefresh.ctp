@@ -35,9 +35,9 @@
 			<i class='fa fa-code'></i>
 		</div>
 		<? if (!empty($key['TweetBank']['img_url'])) { ?>
-            <div class='imagecontainer'>
+            <div class='imagecontainer' style="max-width: 295px">
                 <? echo $this->Html->link("<i class='fa fa-times-circle deleteimage'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $key['TweetBank']['id']), array('escape' => false));?>
-                <? echo $this->Html->image($key['TweetBank']['img_url'], array('style' => 'max-width:500px')); ?>
+                <? echo $this->Html->image($key['TweetBank']['img_url'], array('style' => 'max-width:295px')); ?>
             </div>
     	<? } else {?>
         <div id="imagePreview<?echo$key['TweetBank']['id'];?>" class='imagecontainer'>
