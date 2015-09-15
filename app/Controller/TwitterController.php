@@ -499,10 +499,17 @@ class TwitterController extends AppController {
             $bank_categoriesx[$key['BankCategory']['id']] = $key['BankCategory']['category'];
             $bank_category_colors[$key['BankCategory']['id']] = $key['BankCategory']['color'];
         }
-        $bank_categoriesx = array(0 => 'Select Category') + $bank_categoriesx + array('New' => 'Add New Category...');
-        $bank_category_colors = $bank_category_colors + array('New' => '#202020');
-        $this->set('bank_categories', $bank_categoriesx);
-        $this->set('bank_category_colors', $bank_category_colors);
+        if (!empty($bank_categoriesx)) {
+            $bank_categoriesx = array(0 => 'Select Category') + $bank_categoriesx + array('New' => 'Add New Category...');
+            $bank_category_colors = $bank_category_colors + array('New' => '#202020');
+            $this->set('bank_categories', $bank_categoriesx);
+            $this->set('bank_category_colors', $bank_category_colors);
+        } else {
+            $bank_categoriesx = array(0 => 'Select Category') + array('New' => 'Add New Category...');
+            $bank_category_colors = array('New' => '#202020');
+            $this->set('bank_categories', $bank_categoriesx);
+            $this->set('bank_category_colors', $bank_category_colors);
+        }
 
         $info = $this->TwitterAccount->find('all', array('fields' => array('infolink'), 'conditions' => array('account_id' => $this->Session->read('access_token.account_id'))));
         $this->set('info', $info);

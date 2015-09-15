@@ -23,6 +23,8 @@ class EditorialCalendarsController extends AppController {
                         unset($key['bank_category_id']);
                         $bc['BankCategory']['category'] = $key['bank_category_manual'];
                         $bc['BankCategory']['account_id'] = $this->Session->read('access_token.account_id');
+                        $colors = array('#337ab7', '#5bc0de', '#5cb85c', '#d9534f', '#f0ad4e', '#8465C1');
+                        $bc['BankCategory']['color'] = $colors[array_rand($colors)];
                         $this->BankCategory->save($bc);
                         $key['bank_category_id'] = $this->BankCategory->getLastInsertID();
                     }

@@ -44,11 +44,10 @@ for ($i=$day; $i<=$daysinmonth; $i++) {
 echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
 ?>
 </div>-->
+<?php if (!empty($calendar)) { ?>
 <?
 echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet1', 'id' => 'submitTweets', 'type' => 'file'));
 ?>
-
-<?php if (!empty($calendar)) { ?>
 <?
 $testid = 1;
 $allApproved = array();
@@ -266,7 +265,7 @@ foreach ($calendar as $time => $key1) {
 }
 }
 ?>
-<? echo $this->Form->end(array('id' => 'tweetsubmit1', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); }?>
+<? echo $this->Form->end(array('id' => 'tweetsubmit1', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); ?>
 
 <div class='fixedTwitterAccount' style='display: none;'><span class='screenName'>@<?echo $this->Session->read('access_token.screen_name');?></span></div>
 <div class='fixedScroller'>
@@ -292,6 +291,13 @@ foreach ($calendar as $time => $key1) {
         <?}?>
     </table>
 </div>
+<?} else {?>
+<div id='noaccount' style="display: none;" class="calendarrefresh">
+    <?echo $this->Html->image('/img/logogrey.png', array('width' => '35px'));?>
+    You have not created an editorial calendar. Please click on the button to the left to create one or switch calendar view off.
+</div>
+<?}?>
+
 
 
 <script> 
@@ -299,7 +305,6 @@ foreach ($calendar as $time => $key1) {
         $(document).ready(function () {
             $('.editing.withoutImage').charCount({css: 'counter counter1', allowed: 140});
             $('.editing.withImage').charCount({css: 'counter counter2', allowed: 117});
-
 
             var pusher = new Pusher('67904c5b4e0608620f41', { authEndpoint: '/pusher/pusher/auth.json' });
 
@@ -767,6 +772,10 @@ foreach ($calendar as $time => $key1) {
                 $('#loading').hide();
             });
         });
+
+        <? if (empty($calendar)) {?>
+            $('#noaccount.calendarrefresh').show();
+        <?}?>
         });
 
 </script>

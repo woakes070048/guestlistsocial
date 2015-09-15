@@ -86,10 +86,9 @@ foreach ($calendar as $value => $key) {?>
     <?foreach ($days as $key1 => $value1) {?>
     <td>
         <i class='fa fa-pencil editCategory'></i>
-        <? echo  $this->Form->input('category', array('name' => '', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
         <div class='BankCategory'><span data-id="new"><?echo 'Select Category...';?></span></div>
         <? echo  $this->Form->input('category', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][new][bank_category_id]', 'class' => 'CalendarCategory')); ?>
-        <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
+        <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar][new][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => '', 'value' => '00:00', 'class' => 'CalendarTime'));?>
         <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => '', 'value' => $value1));?>
         <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => '', 'value' => true, 'class' => 'changed'));?>
@@ -281,7 +280,8 @@ $(document).ready(function () {
 }
 .dayheading {
     margin: 0 auto;
-    padding: 5px;
+    width: 126px;
+    text-align: center;
     display: table;
 }
 .input.text {

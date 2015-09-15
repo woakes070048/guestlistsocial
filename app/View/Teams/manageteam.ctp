@@ -110,7 +110,7 @@ echo $this->Html->script('Chart.min');
 				</tr>
 				<?foreach ($tableTweets1 as $key => $value) {?>
 					<tr>
-						<td style='display:block' data-scroll='0' data-account-id='<?echo $key;?>'><?echo $this->Html->image($totalCount1[$key]['profile_pic'], array('width' => '30px', 'style' => 'border-radius: 15px;', 'data-name' => $totalCount1[$key]['screen_name']));?></td>
+						<td style='display:block' data-scroll='0' data-account-id='<?echo $key;?>' colspan="2"><?echo $this->Html->image($totalCount1[$key]['profile_pic'], array('width' => '30px', 'style' => 'border-radius: 15px;', 'data-name' => $totalCount1[$key]['screen_name']));?></td>
 						<?for ($i=1; $i <= date('t'); $i++) {?>
 								<?
 								if (empty($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1])) {
