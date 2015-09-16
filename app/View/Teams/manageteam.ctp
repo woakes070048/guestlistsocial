@@ -323,3 +323,8 @@ $(document).ready(function() {
     });
 });
 </script>
+<style>
+hr {
+	display: grid;
+}
+</style>
