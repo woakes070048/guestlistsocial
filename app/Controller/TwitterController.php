@@ -336,9 +336,9 @@ class TwitterController extends AppController {
         $usersPermissions = Hash::combine($usersPermissions, '{n}.TeamsUser.user_id', '{n}');
 
         $this->set('usersPermissions', $usersPermissions);
-
         //Check if you are allowed to add more twitter accounts or not
-        if ($team_id = $currentTeamCookie) {
+        if (!empty($currentTeamCookie)) {
+            $team_id = $currentTeamCookie;
             $owner = $this->Team->find('first', array('conditions' => array('Team.id' => $team_id)));
             $owner = $owner['Team']['user_id'];
             $ownerGroup = $this->User->find('first', array('conditions' => array('User.id' => $owner)));
