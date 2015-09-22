@@ -29,7 +29,7 @@ echo $this->Session->flash('auth');
 <script>
   window.intercomSettings = {
     app_id: "ryyuwn45",
-    name: "<?echo $this->Session->read('Auth.User.first_name') . $this->Session->read('Auth.User.last_name');?>", // Full name
+    name: "<?echo $this->Session->read('Auth.User.first_name') . ' ' . $this->Session->read('Auth.User.last_name');?>", // Full name
     email: "<?echo $this->Session->read('Auth.User.email');?>", // Email address
     created_at: <?echo strtotime($this->Session->read('Auth.User.created'))?> // Signup date as a Unix timestamp
   };
