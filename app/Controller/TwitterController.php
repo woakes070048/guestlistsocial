@@ -548,6 +548,8 @@ class TwitterController extends AppController {
                 case 3:
                     $accounts_allowed = 10;
                     break;
+                case 9:
+                    $accounts_allowed = 100000;
                 default:
                     $accounts_allowed = 1;
                     break;
