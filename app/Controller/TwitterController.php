@@ -587,6 +587,10 @@ class TwitterController extends AppController {
         $this->Session->write('access_token.oauth_token_secret', $accessToken['oauth_token_secret']);
         $this->Session->write('access_token.screen_name', $accessToken['screen_name']);
 
+        $oauth_token = $accessToken['oauth_token'];
+        $oauth_token_secret = $accessToken['oauth_token_secret'];
+        $name = $accessToken['screen_name'];
+
         $account = $this->TwitterAccount->find('all', array('conditions' => array('screen_name' => $accessToken['screen_name'])));
         if (empty($account)) {
             $this->TwitterAccount->create();
@@ -607,11 +611,16 @@ class TwitterController extends AppController {
 
             $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId'))));
 
+            $team_id = $this->Session->read('filter.team');
+            if (empty($team_id)) {
+                $team_id = $this->Cookie->read('currentTeam');
+            }
+
             if ($existingPermission == 0) {
             $this->TwitterPermission->create();
             $this->TwitterPermission->saveField('user_id', $this->Session->read('Auth.User.id'));
             $this->TwitterPermission->saveField('twitter_account_id', $twitter_account_id);
-            $this->TwitterPermission->saveField('team_id', $this->Session->read('Auth.User.currentTeamId'));
+            $this->TwitterPermission->saveField('team_id', $team_id);
             } else {
                 $this->Session->setFlash('Account already added to this team');
             }
@@ -651,7 +660,6 @@ class TwitterController extends AppController {
         
         if (!empty($details['errors'])) {
             echo $details['errors'][0]['code'];
-            echo $key['TwitterAccount']['account_id'];
         } else {
             $x1['TwitterAccount']['account_id'] = $twitter_account_id;
             $x1['TwitterAccount']['profile_pic'] = $details['profile_image_url'];
@@ -661,7 +669,7 @@ class TwitterController extends AppController {
             $x1['Statistic']['followers_count'] = $details['followers_count'];
             $x1['Statistic']['following_count'] = $details['friends_count'];
             $x1['Statistic']['favourites_count'] = $details['favourites_count'];
-            $this->Statistic->save($x1, array('deep' => true));
+            $this->Statistic->saveAssociated($x1, array('deep' => true));
         }
         $this->redirect('/');
 

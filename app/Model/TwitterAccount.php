@@ -17,6 +17,13 @@ class TwitterAccount extends AppModel {
         ),
     );
 
+    public $hasMany = array(
+        'Statistic' => array(
+            'order' => 'Statistic.timestamp DESC',
+            'limit' => 1
+        )
+    );
+
     public $primaryKey = 'account_id';
 
 }

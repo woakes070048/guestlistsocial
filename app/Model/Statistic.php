@@ -1,4 +1,7 @@
-<?php
-class Statistic extends AppModel {
-	public $hasOne = array('TwitterAccount');
+<?php
+
+class Statistic extends AppModel {
+
+	public $belongsTo = array('TwitterAccount');
+
 }
