@@ -1,13 +1,13 @@
 <?php 
 class UsersController extends AppController {
     public $helpers = array('Html','Form');
-    public $components = array('Tickets');
+    public $components = array('Tickets', 'Cookie');
     var $uses = array('Team', 'User', 'Ticket', 'TeamsUser', 'Group', 'FirstLogin');
 
     public function beforeFilter() {
         parent::beforeFilter();
 		$this->Auth->allow(array('action' => 'logout'));
-		$this->Auth->allow('login', 'initDB', 'verify', 'manage');
+		$this->Auth->allow('login', 'initDB', 'verify', 'manage', 'resend_verification');
     }
 
 	public function register() {
@@ -40,7 +40,7 @@ class UsersController extends AppController {
                             //$calendar_activated = $this->User->Team->find('all', array('conditions' => array('Team.id' => $this->Tickets->get($teamHash))));
                             //$this->User->saveField('calendar_activated', $calendar_activated[0]['User'][0]['calendar_activated']);
                             $this->User->saveField('group_id', $group);
-                            $this->Session->setFlash('You have successfully been registered and added to team ' . $team[0]['Team']['name']);
+                            $this->Session->setFlash('You have successfully been registered and added to team ' . $team['Team']['name']);
                             $this->Tickets->del($this->passedArgs['h']);
                             $this->Tickets->del($this->passedArgs['g']);
                             $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
@@ -53,7 +53,7 @@ class UsersController extends AppController {
                     $Email->to($this->request->data['User']['email']);
                     $Email->subject('Confirm Registration for Guestlist Social');
                     $Email->send($msg);
-	                $this->Session->setFlash(__('Please check your email to complete registration.'));
+	                $this->Session->setFlash(__('Please check your email to complete registration.'), 'default', array('class' => 'success'));
 	                $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
 	            } else {
 	                $this->Session->setFlash(__('The user could not be saved. Please, try again.'));
@@ -73,23 +73,23 @@ class UsersController extends AppController {
         if (!empty($this->passedArgs['id']) && !empty($this->passedArgs['h'])){
             $id = $this->passedArgs['id'];
             $hash = $this->passedArgs['h'];
-            $results = $this->User->find('all', array('fields' => array('group_id', 'registration_hash'), 'conditions' => array('User.id' => $id)));
+            $results = $this->User->find('all', array('fields' => array('group_id', 'registration_hash', 'first_name'), 'conditions' => array('User.id' => $id)));
             //check if the user is already activated
             if ($results[0]['User']['group_id'] == 6) {
             //check the token
                 if($results[0]['User']['registration_hash'] == $hash) {
                     debug($id);
                     //create team and add to team
-                    $team = array('name' => $results[0]['User']['first_name'] . "'s team", 'hash' => substr(md5(rand()), 0, 20));
+                    $team = array('name' => $results[0]['User']['first_name'] . "'s team", 'hash' => substr(md5(rand()), 0, 20), 'user_id' => $id);
                     $this->Team->save($team);
-                    $id = $this->Team->getLastInsertId();
-                    $teamHash = $this->Tickets->set($id);
+                    $team_id = $this->Team->getLastInsertId();
+                    $teamHash = $this->Tickets->set($team_id);
                     $adminHash = $this->Tickets->set(1);
-                    $this->addtoTeam($teamHash, $adminHash);
+                    $this->addtoTeam($teamHash, $adminHash, $id);
                     $this->User->id = $id;
                     $this->User->saveField('group_id', 1);
-                    $this->FirstLogin->save(array('user_id' => $id, 'stage' => 1));
-                    $this->Session->setFlash('Your registration is complete. Please log in.');
+                    $this->Cookie->destroy();//destroy any previous data (if you were logged in with a different account previously)
+                    $this->Session->setFlash('Your registration is complete. Please log in.', 'default', array('class' => 'success'));
                     $this->redirect('/landing');
                     exit;
                 } else { //hashes don't match
@@ -118,12 +118,13 @@ class UsersController extends AppController {
     	if ($this->request->is('post')) {
             if (isset($this->request->data['User'])) {
         	    if ($this->Auth->login()) {
-        	        $this->User->id = $this->Session->read('Auth.User.id');
+                    $id = $this->Session->read('Auth.User.id');
+        	        $this->User->id = $id;
 	                $this->User->saveField('session_id', $this->Session->id());
 
                     if ($this->Session->read('Auth.User.group_id') == 6) {//do not allow access if email not verified
                         $this->Session->destroy();
-                        $this->Session->setFlash('You have not verified your e-mail address, please follow the link in the email sent to you when you registered.');
+                        $this->Session->setFlash('You have not verified your e-mail address, please follow the link in the email sent to you when you registered.    ' . "<a href='/users/resend_verification/" . $id . "'>Resend E-mail</a>");
                         $this->redirect($this->Auth->logout());
                     }
 
@@ -135,7 +136,7 @@ class UsersController extends AppController {
                         $this->redirect('/');
                     }
       	        } else {
-           	        $this->Session->setFlash(__('Invalid username or password, try again'));
+           	        $this->Session->setFlash(__('Invalid username or password, try again.   ' . "<a href='/forgot_password'>Forgot Password?</a>"));
                     $this->redirect('/landing');
         	    }
             }
@@ -221,6 +222,45 @@ class UsersController extends AppController {
         }
     }
 
+    public function addtoTeam($teamHash, $groupHash = null, $user_id = null) {
+        $team = $this->Team->find('first', array('fields' => array('id', 'name', 'hash'), 'conditions' => array('id' => $this->Tickets->get($teamHash))));
+
+        if (empty($user_id)) {
+            $user_id = $this->Session->read('Auth.User.id');
+        }
+
+        $save = array(
+                    'TeamsUser' => array (
+                        'user_id' => $user_id,
+                        'team_id' => $this->Tickets->get($teamHash),
+                        'group_id' => $this->Tickets->get($groupHash)
+                    )
+                );
+        $this->TeamsUser->save($save);
+        $this->Tickets->del($teamHash);
+        $this->Tickets->del($group);
+
+        return true;
+    }
+
+    public function resend_verification($user_id) {
+        $user = $this->User->find('first', array('conditions' => array('User.id' => $user_id)));
+        if ($user['User']['group_id'] == 6) {
+            $hash = sha1($user['User']['first_name'].rand(0,100));
+
+            $msg = "Please click on the link below to activate you account with Guestlist Social:
+
+" . Router::url(array('action' => 'verify', 'id' => $user_id, 'h' => $hash), true);
+                    $Email = new CakeEmail('default');
+                    //$Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
+                    $Email->to($user['User']['email']);
+                    $Email->subject('Confirm Registration for Guestlist Social');
+                    $Email->send($msg);
+                    $this->Session->setFlash(__('Please check your email to complete registration.'), 'default', array('class' => 'success'));
+                    $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
+        }
+    }
+
     public function initDB() {
     /*
     Group id's and names
@@ -231,7 +271,7 @@ class UsersController extends AppController {
     7 => proofers
     */
 
-    $group = $this->User->Group;
+    //$group = $this->User->Group;
 
     // Allow admins to everything
     //$group->id = 1;
@@ -247,9 +287,9 @@ class UsersController extends AppController {
 
     // allow basic users to log out
     //$this->Acl->allow($group, 'controllers/users/logout');
-    debug($group);
-    $group->id = 1;
-    $this->Acl->allow($group, 'controllers');
+    //debug($group);
+    //$group->id = 1;
+    //$this->Acl->allow($group, 'controllers');
     //$group->id = 1;
     //$this->Acl->allow($group, 'controllers/comments/commentSave');
     //$this->Acl->allow($group, 'controllers/teams/removeFromTeam');
@@ -261,6 +301,7 @@ class UsersController extends AppController {
     //$group->id = 7;
     //$this->Acl->allow($group, 'controllers/comments/commentSave');
     // we add an exit to avoid an ugly "missing views" error message
+
     echo "all done";
     exit;
 }

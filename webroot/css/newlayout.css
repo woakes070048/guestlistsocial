@@ -603,7 +603,7 @@ footer div {
     margin: 10px;
     border-radius: 6px;
     display: inline-block;
-    background-color: #f5f5f5;
+    background-color: #fafafb;
     width: 650px;
     margin-left: 40px;
 }
@@ -1057,6 +1057,14 @@ span.counter1.exceeded {
 
 	transition: opacity 0.5s ease-in-out;
 
+	border: 1px solid #ddd;
+
+	border-top: 0;
+
+	border-top-left-radius: 0;
+
+	border-top-right-radius: 0;
+
 }
 
 
@@ -1219,7 +1227,9 @@ span.counter1.exceeded {
 
 	overflow: hidden;
 
-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+
+	color: #59626A;
 
 }
 #notificationTable {
@@ -1274,10 +1284,10 @@ text-overflow: ellipsis;
 /*BADGES*/
 .badge:after {
     position: absolute;
-    background: #0788D3;
+    background: #E89226;
     height: 12px;
     top: 23px;
-    right: 48px;
+    right: 81px;
     width: 12px;
     text-align: center;
     line-height: 12px;
@@ -1732,7 +1742,7 @@ input#CalendarTime {
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 4px;
-    background-color: #f5f5f5;
+    background-color: #fafafb;
     font-size: 18px;
 }
 
@@ -2180,7 +2190,7 @@ input#CalendarTime {
 	border: 1px solid #ccc;
 	border-radius: 4px;
 	position: absolute;
-	background-color: #f5f5f5;
+	background-color: #fafafb;
 	font-size: 12px;
 	margin-top: -25px;
 	cursor: pointer;
@@ -2256,5 +2266,27 @@ input#CalendarTime {
 	cursor: pointer;
 	margin: 2px;
 	display: inline-block;
-	max-width: 500px;
+	max-width: 300px;
+}
+
+.recycleBody .rr1 img {
+	vertical-align: middle;
+	display: inline-block;
+}
+
+#flashMessage {
+    color: #fff;
+    background-color: #AF3838;
+    text-align: center;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.recycleBody .rr1 div.tweetBankCount {
+	background-color: #2EA0E2;
+	color: #fff;
+	display: inline-block;
+	border: 0;
+	font-size: 11px;	border-radius: 6px;
+	vertical-align: middle;
 }

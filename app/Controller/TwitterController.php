@@ -17,6 +17,8 @@ class TwitterController extends AppController {
             $this->Session->write('access_token.screen_name', $acc['TwitterAccount']['screen_name']);
             $this->set('account', $acc['TwitterAccount']['screen_name']);
             $this->Session->write('filter.account', $acc['TwitterAccount']['screen_name']);
+            $this->Cookie->write('currentAccount', $this->request->query['accid']);
+            $this->Cookie->write('currentAccountScreenName', $acc['TwitterAccount']['screen_name']);
         } else {
             $this->set('scroll', 0);
         }
@@ -38,6 +40,7 @@ class TwitterController extends AppController {
 
         $permissions = array();
         $allTeams = array();
+        $adminTeams = array();
         foreach ($this->Session->read('Auth.User.Team') as $key) {
             $permissionsx = $this->TwitterPermission->find('list', array('fields' => 'twitter_account_id', 'conditions' => array('team_id' => $key['id'])));
             $permissions = array_merge($permissionsx, $permissions);
@@ -47,6 +50,7 @@ class TwitterController extends AppController {
                 $adminTeams[$key['id']] = $key['id'];
             }
         }
+
         $conditions = array('TwitterAccount.account_id' => $permissions);
         $this->set('myteam', $myteam);
         $this->set('adminTeams', $adminTeams);
@@ -160,10 +164,20 @@ class TwitterController extends AppController {
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
         $currentTeamCookie = $this->Cookie->read('currentTeam');
-        if (!empty($currentTeamCookie)) {
-            $this->set('team', $this->Cookie->read('currentTeam'));
+        if (in_array($currentTeamCookie, $myteam)) {
+            $ff = $this->Session->read('filter.team');
+            if (!empty($currentTeamCookie)) {
+                $this->set('team', $this->Cookie->read('currentTeam'));
+            } elseif ($ff) {
+                $this->set('team', $this->Session->read('filter.team'));
+            } else {
+                $this->set('team', false);
+            }
         } else {
-            $this->set('team', $this->Session->read('filter.team'));
+            $this->set('team', false);
+            $this->Cookie->delete('currentTeam');
+            $this->Cookie->delete('currentAccount');
+            $this->Cookie->delete('currentAccountScreenName');
         }
         if (!empty($this->request->query['h'])) {
             if ($this->request->query['h'] == 'nocalendar') {
@@ -271,7 +285,9 @@ class TwitterController extends AppController {
 
             $this->Cookie->write('currentTeam', $filter['team'], $encrypt = false, $expires = null);
         } else {
-            $this->set('team', 0);
+            $filter['team'] = array_keys($myteam)[0];
+            $this->Cookie->write('currentTeam', $filter['team'], $encrypt = false, $expires = null);
+            $this->set('team', $filter['team']);
         }
 
         if (!empty($user_id)) {
@@ -528,6 +544,12 @@ class TwitterController extends AppController {
         if ($months) {
             $this->set('months', $months);
         }
+
+        if ($this->Session->read('Auth.User.first_login_complete') == 1) {
+            $this->User->id = $this->Session->read('Auth.User.id');
+            $this->User->saveField('first_login_complete', 2);
+            $this->refreshUser();
+        }
     }
 
     public function connect() {
@@ -608,6 +630,8 @@ class TwitterController extends AppController {
         
             
             $this->Session->write('access_token.account_id', $account[0]['TwitterAccount']['account_id']);
+            $this->Cookie->write('currentAccount', $account[0]['TwitterAccount']['account_id']);
+            $this->Cookie->write('currentAccountScreenName', $accessToken['screen_name']);
 
             $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId'))));
 
@@ -671,6 +695,13 @@ class TwitterController extends AppController {
             $x1['Statistic']['favourites_count'] = $details['favourites_count'];
             $this->Statistic->saveAssociated($x1, array('deep' => true));
         }
+
+        if ($this->Session->read('Auth.User.first_login_complete') == 0) {
+            $this->User->id = $this->Session->read('Auth.User.id');
+            $this->User->saveField('first_login_complete', 1);
+            $this->refreshUser();
+        }
+
         $this->redirect('/');
 
     }

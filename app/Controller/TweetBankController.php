@@ -329,12 +329,11 @@ class TweetBankController extends AppController {
     		$tweets = $this->Tweet->find('all', array('conditions' => array('tweet_bank_id' => $id)));
     		$toSave = array();
     		foreach ($tweets as $key) {
-    			$x['id'] = $key['id'];
+    			$x['id'] = $key['Tweet']['id'];
     			$x['tweet_bank_id'] = 0;
     			$toSave[] = $x;
     		}
     		$this->Tweet->saveAll($toSave);
-    		$this->TweetBank->delete($id);
     		if ($this->TweetBank->delete($id)) {
                 $this->response->statusCode(200);
             } else {
@@ -357,5 +356,16 @@ class TweetBankController extends AppController {
         $category = $this->BankCategory->find('all', array('conditions' => array('BankCategory.id' => $bank_category_id)));
         $this->set('category', $category);
         $this->set('bank_category_id', $bank_category_id);
+    }
+
+    public function deleteImage($tweet_bank_id) {
+        $this->TweetBank->id = $tweet_bank_id;
+        if ($this->TweetBank->saveField('img_url', '')) {
+            $this->response->statusCode(200);
+        } else {
+            $this->response->statusCode(500);
+        }
+        return $this->response;
+        $this->redirect(Controller::referer());
     }
 }

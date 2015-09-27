@@ -86,6 +86,13 @@ class EditorialCalendarsController extends AppController {
             } else {
                 $this->response->statusCode(500);
             }
+
+
+            if ($this->Session->read('Auth.User.first_login_complete') == 2) {
+                $this->User->id = $this->Session->read('Auth.User.id');
+                $this->User->saveField('first_login_complete', 3);
+                $this->refreshUser();
+            }
         }
         return $this->response;
         $this->redirect(Controller::referer());
@@ -583,7 +590,8 @@ class EditorialCalendarsController extends AppController {
     }
 
 
-    public function calendarRefresh ($months) {        $this->Session->write('Auth.User.monthSelector', $months);
+    public function calendarRefresh ($months) {        
+        $this->Session->write('Auth.User.monthSelector', $months);
         $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC'), 'contain' => array('TwitterAccount', 'BankCategory', 'Tweet' => array('conditions' => array('timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'Comment', 'Editor' => array('User')))));
         $calendarx = array();
         $c = array();
@@ -698,6 +706,14 @@ class EditorialCalendarsController extends AppController {
                 $tweetBanks = array();
             }
         }
+
+        $tweet_bank_ids = array();
+        foreach ($tweetBanks as $key) {
+            $tweet_bank_ids[] = $key['TweetBank']['id'];
+        }
+        $tweet_bank_counts = $this->Tweet->find('all', array('fields' => array("COUNT(tweet_bank_id)", 'tweet_bank_id'), 'conditions' => array('tweet_bank_id' => $tweet_bank_ids), 'group' => 'tweet_bank_id'));
+        $tweet_bank_counts = Hash::combine($tweet_bank_counts, '{n}.Tweet.tweet_bank_id', '{n}');
+        $this->set('tweet_bank_counts', $tweet_bank_counts);
 
 
         $this->set('tweetBanks', $tweetBanks);

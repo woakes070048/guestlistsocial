@@ -21,20 +21,14 @@ echo $this->Html->css('jquery.scrollbar');
 echo $this->Html->css('slick');
 echo $this->Html->css('jquery.selectBoxIt');?>
 <?php
-echo $this->Session->flash('auth');
+$flash = $this->Session->flash('auth');
+if ($flash != 'You are not authorized to access that location.') {
+    echo $this->Session->flash('auth');
+}
 ?>
 <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.3/release/featherlight.min.css" type="text/css" rel="stylesheet" />
 <script src="//cdn.rawgit.com/noelboss/featherlight/1.3.3/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://checkout.stripe.com/checkout.js"></script>
-<script>
-  window.intercomSettings = {
-    app_id: "ryyuwn45",
-    name: "<?echo $this->Session->read('Auth.User.first_name') . ' ' . $this->Session->read('Auth.User.last_name');?>", // Full name
-    email: "<?echo $this->Session->read('Auth.User.email');?>", // Email address
-    created_at: <?echo strtotime($this->Session->read('Auth.User.created'))?> // Signup date as a Unix timestamp
-  };
-</script>
-<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ryyuwn45';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
 <!--<?
 echo $this->Form->create('filterAccount');
 echo $this->Html->image('twitter19px.png', array('class' => 'selectimage'));
@@ -92,7 +86,7 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
 <div class='selectTeamText'>
     <?
     if ($team == 0) {
-        $myteam[0] = 'Select Team';
+        $team = array_keys($myteam)[0];
     }
     echo $this->Form->input('team', array(
         'type' => 'radio',
@@ -145,15 +139,15 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
     ?>
 </div>
 <div class="filter-buttons">
-    <i class="fa fa-pencil fa-fw" id="pencilIcon"></i>
-    <i class="fa fa-bar-chart fa-fw" id="chartIcon"></i>
+    <i class="fa fa-pencil fa-fw" id="pencilIcon" data-label="Edit Teams"></i>
+    <i class="fa fa-bar-chart fa-fw" id="chartIcon" data-label="Team Progress"></i>
     <?
     if (!empty($team)) {
         if ($session_teams[$team]['TeamsUser']['group_id'] == 1) {?>
-            <i class="fa fa-users fa-fw" id="teamIcon"></i>
+            <i class="fa fa-users fa-fw" id="teamIcon" data-label="Manage Users"></i>
         <?}
     }?>
-    <i class="fa fa-cog fa-fw" id="cogIcon"></i>
+    <i class="fa fa-twitter fa-fw" id="twitterIcon" data-label="Manage Twitter Accounts"></i>
 </div>
 <?if (!empty($team)) {?>
 <div id="manageTeam">
@@ -190,7 +184,6 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
             </div>
 </div>
 <?}?>
-<?if (!empty($account)) {?>
 <div id="twitterManage">
             <? echo $this->Form->create('Accounts', array('url' => array('controller' => 'teams', 'action' => 'permissionSave1')));?>
 <ul id='editTeam' class="scrollbar-macosx">
@@ -210,19 +203,20 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
             <? echo $this->Form->submit('Save');?>
             <? echo $this->Form->end();?>
 </div>
-<?}?>
 <div id="createTeam">
     <?
     echo $this->Form->create('editTeam', array('url' => array('controller' => 'teams', 'action' => 'editTeam')));
     foreach ($myteam as $key => $value) {
-        if (!empty($adminTeams[$key])) {?>
-        <div style="margin: 0">
-            <?
-            echo $this->Form->input('name', array('label' => false, 'name' => 'data[' . $key . '][Team][name]', 'value' => $value, 'class' => 'inputBox'));?>
-            <i class="fa fa-pencil fa-fw"></i>
-            <a href="/teams/deleteTeam/<?echo $key;?>"><i class="fa fa-trash fa-fw" style='margin-left: 40px' onclick='confirm("Are you sure you want to delete this team?");'></i></a>
-        </div>
-    <?  }
+        if (!empty($adminTeams)) {
+            if (!empty($adminTeams[$key])) {?>
+            <div style="margin: 0">
+                <?
+                echo $this->Form->input('name', array('label' => false, 'name' => 'data[' . $key . '][Team][name]', 'value' => $value, 'class' => 'inputBox'));?>
+                <i class="fa fa-pencil fa-fw"></i>
+                <a href="/teams/deleteTeam/<?echo $key;?>"><i class="fa fa-trash fa-fw" style='margin-left: 40px' onclick='confirm("Are you sure you want to delete this team?");'></i></a>
+            </div>
+        <?  }
+        }
     }
     echo $this->Form->end('Submit Changes');?>
     <hr style="border: none; background-color: #ccc; width: 220px; height: 1px; margin: 25px 0">
@@ -372,8 +366,7 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
         }
     }
     ?>
-    <a href="/twitter/calendar/0"><i class="fa fa-calendar fa-fw"></i></a>
-    <i class="fa fa-cog fa-fw"></i>
+    <a href="/twitter/calendar/0"><i class="fa fa-calendar fa-fw" data-label="Editorial Calendar"></i></a>
 </div>
     <footer>
         <ul>
@@ -568,7 +561,8 @@ $(document).ready(function() {
                         contentType: false,
                         success: function(data) {
                             warnMessage = null;
-                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                            var month = $('.slick-current').attr('data-month');
+                            $('#table').load('/editorial_calendars/calendarrefresh/' + month, function() {
                                 $("#table").css('opacity', '1');
                                 $('#loading').hide();
                             });
@@ -790,11 +784,26 @@ $(document).ready(function() {
         $('select').selectBoxIt({
         });
 
+        $('.filter-buttons i').qtip({
+            content: {
+                text: function(event, api) {
+                    label = $(this).attr('data-label'); 
+                    
+                    return label; // Set some initial text
+                }
+            },
+            position: {
+                my: 'top center',
+                at: 'bottom center', 
+                target: 'event'
+            }
+        });
+
         $('.filter-buttons #teamIcon').click(function () {
             $('#manageTeam').toggle();
         });
 
-        $('.filter-buttons #cogIcon').click(function () {
+        $('.filter-buttons #twitterIcon').click(function () {
             $('#twitterManage').toggle();
         });
 

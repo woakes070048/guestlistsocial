@@ -56,7 +56,24 @@ foreach ($tweetBanks as $key => $value) {
 		<div class='arrowdown'></div>
 
 	</div>-->
-				<div class='rr1'><div><?echo $value['TweetBank']['body'];?></div><? echo ($value['TweetBank']['img_url']) ? "<i class='fa fa-camera fa-fw recycleBodyImage' data='" . $value['TweetBank']['img_url'] . "'>" : '' ;?></div>
+				<div class='rr1'>
+					<? if (!empty($value['TweetBank']['img_url'])) {
+						echo $this->Html->image($value['TweetBank']['img_url'], array('width' => '30px', 'height' => '30px', 'class' => 'recycleBodyImage'));
+					} else {?>
+						<div style="height: 30px; width: 30px; border: 0; padding: 0; background-color: rgba(255, 255, 255, 0); margin: 0"></div>
+					<?}?>
+					<div><?echo $value['TweetBank']['body'];?></div>
+					 <?
+					 if (!empty($tweet_bank_counts[$value['TweetBank']['id']][0]['COUNT(tweet_bank_id)'])) {
+					 	$count = $tweet_bank_counts[$value['TweetBank']['id']][0]['COUNT(tweet_bank_id)'];
+					 } else {
+					 	$count = '0';
+					 }
+					 ?>
+					<div class="tweetBankCount" data-count="<? echo $count;?>">
+						<? echo $count;?>
+					</div>
+				</div>
 <?}?>
 </div>
 </div>
@@ -73,23 +90,28 @@ $(document).ready(function () {
 	$('.recycleBodyImage').qtip({
 		content: {
 			text: function(event, api) {
-				return '<img src=\"' + $(this).attr('data') + '\" width="400px">';
+				return '<img src=\"' + $(this).attr('src') + '\" width="400px">';
 			}
+		},
+		position: {
+			my: "right top",
+			at: "left center",
+			target: "event"
 		}
 	});
 
 	$('.recycleBody .rr1 div').click(function (e) {
 		text = $(this).text();
-		image_url = $(this).closest('.rr1').find('i').attr('data');
+		image_url = $(this).closest('.rr1').find('img').attr('src');
 		id = $(this).closest('.qtip-default').attr('id');
 	    id = id.split('-')[1];
 	    $('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('textarea').text(text);
 	    $('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('#TweetImgUrl').val(image_url);
 	    $('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('input[name=tosubmit]').val(true);
 	    if (image_url) {
-		    $('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('.file').after(function () {
+		    $('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('.calendar.verified').after(function () {
 		    	$('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('.imagecontainer').hide();
-		    	return '<div class="imagecontainer"><img src="' + image_url + '" style="max-width:500px;"></div>';
+		    	return '<div class="imagecontainer"><img src="' + image_url + '" style="max-width:496px;"></div>';
 		    });
 	    } else {
 	    	$('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('.imagecontainer').hide();
@@ -117,6 +139,20 @@ $(document).ready(function () {
 	});
 
     $('.scrollbar-macosx').scrollbar();
+
+    $('.tweetBankCount').qtip({
+		content: {
+			text: function(event, api) {
+				count = $(this).attr('data-count');
+				return 'This tweet has been used ' + count + ' times.';
+			}
+		},
+		position: {
+			my: "top center",
+			at: "bottom center",
+			target: "event"
+		}
+    });
 });
 </script>
 </div>

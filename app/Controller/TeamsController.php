@@ -6,7 +6,7 @@ class TeamsController extends AppController {
     
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('test', 'edit', 'users', 'permissionSave1', 'editrefresh', 'editTeam', 'deleteTeam');
+        $this->Auth->allow('test', 'edit', 'users', 'permissionSave1', 'editrefresh', 'editTeam', 'deleteTeam', 'invite', 'removeFromTeam');
     }
 
 
@@ -83,6 +83,11 @@ class TeamsController extends AppController {
 											GROUP BY account_id, verified");
 
 			$totalCount1 = array();
+			foreach ($twitter_accounts as $key) {
+				$totalCount1[$key['TwitterPermission']['twitter_account_id']][0] = 0;
+				$totalCount1[$key['TwitterPermission']['twitter_account_id']][1] = 0;
+				$totalCount1[$key['TwitterPermission']['twitter_account_id']][2] = 0;
+			}
 			foreach ($totalCount as $key) {
 				$totalCount1[$key['tweets']['account_id']][$key['tweets']['verified']] = $key[0]['COUNT(user_id)'];
 			}
@@ -124,12 +129,22 @@ class TeamsController extends AppController {
 															FROM editorial_calendars
 															WHERE twitter_account_id IN ($query_twitter_accounts1)
 															GROUP BY twitter_account_id");
-			foreach ($calendarCount as $key1) {
+			$calendarCount = Hash::combine($calendarCount, '{n}.editorial_calendars.twitter_account_id', '{n}');
+			/*foreach ($calendarCount as $key1) {
 				if (!empty($totalCount1[$key1['editorial_calendars']['twitter_account_id']])) {
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['calendarCount'] = $key1[0]['COUNT(id)'] / 7;
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['screen_name'] = $screen_names[$key1['editorial_calendars']['twitter_account_id']];
 					$totalCount1[$key1['editorial_calendars']['twitter_account_id']]['profile_pic'] = $profile_pics[$key1['editorial_calendars']['twitter_account_id']];
 				}
+			}*/
+			foreach ($twitter_accounts as $key1) {
+				if (!empty($calendarCount[$key1['TwitterPermission']['twitter_account_id']])) {
+					$totalCount1[$key1['TwitterPermission']['twitter_account_id']]['calendarCount'] = $calendarCount[$key1['TwitterPermission']['twitter_account_id']][0]['COUNT(id)'] / 7;
+				} else {
+					$totalCount1[$key1['TwitterPermission']['twitter_account_id']]['calendarCount'] = 0;
+				}
+					$totalCount1[$key1['TwitterPermission']['twitter_account_id']]['screen_name'] = $screen_names[$key1['TwitterPermission']['twitter_account_id']];
+					$totalCount1[$key1['TwitterPermission']['twitter_account_id']]['profile_pic'] = $profile_pics[$key1['TwitterPermission']['twitter_account_id']];
 			}
 			unset($calendarCount);
 			//debug($calendarCount);
@@ -147,11 +162,15 @@ class TeamsController extends AppController {
 			$tableTweets = $this->Tweet->find('all', array('fields' => array('id', 'account_id', 'timestamp', 'verified', 'calendar_id', 'modified'), 'conditions' => array('Tweet.account_id' => $query_twitter_accounts, 'timestamp >=' => $firstdate, 'timestamp <=' => $seconddate, 'calendar_id' => $calendarIDs), 'recursive' => -1, 'order' => 'Tweet.modified DESC'));
 			
 			$tableTweets1 = array();
+			foreach ($twitter_accounts as $key) {
+				$tableTweets1[$key['TwitterPermission']['twitter_account_id']] = array();
+			}
 			foreach ($tableTweets as $key) {
 				if (empty($tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']])) {
 					$tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']] = 0;
 				}
 				$tableTweets1[$key['Tweet']['account_id']][date('jS', $key['Tweet']['timestamp'])][$key['Tweet']['verified']] += 1;
+				unset($key);
 			}
 			$this->set('tableTweets1', $tableTweets1);
 			unset($tableTweets1);
@@ -301,7 +320,7 @@ class TeamsController extends AppController {
 
 				" . Router::url(array('controller' => 'users', 'action' => 'register', 'h' => $hash, 'g' => $grouphash), true);
             	$Email->send($msg);
-            	$this->Session->setFlash(__('Invite Sent.'));
+            	$this->Session->setFlash(__('Invite Sent.'), 'default', array('class' => 'success'));
 			} elseif ($count == 1) {
             	$Email->subject('You have been invited to join a team at Guestlist Social');
 				$msg = "You have been invited to join the team $teamname by $first_name $last_name. Click the link below to join their team!
@@ -310,6 +329,7 @@ class TeamsController extends AppController {
 				$Email->send($msg);
             	$this->Session->setFlash(__('Invite Sent.'));
 			}
+			$this->redirect('/');
 		}
 	}
 

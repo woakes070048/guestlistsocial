@@ -109,12 +109,12 @@ foreach ($tweets as $key) { ?>
     ?>
     <? if ($key['Tweet']['img_url']) { ?>
         <div class='imagecontainer'>
-            <? echo $this->Html->image($key['Tweet']['img_url'], array('style' => 'max-width:640px')); ?>
-            <? echo $this->Html->link("<div class='deleteimage'>Delete image</div>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
+            <? echo $this->Html->link("<i class='deleteimage fa fa-times'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
+            <? echo $this->Html->image($key['Tweet']['img_url'], array('style' => 'max-width:496px')); ?>
         </div>
     <?  } else {?>
         <div id="imagePreview<?echo$id;?>" class='imagecontainer'>
-            <img src='' style='max-width:640px'>
+            <img src='' style='max-width:496px'>
         </div>
     <?  }  ?>
 </div>

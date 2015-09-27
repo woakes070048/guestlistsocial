@@ -107,7 +107,7 @@
 <script type="text/javascript">
 $(document).ready(function () {
       var handler = StripeCheckout.configure({
-        key: 'pk_test_jhuRvD7XWwgcdDLE1Ymgvq8e',
+        key: 'pk_live_ponMFqIV8IKQkFS2XNJfuNLF',
         image: '/img/logo.png',
         locale: 'auto',
         email: "<?echo $this->Session->read('Auth.User.email');?>",
@@ -148,7 +148,7 @@ $(document).ready(function () {
 
 
       var handler1 = StripeCheckout.configure({
-        key: 'pk_test_jhuRvD7XWwgcdDLE1Ymgvq8e',
+        key: 'pk_live_ponMFqIV8IKQkFS2XNJfuNLF',
         image: '/img/logo.png',
         locale: 'auto',
         email: "<?echo $this->Session->read('Auth.User.email');?>",
@@ -188,7 +188,7 @@ $(document).ready(function () {
       });
 
       var handler2 = StripeCheckout.configure({
-        key: 'pk_test_jhuRvD7XWwgcdDLE1Ymgvq8e',
+        key: 'pk_live_ponMFqIV8IKQkFS2XNJfuNLF',
         image: '/img/logo.png',
         locale: 'auto',
         email: "<?echo $this->Session->read('Auth.User.email');?>",

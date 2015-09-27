@@ -527,3 +527,20 @@ hr {
 	text-decoration: underline;
 	color: #000;
 }
+
+#flashMessage {
+    color: #fff;
+    background-color: #AF3838;
+    text-align: center;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+#flashMessage a {
+	text-decoration: underline;
+    margin-left: 10px;
+}
+
+#flashMessage.success {
+	background-color: #4CAB50;
+}

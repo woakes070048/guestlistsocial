@@ -105,7 +105,7 @@ echo $this->Html->script('Chart.min');
 					<th>
 					</th>
 					<?for ($i=1; $i <= date('t'); $i++) {?>
-						<th style='font-size: 7pt;' colspan="2"><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?><div></div></th>
+						<th style='font-size: 7pt; width: 20px;' colspan="2"><?echo date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')));?><div></div></th>
 					<?}?>
 				</tr>
 				<?foreach ($tableTweets1 as $key => $value) {?>
@@ -123,11 +123,11 @@ echo $this->Html->script('Chart.min');
 									$value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0] = 0;
 								}
 
-								if ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] == $totalCount1[$key]['calendarCount']) {
+								if ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] == $totalCount1[$key]['calendarCount'] && $totalCount1[$key]['calendarCount'] != 0) {
 									$class = 'allApproved';
-								} elseif (($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] + $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) == $totalCount1[$key]['calendarCount']) {
+								} elseif (($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][1] + $value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][0]) == $totalCount1[$key]['calendarCount'] && $totalCount1[$key]['calendarCount'] != 0) {
 									$class = 'notAllApproved';
-								} elseif ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2]) {
+								} elseif ($value[date('jS', strtotime($i . '-' . date('m') . '-' . date('Y')))][2] && $totalCount1[$key]['calendarCount'] != 0) {
 									$class = 'improveApproved';
 								} else {
 									$class = '';
@@ -154,7 +154,7 @@ echo $this->Html->script('Chart.min');
 								} else {
 										$class = '';
 								}*/?>
-							<td class='<?echo $class;?>' data-scroll='<?echo $i;?>' data-account-id='<?echo $key;?>'>
+							<td class='<?echo $class;?>' data-scroll='<?echo $i;?>' data-account-id='<?echo $key;?>' colspan="2">
 							</td>
 						<?}?>
 					</tr>

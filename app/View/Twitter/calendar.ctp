@@ -7,6 +7,7 @@
     echo $this->Html->script('toastr.min'); 
     echo $this->Html->script('jquery.qtip.min');
     echo $this->Html->script('masonry.pkgd.min');
+    echo $this->Html->script('imagesloaded.pkgd.min');
     echo $this->Html->css('jquery.qtip.min');
     echo $this->Html->css('calendar');
     echo $this->Html->css('toastr.min'); ?>
@@ -255,7 +256,9 @@ $(document).ready(function () {
 
     $('.BankCategory').click(function () {
         id = $(this).find('span').attr('data-id');
-        $('#refresh').load('/tweetBank/calendarrefresh/' + id);
+        if (id) {
+            $('#refresh').load('/tweetBank/calendarrefresh/' + id);
+        }
         $('td').css('background-color', '#fff');
         $(this).closest('td').css('background-color', '#fffca1');
     });
@@ -289,6 +292,10 @@ $(document).ready(function () {
 }
 #TweetBody {
     font-size: 100%;
+}
+
+#refresh {
+    margin-top: 30px;
 }
 
 td, th {
@@ -342,5 +349,9 @@ textarea {
 
 .submit {
     display: inline-block;
+}
+
+#container {
+    background: #fff;
 }
 </style>

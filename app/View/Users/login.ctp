@@ -167,7 +167,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$(document).mouseup(function (e) {
+	$(document).mousedown(function (e) {
 	    var container = $("#login");
 
 	    if (!container.is(e.target) && container.has(e.target).length === 0) {

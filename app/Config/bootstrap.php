@@ -201,6 +201,7 @@ Configure::write('Dispatcher.filters', array(
 
 Configure::write('Stripe.TestSecret', 'sk_test_pbIzGSOjdMGZBPtTcFDpJnTz');
 Configure::write('Stripe.LiveSecret', 'sk_live_IOin7meoHoAUJK0KFYP6vr9I');
+Configure::write('Stripe.mode', 'Live');
 
 
 /**

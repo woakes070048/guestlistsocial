@@ -1,3 +1,4 @@
+<div id="refresh1">
 <?echo $this->Form->create('TweetBank', array('url' => '/TweetBank/save', 'type' => 'file'));?>
 <div class='tweetBank' data-id='new' style='background-color: rgb(255, 252, 161)'>
 	<div class='tweetBankTop'>
@@ -36,7 +37,7 @@
 		</div>
 		<? if (!empty($key['TweetBank']['img_url'])) { ?>
             <div class='imagecontainer' style="max-width: 290px">
-                <? echo $this->Html->link("<i class='fa fa-times-circle deleteimage' style='margin-left: 270px'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $key['TweetBank']['id']), array('escape' => false));?>
+                <? echo $this->Html->link("<i class='fa fa-times-circle deleteimage' style='margin-left: 270px'></i>", array('controller' => 'tweetBank', 'action' => 'deleteImage', $key['TweetBank']['id']), array('escape' => false));?>
                 <? echo $this->Html->image($key['TweetBank']['img_url'], array('style' => 'max-width:290px')); ?>
             </div>
     	<? } else {?>
@@ -50,9 +51,19 @@
 
 
 echo $this->Form->end(array('class' => 'saveTweetBank', 'label' => 'Save'));?>
+</div>
 
 <script>
 $(document).ready(function () {
+
+imagesLoaded('#refresh1', function() {
+	$("#refresh1").masonry({
+	    itemSelector: '.tweetBank',
+	    columnWidth: 302,
+	    gutter: 27,
+	    isOriginTop: true
+	});
+});
 
 $('.saveTweetBank').click(function (e) {
 	e.preventDefault();
@@ -74,12 +85,18 @@ $('.saveTweetBank').click(function (e) {
 $('.deleteTweetBank').click(function () {
 	id = $(this).closest('.tweetBank').attr('data-id');
 	$.ajax({
-	    url: 'delete/' + id,
+	    url: '/tweetBank/delete/' + id,
 	    context: $(this),
 	    success: function(data) {
 	        toastr.success('Deleted successfully.');
 	        $(this).closest('.tweetBank').find('input, select, textarea').prop('disabled', true);
 	        $(this).closest('.tweetBank').hide();
+			$("#refresh1").masonry({
+			    itemSelector: '.tweetBank',
+			    columnWidth: 302,
+			    gutter: 27,
+			    isOriginTop: true
+			});
 	    },
 	    error: function(XMLHttpRequest, textStatus, errorThrown) { 
 	        toastr.error('An error occurred. Please try again.');
@@ -119,11 +136,5 @@ $('.imagecontainer a').click(function (e) {
     });
 });
 
-$("#refresh").masonry({
-    itemSelector: '.tweetBank',
-    columnWidth: 302,
-    gutter: 27,
-    isOriginTop: true
-});
 });
 </script>

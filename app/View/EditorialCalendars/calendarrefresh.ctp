@@ -242,7 +242,7 @@ foreach ($calendar as $time => $key1) {
         </div>
     <?  } else {?>
         <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
-            <img src='' style='max-width:640px'>
+            <img src='' style='max-width:496px'>
         </div>
     <?  }  ?>
     <?
@@ -343,7 +343,8 @@ foreach ($calendar as $time => $key1) {
                         processData: false,
                         contentType: false,
                         success: function(data) {
-                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                            var month = $('.slick-current').attr('data-month');
+                            $('#table').load('/editorial_calendars/calendarrefresh/' + month, function() {
                                 warnMessage = null;
                                 $("#table").css('opacity', '1');
                                 $('#loading').hide();

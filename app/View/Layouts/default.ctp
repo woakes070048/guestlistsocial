@@ -17,15 +17,15 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = __d('cake_dev', 'tweetPROOF');
+$cakeDescription = __d('cake_dev', 'TweetProof');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php echo $cakeDescription ?>:
-		<?php echo $title_for_layout; ?>
+		<?php echo $cakeDescription ?>
+		<?php //echo $title_for_layout; ?>
 	</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 	<?php
@@ -38,7 +38,18 @@ $cakeDescription = __d('cake_dev', 'tweetPROOF');
 		echo $this->fetch('script');
 	?>
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
-</li>
+
+	<script>
+	  window.intercomSettings = {
+	    app_id: "ryyuwn45",
+	    name: "<?echo $this->Session->read('Auth.User.first_name') . ' ' . $this->Session->read('Auth.User.last_name');?>", // Full name
+	    email: "<?echo $this->Session->read('Auth.User.email');?>", // Email address
+	    //created_at: <?echo time();?>, 
+	    created_at: <?echo strtotime($this->Session->read('Auth.User.created'))?>, // Signup date as a Unix timestamp
+	    tutorial_progress: <?echo $this->Session->read('Auth.User.first_login_complete');?>
+	  };
+	</script>
+	<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ryyuwn45';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
 </head>
 
 <div id="loading" style="display: none;">
@@ -146,7 +157,7 @@ $(document).click(function(e) {
 
 });
 
-$(document).mouseup(function (e) {
+$(document).mousedown(function (e) {
     var container = $("#twitterManage");
 
     if (!container.is(e.target) && container.has(e.target).length === 0) {
@@ -154,7 +165,7 @@ $(document).mouseup(function (e) {
     }
 });
 
-$(document).mouseup(function (e) {
+$(document).mousedown(function (e) {
     var container = $("#manageTeam");
 
     if (!container.is(e.target) && container.has(e.target).length === 0) {
@@ -162,7 +173,7 @@ $(document).mouseup(function (e) {
     }
 });
 
-$(document).mouseup(function (e) {
+$(document).mousedown(function (e) {
     var container = $("#createTeam");
 
     if (!container.is(e.target) && container.has(e.target).length === 0) {
@@ -170,7 +181,7 @@ $(document).mouseup(function (e) {
     }
 });
 
-$(document).mouseup(function (e) {
+$(document).mousedown(function (e) {
     var container = $(".filter.filterTeamScroll");
 
     if (!container.is(e.target) && container.has(e.target).length === 0) {
@@ -183,7 +194,7 @@ $(document).mouseup(function (e) {
     }
 });
 
-$(document).mouseup(function (e) {
+$(document).mousedown(function (e) {
     var container = $(".filter.filterAccountScroll");
 
     if (!container.is(e.target) && container.has(e.target).length === 0) {
