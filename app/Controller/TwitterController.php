@@ -1290,4 +1290,20 @@ class TwitterController extends AppController {
             return false;
         }*/
     }
+
+    public function http(){
+        //temp function to change all http to https for full secure page
+        $data = array();
+        $x = 0;
+        $images = $this->TwitterAccount->find('all');
+        foreach($images as $image){
+            $exploded = explode('http://',$image['TwitterAccount']['profile_pic']);
+            if(!empty($exploded[1])){
+                $data[$x]['account_id'] = $image['TwitterAccount']['account_id'];
+                $data[$x]['profile_pic'] = 'https://'.$exploded[1];
+                $x++;
+            }
+        }
+        $this->TwitterAccount->saveAll($data);
+    }
 }

@@ -1,7 +1,7 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
 <?php echo $this->Html->script('jquery-ui-1.10.3.custom'); 
 echo $this->Html->css('calendar');?>
-<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
 $(function () { 
     $('#graph').highcharts({

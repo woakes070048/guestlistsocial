@@ -18,7 +18,7 @@ $cakeDescription = __d('cake_dev', 'social.guestlist.net');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
-	<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
 </li>
 </head>
 

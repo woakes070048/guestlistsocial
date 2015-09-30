@@ -1,5 +1,5 @@
 <? 
-echo $this->Html->script("http://code.jquery.com/jquery-1.9.1.min.js");
+echo $this->Html->script("https://code.jquery.com/jquery-1.9.1.min.js");
 echo $this->Html->script('toastr.min');
 echo $this->Html->script('jquery.dropdown');
 echo $this->Html->css('jquery.dropdown');

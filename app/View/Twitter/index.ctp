@@ -1,6 +1,6 @@
 <? 
-echo $this->Html->script("http://code.jquery.com/jquery-1.9.1.min.js");
-echo $this->Html->script("http://malsup.github.io/jquery.form.js");
+echo $this->Html->script("https://code.jquery.com/jquery-1.9.1.min.js");
+echo $this->Html->script("https://malsup.github.io/jquery.form.js");
 echo $this->Html->script("//js.pusher.com/2.2/pusher.min.js");
 echo $this->Html->script('jquery-ui-1.10.3.custom');
 echo $this->Html->script('jquery-ui-timepicker-addon');
