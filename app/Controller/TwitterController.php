@@ -164,7 +164,7 @@ class TwitterController extends AppController {
         $this->set('user', $this->Session->read('filter.user'));
         $this->set('account', $this->Session->read('filter.account'));
         $currentTeamCookie = $this->Cookie->read('currentTeam');
-        if (in_array($currentTeamCookie, $myteam)) {
+        if (in_array($currentTeamCookie, array_flip($myteam))) {
             $ff = $this->Session->read('filter.team');
             if (!empty($currentTeamCookie)) {
                 $this->set('team', $this->Cookie->read('currentTeam'));
@@ -587,7 +587,7 @@ class TwitterController extends AppController {
 
         if (!empty($allowed_more_accounts)) {
             $client = $this->createClient();
-            $requestToken = $client->getRequestToken('https://api.twitter.com/oauth/request_token', 'http://' . $_SERVER['HTTP_HOST'] . '/twitter/twitterredirect');
+            $requestToken = $client->getRequestToken('https://api.twitter.com/oauth/request_token', 'https://' . $_SERVER['HTTP_HOST'] . '/twitter/twitterredirect');
 
             if ($requestToken) {
                 $this->Session->write('twitter_request_token', $requestToken);
@@ -629,8 +629,8 @@ class TwitterController extends AppController {
         }
         
             
-            $this->Session->write('access_token.account_id', $account[0]['TwitterAccount']['account_id']);
-            $this->Cookie->write('currentAccount', $account[0]['TwitterAccount']['account_id']);
+            $this->Session->write('access_token.account_id', $twitter_account_id);
+            $this->Cookie->write('currentAccount', $twitter_account_id);
             $this->Cookie->write('currentAccountScreenName', $accessToken['screen_name']);
 
             $existingPermission = $this->TwitterPermission->find('count', array('conditions' => array('user_id' => $this->Session->read('Auth.User.id'), 'twitter_account_id' => $twitter_account_id, 'team_id' => $this->Session->read('Auth.User.currentTeamId'))));

@@ -207,6 +207,12 @@ $(document).mousedown(function (e) {
     }
 });
 
+$(document).click(function(e) {  
+    if(e.target.className != 'imageUpload' && e.target.className != 'fa fa-camera') {
+        $('.imageUpload').hide();
+    }
+});
+
 
 $('#headercontainer nav img, #headercontainer nav .arrowdown').click(function () {
 	$('.accountSettings').toggle();

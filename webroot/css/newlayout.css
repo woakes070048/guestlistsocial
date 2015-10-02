@@ -683,10 +683,10 @@ span.counter1.exceeded {
     overflow: hidden;
 }
 
-.input.file::before {
+/*.input.file::before {
 	font-family: FontAwesome;
 	content: "\f030"
-}
+}*/
 
 .calendar.verified {
 	display: inline-block;
@@ -1819,8 +1819,8 @@ input#CalendarTime {
 }
 
 #editTeam input[type='submit']:hover,
-#twitterManage input[type='submit'],
-#createTeam input[type='submit'] {
+#twitterManage input[type='submit']:hover,
+#createTeam input[type='submit']:hover {
     border: 1px solid #05456B;
 }
 
@@ -2289,4 +2289,57 @@ input#CalendarTime {
 	border: 0;
 	font-size: 11px;	border-radius: 6px;
 	vertical-align: middle;
+}
+
+#TweetImgUrl2 {
+    display: inline-block;
+    width: 140px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 12px 0 12px 0px;
+    font-family: 'Open Sans';
+    font-size: 14px;
+}
+
+.imageUpload {
+	width: 200px;
+	margin-left: 300px;
+	position: absolute;
+	text-align: center;
+	background-color: #fff;
+	z-index: 100;
+	border-radius: 5px;
+	border: 1px solid #d2d2d2;
+	padding: 20px 0;
+}
+
+.imageUpload span {
+	display: block;	
+	font-size: 12px;
+	margin-top: 20px;
+}
+
+.button {
+	padding: 5px;
+	border: 1px solid #eee;
+	border-radius: 3px;
+    width: 350px;
+    background-color: #39AAEC;
+    color: #fff;
+    font-weight: 600;
+    font-family: 'Open Sans';
+    border: 1px solid #1580C3;
+    cursor: pointer;
+}
+
+.imageUpload .button {
+	font-size: 11px;
+	display: inline;
+	width: 100px;
+}
+
+.imageUpload .input.file input {
+	width: 0;
+	height: 0;
 }

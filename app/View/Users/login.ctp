@@ -147,7 +147,7 @@ echo $this->Html->css('jquery.dropdown');
 	<? echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'login')));
 	        echo $this->Form->input('email', array('placeholder' => 'Email Address', 'label' => false));
 	        echo $this->Form->input('password', array('placeholder' => 'Password', 'label' => false));?>
-			<h1><?echo $this->Html->link('Forgotten password?', array('action' => 'forgotpw'));?></h1>
+			<h1><?echo $this->Html->link('Forgotten password?', array('action' => '#'), array('class' => 'forgot', 'data-featherlight' => '/users/forgotpw'));?></h1>
 	        <?echo $this->Form->end('SIGN IN');?>
 	</div>
 </div>
@@ -155,6 +155,9 @@ echo $this->Html->css('jquery.dropdown');
 <script>
 $(document).ready(function() {
 	$('.tableButton:not(.one)').featherlight('/users/register', {
+	});
+
+	$('.forgot').featherlight('/users/forgotpw', {
 	});
 
 	$('.tableButton.one').click(function () {

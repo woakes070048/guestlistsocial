@@ -87,7 +87,7 @@ foreach ($calendar as $time => $key1) {
     }*/
 
     //if (empty($tweets[$key1['EditorialCalendar']['id']])) {
-    if (!$key1['Tweet']) {
+    if (empty($key1['Tweet'])) {
         $value2 = '';
         $value1 = $testid;
         $id = '';
@@ -193,8 +193,14 @@ foreach ($calendar as $time => $key1) {
             <i class="empty comments <?echo $present;?> fa fa-comments" id="<? echo $id; ?>"></i>
             <i class="smallSaveButton fa fa-floppy-o"></i>
             <i class="urlSubmit1 shortsingle fa fa-code"></i>
-            <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false, 'class' => 'imgupload')); ?>
+            <? //echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false, 'class' => 'imgupload')); ?>
+            <i class="fa fa-camera"></i>
         </div>
+    </div>
+    <div class="imageUpload" style="display:none">
+        <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => "<span class='button'>Upload Image</span>", 'class' => 'button')); ?>
+        <span>OR</span>
+        <? echo $this->Form->input('img_url2', array('name' => 'data[Tweet]['.$value1.'][img_url2]', 'label' => false, 'placeholder' => 'Paste Link...'));?>
     </div>
     <div class="calendar verified">
     <? echo $this->Form->input('verified', 
@@ -234,17 +240,15 @@ foreach ($calendar as $time => $key1) {
         </ul>
         <?}?>
     </div>
-
-    <? if ($img) { ?>
+    <? if (!empty($img)) {?>
         <div class='imagecontainer'>
             <? echo $this->Html->link("<i class='deleteimage fa fa-times'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
             <? echo $this->Html->image($img, array('style' => 'max-width:496px')); ?>
         </div>
-    <?  } else {?>
-        <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer'>
+    <?}?>
+        <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer' style="display: none">
             <img src='' style='max-width:496px'>
         </div>
-    <?  }  ?>
     <?
     echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
     echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]', 'data-id' => $idForPusher));
@@ -499,6 +503,7 @@ foreach ($calendar as $time => $key1) {
                 $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                 $(this).closest(".tweet").find('.editing').addClass('withImage').removeClass('withoutImage');
                 $(this).closest(".tweet").find('.counter1').hide();
+                $(this).closest(".tweet").find('.counter2').hide();
                 val = $(this).closest(".tweet").find('.TwitterVerified1:checked').val();
                 if (val == 0) {
                     color = '#ffcc00';
@@ -520,8 +525,9 @@ foreach ($calendar as $time => $key1) {
                     reader.readAsDataURL(files[0]); // read the local file
                     var id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
                     reader.onloadend = function(){ // set image data as background of div
+                        $("#imagePreview" + id + " img").closest('.tweet').find('.imagecontainer').hide();
                         $("#imagePreview" + id + " img").attr('src', this.result);
-                        $("#imagePreview" + id + " img").css('margin-top', '20px');
+                        $("#imagePreview" + id).show();
                     }
                 }
             });
@@ -777,6 +783,11 @@ foreach ($calendar as $time => $key1) {
         <? if (empty($calendar)) {?>
             $('#noaccount.calendarrefresh').show();
         <?}?>
+
+        $('.fa.fa-camera').click(function () {
+            $(this).closest('.tweet').find('.imageUpload').show();
+        });
+
         });
 
 </script>

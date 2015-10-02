@@ -388,12 +388,15 @@ hr {
 }
 
 #UserRegisterForm .input,
-#UserRegisterForm .submit {
+#UserRegisterForm .submit,
+#UserForgotpwForm .input,
+#UserForgotpwForm .submit {
 	width: 266px;
 	margin: 0 auto;
 }
 
-#UserRegisterForm input {
+#UserRegisterForm input,
+#UserForgotpwForm input {
 	border: 1px solid #bbb;
 	padding: 7px;
 	font-size: 14px;
@@ -415,18 +418,21 @@ hr {
 	font-size: 14px;
 }
 
-#UserRegisterForm .submit {
+#UserRegisterForm .submit,
+#UserForgotpwForm .submit {
 	width: 266px;
 }
 
-#UserRegisterForm .submit input {
+#UserRegisterForm .submit input,
+#UserForgotpwForm .submit input {
 	background-color: #2EA0E2;
 	color: #fff;
 	width: 266px;
 	cursor: pointer;
 }
 
-#register h2 {
+#register h2,
+#forgotpw h2 {
 	font-size: 25px;
 }
 

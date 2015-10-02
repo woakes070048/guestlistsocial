@@ -295,6 +295,23 @@ class EditorialCalendarsController extends AppController {
                         //$this->Session->setFlash('There was an error processing your image, please try again.');
                     }
                     $edited = true;
+                } elseif (!empty($key['img_url2'])) {
+                    $z = explode(".", $key['img_url2']);
+                    $extension = end($z);
+                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");debug($extension);
+                
+                    if (in_array(strtolower($extension), $allowed_extensions)) {
+                        $newFileName = $this->Session->read('Auth.User.id') . "-" . $key['account_id'] . "-" . $key['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                        $key['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
+                        if (copy($key['img_url2'], $key['img_url'])) {
+
+                        } else {
+                            unset($key['img_url']);
+                            $this->Session->setFlash('Image failed to upload. Please try again');
+                        }
+                    } else {
+                        $this->Session->setFlash('You can only use images');
+                    }
                 } else {
                     if (empty($key['img_url'])) {
                         $key['img_url'] = $original['Tweet']['img_url'];
@@ -442,6 +459,23 @@ class EditorialCalendarsController extends AppController {
                     } else {
                         //$this->Session->setFlash('There was an error processing your image, please try again.');
                     }
+                } elseif (!empty($key['img_url2'])) {
+                    $z = explode(".", $key['img_url2']);
+                    $extension = end($z);
+                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");debug($extension);
+                
+                    if (in_array(strtolower($extension), $allowed_extensions)) {
+                        $newFileName = $this->Session->read('Auth.User.id') . "-" . $key['account_id'] . "-" . $key['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                        $key['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
+                        if (copy($key['img_url2'], $key['img_url'])) {
+
+                        } else {
+                            unset($key['img_url']);
+                            $this->Session->setFlash('Image failed to upload. Please try again');
+                        }
+                    } else {
+                        $this->Session->setFlash('You can only use images');
+                    }
                 }
 
 
@@ -515,8 +549,8 @@ class EditorialCalendarsController extends AppController {
             } else {
                 $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again1');
             }
-        }
-        $this->redirect(Controller::referer());
+        }debug($this->request->data);
+        //$this->redirect(Controller::referer());
     }
 
 
@@ -540,7 +574,7 @@ class EditorialCalendarsController extends AppController {
                     unlink($toDelete);
                 }*/
 
-                $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
+                $key['img_url'] = "https://tweetproof.com/img/uploads/".$newFileName;
                 return $key['img_url'];
             } else {
                 $this->Session->setFlash('You can only upload images.');

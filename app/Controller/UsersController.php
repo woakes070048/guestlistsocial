@@ -174,13 +174,15 @@ class UsersController extends AppController {
                 $Email->to($this->request->data['User']['email']);
                 $Email->subject('Password Reset');
                 $Email->send($msg);
-                $this->Session->setFlash(__('An e-mail has been sent to the address given. Please follow the link in the e-mail to reset your password.'));
+                $this->Session->setFlash(__('An e-mail has been sent to the address given. Please follow the link in the e-mail to reset your password.'), 'default', array('class' => 'success'));
             } else {
                 $this->Session->setFlash(__('User not found in database. Please register from the homepage.'));
             }
+
+            $this->redirect('/landing');
         }
 
-        $this->layout = 'loginlayout';
+        $this->layout = '';
     }
 
     public function resetpw ($hash = null) {
@@ -246,7 +248,7 @@ class UsersController extends AppController {
     public function resend_verification($user_id) {
         $user = $this->User->find('first', array('conditions' => array('User.id' => $user_id)));
         if ($user['User']['group_id'] == 6) {
-            $hash = sha1($user['User']['first_name'].rand(0,100));
+            $hash = $user['User']['registration_hash'];
 
             $msg = "Please click on the link below to activate you account with Guestlist Social:
 
