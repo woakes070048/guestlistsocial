@@ -198,7 +198,7 @@ foreach ($calendar as $time => $key1) {
         </div>
     </div>
     <div class="imageUpload" style="display:none">
-        <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => "<span class='button'>Upload Image</span>", 'class' => 'button')); ?>
+        <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => "<span class='button'>Upload Image</span>", 'class' => 'button', 'id' => 'TweetImgUrl1' . $idForPusher)); ?>
         <span>OR</span>
         <? echo $this->Form->input('img_url2', array('name' => 'data[Tweet]['.$value1.'][img_url2]', 'label' => false, 'placeholder' => 'Paste Link...'));?>
     </div>

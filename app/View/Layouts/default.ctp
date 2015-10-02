@@ -37,7 +37,7 @@ $cakeDescription = __d('cake_dev', 'TweetProof');
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 	?>
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
 
 	<script>
 	  window.intercomSettings = {
@@ -208,7 +208,7 @@ $(document).mousedown(function (e) {
 });
 
 $(document).click(function(e) {  
-    if(e.target.className != 'imageUpload' && e.target.className != 'fa fa-camera') {
+    if(e.target.className != 'imageUpload' && e.target.className != 'fa fa-camera' && e.target.className != 'button' && e.target.id != 'TweetImgUrl2') {
         $('.imageUpload').hide();
     }
 });
