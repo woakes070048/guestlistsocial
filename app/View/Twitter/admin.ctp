@@ -1,5 +1,5 @@
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"> </script>
-	<script type="text/javascript" src="http://malsup.github.io/jquery.form.js"></script> 
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"> </script>
+	<script type="text/javascript" src="https://malsup.github.io/jquery.form.js"></script> 
 	<?php echo $this->Html->script('charCount');
 	echo $this->Html->script('jquery-ui-1.10.3.custom'); 
 	echo $this->Html->script('jquery-ui-timepicker-addon');

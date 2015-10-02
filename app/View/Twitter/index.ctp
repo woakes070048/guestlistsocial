@@ -1,6 +1,6 @@
 <? 
-echo $this->Html->script("http://code.jquery.com/jquery-1.9.1.min.js");
-echo $this->Html->script("http://malsup.github.io/jquery.form.js");
+echo $this->Html->script("https://code.jquery.com/jquery-1.9.1.min.js");
+echo $this->Html->script("https://malsup.github.io/jquery.form.js");
 echo $this->Html->script("//js.pusher.com/2.2/pusher.min.js");
 echo $this->Html->script('jquery-ui-1.10.3.custom');
 echo $this->Html->script('jquery-ui-timepicker-addon');
@@ -29,7 +29,8 @@ if ($flash != 'You are not authorized to access that location.') {
 <link href="//cdn.rawgit.com/noelboss/featherlight/1.3.3/release/featherlight.min.css" type="text/css" rel="stylesheet" />
 <script src="//cdn.rawgit.com/noelboss/featherlight/1.3.3/release/featherlight.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://checkout.stripe.com/checkout.js"></script>
-<!--<?
+<?
+/*
 echo $this->Form->create('filterAccount');
 echo $this->Html->image('twitter19px.png', array('class' => 'selectimage'));
 echo $this->Form->input('account', array(
@@ -80,7 +81,8 @@ echo $this->Html->link('Day-by-Day', array('controller'=>'twitter','action'=>'in
 echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>'index','?'=>array('h'=>'notpublished')), array('class' => (!empty($this->params['named']['h']) && ($this->params['named']['h']=='notpublished') )?'notPublished active' :'notPublished inactive'));
 ?>
 </div>
--->
+*/
+?>
 <div class='left'>
 <div class='selectTeam selectedTeam'>
 <div class='selectTeamText'>
@@ -383,7 +385,9 @@ echo $this->Html->Link('Not Published', array('controller'=>'twitter','action'=>
 </div>
 
 
-<!--<div id='addtweetprogress'>
+<?php
+/*
+<div id='addtweetprogress'>
 
 <? if ($params == 'h:nocalendar' && $account) {?>
     <div id='addTweetWrapper'>
@@ -437,7 +441,9 @@ echo $text;
 </div>
 </a>
 
-</div>-->
+</div>
+*/
+?>
 <div id="tableContainer">
     <div class='switchContainer'>
     Calendar View:

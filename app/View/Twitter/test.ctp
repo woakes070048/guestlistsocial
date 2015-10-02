@@ -10,7 +10,7 @@
     data-email="<? echo $this->Session->read('Auth.User.email');?>">
   </script>
 </form>
-<?echo $this->Html->script("http://code.jquery.com/jquery-1.9.1.min.js");?>
+<?echo $this->Html->script("https://code.jquery.com/jquery-1.9.1.min.js");?>
 <script src="https://checkout.stripe.com/checkout.js"></script>
 <form action="" method="POST">
 <button id="customButton">Go</button>
