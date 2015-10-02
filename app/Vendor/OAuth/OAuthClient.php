@@ -143,8 +143,9 @@ class OAuthClient {
 
         $arrContextOptions=array(
             "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
+                "cafile" => "/tweetproof.com.crt",
+                "verify_peer"=>true,
+                "verify_peer_name"=>true,
             ),
         );  
 
