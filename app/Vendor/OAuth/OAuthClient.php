@@ -141,10 +141,17 @@ class OAuthClient {
             $body .= "--{$boundary}\r\n";
         }
 
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        );  
+
         foreach ($paths as $key => $path) {
             $body .= "Content-Disposition: form-data; name=\"{$key}\"; filename=\"{$path}\"\r\n";
             $body .= "\r\n";
-            $body .= file_get_contents($path) . "\r\n";
+            $body .= file_get_contents($path, false, stream_context_create($arrContextOptions)) . "\r\n";
             $body .= "--{$boundary}--\r\n";
         }
 
