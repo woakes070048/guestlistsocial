@@ -259,7 +259,9 @@ class EditorialCalendarsController extends AppController {
 
                         $key['verified'] = 0;
                         $edited = true;
-                    } elseif ($original['Tweet']['verified'] == $key['verified'] && !empty($key['img_url2'])) {
+                    }
+
+                    if ($original['Tweet']['verified'] == $key['verified'] && !empty($key['img_url2'])) {
 
                         $key['verified'] = 0;
                         $edited = true;
