@@ -200,7 +200,7 @@ foreach ($calendar as $time => $key1) {
     <div class="imageUpload" style="display:none">
         <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => "<span class='button'>Upload Image</span>", 'class' => 'button', 'id' => 'TweetImgUrl1' . $idForPusher)); ?>
         <span>OR</span>
-        <? echo $this->Form->input('img_url2', array('name' => 'data[Tweet]['.$value1.'][img_url2]', 'label' => false, 'placeholder' => 'Paste Link...'));?>
+        <? echo $this->Form->input('img_url2', array('name' => 'data[Tweet]['.$value1.'][img_url2]', 'label' => false, 'placeholder' => 'Paste Link...', 'class' => 'TweetImgUrl2'));?>
     </div>
     <div class="calendar verified">
     <? echo $this->Form->input('verified', 
@@ -530,6 +530,10 @@ foreach ($calendar as $time => $key1) {
                         $("#imagePreview" + id).show();
                     }
                 }
+            });
+
+            $('.TweetImgUrl2').on('change', function() {
+                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
             });
 
             /*$('select').selectric();*/
