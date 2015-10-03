@@ -395,8 +395,10 @@ header {
 
 }
 
-.selectTwitterAccount:not(.selectedAccount):hover,
-.selectTeam:not(.selectedTeam):hover {
+.selectTwitterAccount:not(.checked):hover,
+.selectTeam:not(.checked):hover,
+.selectTwitterAccount.hover:not(.checked),
+.selectTeam.hover:not(.checked) {
 	background-color: #F0F9FF;
 }
 

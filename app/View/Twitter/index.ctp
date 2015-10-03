@@ -784,7 +784,6 @@ $(document).ready(function() {
 
         
         $('.inputFilter').hideseek({
-            nodata: "<h3>HEY</h3>"
         });
 
         $('select').selectBoxIt({
@@ -852,5 +851,103 @@ $(document).ready(function() {
             });
         });
         <?}?>
+
+        $(document).keydown(function(e) {
+            switch(e.which) {
+                case 37: // left
+                break;
+
+                case 38: // up
+                    if ($('input[data-list=".input.radio.filter2"]').is(":focus") == true) {
+                        if ($(".selectTwitterAccount.hover").length) {
+                            alt = $(".selectTwitterAccount.hover").first().attr('alt');
+                            $(".selectTwitterAccount.hover").first().removeClass('hover');
+                            if ($('.selectTwitterAccount[alt="' + alt + '"]').prev(":not(.checked)").length) {
+                                $('.selectTwitterAccount[alt="' + alt + '"]').prev(":not(.checked)").addClass('hover');
+                            } else {
+                                $('input[data-list=".input.radio.filter2"]').closest(".filter").find('.selectTwitterAccount:not(.checked)').last().addClass('hover');
+                            }
+                        } else {
+                            $('input[data-list=".input.radio.filter2"]').closest(".filter").find('.selectTwitterAccount:not(.checked)').last().addClass('hover');
+                        }
+
+                        e.preventDefault(); // prevent the default action (scroll / move caret)
+                    }
+
+                    if ($('input[data-list=".input.radio.filter1"]').is(":focus") == true) {
+                        if ($(".selectTeam.hover").length) {
+                            alt = $(".selectTeam.hover").first().attr('alt');
+                            $(".selectTeam.hover").first().removeClass('hover');
+                            if ($('.selectTeam[alt="' + alt + '"]').prev(":not(.checked)").length) {
+                                $('.selectTeam[alt="' + alt + '"]').prev(":not(.checked)").addClass('hover');
+                            } else {
+                                $('input[data-list=".input.radio.filter1"]').closest(".filter").find('.selectTeam:not(.checked)').last().addClass('hover');
+                            }
+                        } else {
+                            $('input[data-list=".input.radio.filter1"]').closest(".filter").find('.selectTeam:not(.checked)').last().addClass('hover');
+                        }
+
+                        e.preventDefault(); // prevent the default action (scroll / move caret)
+                    }
+                break;
+
+                case 39: // right
+                break;
+
+                case 40: // down
+                    if ($('input[data-list=".input.radio.filter2"]').is(":focus") == true) {
+                        if ($(".selectTwitterAccount.hover").length) {
+                            alt = $(".selectTwitterAccount.hover").first().attr('alt');
+                            $(".selectTwitterAccount.hover").first().removeClass('hover');
+                            if ($('.selectTwitterAccount[alt="' + alt + '"]').next(":not(.checked)").length) {
+                                $('.selectTwitterAccount[alt="' + alt + '"]').next(":not(.checked)").addClass('hover');
+                            } else {
+                                $('input[data-list=".input.radio.filter2"]').closest(".filter").find('.selectTwitterAccount:not(.checked)').first().addClass('hover');
+                            }
+                        } else {
+                            $('input[data-list=".input.radio.filter2"]').closest(".filter").find('.selectTwitterAccount:not(.checked)').first().addClass('hover');
+                        }
+
+                        e.preventDefault(); // prevent the default action (scroll / move caret)
+                    }
+
+                    if ($('input[data-list=".input.radio.filter1"]').is(":focus") == true) {
+                        if ($(".selectTeam.hover").length) {
+                            alt = $(".selectTeam.hover").first().attr('alt');
+                            $(".selectTeam.hover").first().removeClass('hover');
+                            if ($('.selectTeam[alt="' + alt + '"]').next(":not(.checked)").length) {
+                                $('.selectTeam[alt="' + alt + '"]').next(":not(.checked)").addClass('hover');
+                            } else {
+                                $('input[data-list=".input.radio.filter1"]').closest(".filter").find('.selectTeam:not(.checked)').first().addClass('hover');
+                            }
+                        } else {
+                            $('input[data-list=".input.radio.filter1"]').closest(".filter").find('.selectTeam:not(.checked)').first().addClass('hover');
+                        }
+
+                        e.preventDefault(); // prevent the default action (scroll / move caret)
+                    }
+                break;
+
+                case 13: // enter
+                    if ($('input[data-list=".input.radio.filter2"]').is(":focus") == true) {
+                        if ($(".selectTwitterAccount.hover").length) {
+                            $(".selectTwitterAccount.hover").find('input').attr("checked", "checked");
+                            $(".selectTwitterAccount.hover").closest('#filterIndexForm').submit();
+                        }
+                        e.preventDefault();
+                    }
+
+                    if ($('input[data-list=".input.radio.filter1"]').is(":focus") == true) {
+                        if ($(".selectTeam.hover").length) {
+                            $(".selectTeam.hover").find('input').attr("checked", "checked");
+                            $(".selectTeam.hover").closest('#filterIndexForm').submit();
+                        }
+                        e.preventDefault();
+                    }
+                break;
+
+                default: return; // exit this handler for other keys
+            }
+        });
 });
 </script>

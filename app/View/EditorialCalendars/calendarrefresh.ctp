@@ -419,6 +419,13 @@ foreach ($calendar as $time => $key1) {
                 dataType: 'json',
                 success: function(response) {
                      textbox.val(textbox.val().replace(longUrlLink, response.id));
+                     classs = $(textbox).closest(".tweet").find('.counter').first().attr('class');
+                     $(textbox).closest(".tweet").find('.counter').first().hide();
+                     if (classs == "counter counter2") {
+                        $(textbox).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
+                     } else if (classs == "counter counter1") {
+                        $(textbox).closest(".tweet").find('.editing').charCount({css: 'counter counter1', allowed: 140});
+                     }
                      toastr.success("URL successfully shortened: <br/>" + longUrlLink + " -> " + response.id);
                 },
                 error: function(response) {

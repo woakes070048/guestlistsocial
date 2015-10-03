@@ -10,6 +10,8 @@
 </div>
 </div>
 
+<?$random = rand(10000, 99999);?>
+
 
 <?echo $this->Form->create('TwitterAccount', array('class' => 'recycleFilter'));
         ?>
@@ -24,11 +26,18 @@
 	        'type' => 'radio',
 	        'default' => $selected,
 	        'options' => array_combine($accounts,$accounts),
-	        'legend' => false
+	        'legend' => false,
+	        'id' => $random
 	        ));?>
         </div>
 
 		<div class="recycleSelectedCategory">
+			<?
+			if (empty($selectedCategories)) {
+				$selectedCategories = 0;
+				$categories[$selectedCategories] = 'No category selected';
+			}
+			?>
         	<?echo $categories[$selectedCategories];?>
 	        <i class="fa fa-chevron-down"></i>
         </div>
@@ -127,7 +136,7 @@ $(document).ready(function () {
 	    $(this).closest('#editrefresh').load('/editorial_calendars/recycle/' + calendar_id, postData);
 	    $(this).closest('#editloading').hide();
 	    $(this).closest('#editrefresh').css('opacity', 1);
-	    $('.recycleFilter').unbind(); //unbind. to stop multiple form submit.
+	    $(this).unbind(); //unbind. to stop multiple form submit.
 	});
 
 	$('.recycleSelectedAccount').click(function () {
