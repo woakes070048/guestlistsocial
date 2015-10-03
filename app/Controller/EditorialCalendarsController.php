@@ -265,6 +265,7 @@ class EditorialCalendarsController extends AppController {
 
                         $key['verified'] = 0;
                         $edited = true;
+                        $uneditedTweet = 0;
                     }
                 }
 
