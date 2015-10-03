@@ -298,13 +298,23 @@ class EditorialCalendarsController extends AppController {
                 } elseif (!empty($key['img_url2'])) {
                     $z = explode(".", $key['img_url2']);
                     $extension = end($z);
-                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");debug($extension);
+                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");
+
+
+                    $arrContextOptions=array(
+                        "ssl"=>array(
+                            //"cafile"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.ca-bundle",
+                            //"local_cert"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.pem",
+                            "verify_peer"=>false,
+                            "verify_peer_name"=>false,
+                        ),
+                    ); 
                 
                     if (in_array(strtolower($extension), $allowed_extensions)) {
                         $newFileName = $this->Session->read('Auth.User.id') . "-" . $key['account_id'] . "-" . $key['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
                         $key['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
-                        if (copy($key['img_url2'], $key['img_url'])) {
-
+                        if (copy($key['img_url2'], $key['img_url'], stream_context_create($arrContextOptions))) {
+                            $key['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
                         } else {
                             unset($key['img_url']);
                             $this->Session->setFlash('Image failed to upload. Please try again');
@@ -328,7 +338,6 @@ class EditorialCalendarsController extends AppController {
                         $key['verified'] = 0;
                     }
                 }
-
 
                 $toSave = array();
                 $toSave['Tweet']['id'] = $key['id'];
@@ -463,12 +472,22 @@ class EditorialCalendarsController extends AppController {
                     $z = explode(".", $key['img_url2']);
                     $extension = end($z);
                     $allowed_extensions = array("gif", "jpeg", "jpg", "png");debug($extension);
+
+
+                    $arrContextOptions=array(
+                        "ssl"=>array(
+                            //"cafile"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.ca-bundle",
+                            //"local_cert"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.pem",
+                            "verify_peer"=>false,
+                            "verify_peer_name"=>false,
+                        ),
+                    ); 
                 
                     if (in_array(strtolower($extension), $allowed_extensions)) {
                         $newFileName = $this->Session->read('Auth.User.id') . "-" . $key['account_id'] . "-" . $key['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
                         $key['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
                         if (copy($key['img_url2'], $key['img_url'])) {
-
+                            $key['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
                         } else {
                             unset($key['img_url']);
                             $this->Session->setFlash('Image failed to upload. Please try again');
@@ -517,7 +536,6 @@ class EditorialCalendarsController extends AppController {
             }
             unset($key);
         }
-
 
         if (!empty($test)) {
             if ($this->Tweet->saveAll($test, array('deep' => true))) {
