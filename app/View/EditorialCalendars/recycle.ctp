@@ -48,7 +48,8 @@
 	        'type' => 'radio',
 	        'default' => $selectedCategories,
 	        'options' => $categories,
-	        'legend' => false
+	        'legend' => false,
+	        'id' => $random
 	        ));?>
         </div>
 		<?
