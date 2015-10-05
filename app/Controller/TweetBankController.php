@@ -3,7 +3,7 @@
 class TweetBankController extends AppController {
 	public $components = array('Session', 'Auth');
     public $helpers =  array('Html' , 'Form', 'Session');
-    var $uses = array('Tweet', 'Notification', 'Comment', 'BankCategory', 'TwitterPermission', 'EditorialCalendar', 'EditorialCalendar1', 'TweetBank', 'TwitterAccount');
+    var $uses = array('Tweet', 'Notification', 'Comment', 'BankCategory', 'TwitterPermission', 'EditorialCalendar', 'EditorialCalendar1', 'TweetBank', 'TwitterAccount', 'TeamsUser');
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('*');
@@ -362,6 +362,32 @@ class TweetBankController extends AppController {
         $this->TweetBank->id = $tweet_bank_id;
         if ($this->TweetBank->saveField('img_url', '')) {
             $this->response->statusCode(200);
+        } else {
+            $this->response->statusCode(500);
+        }
+        return $this->response;
+        $this->redirect(Controller::referer());
+    }
+
+    public function autoPopulate($twitter_account_id) {
+        $myTeams = $this->TeamsUser->find('list', array('fields' => 'team_id', 'conditions' => array('user_id' => $this->Session->read('Auth.User.id'))));
+        $permissions = $this->TwitterPermission->find('list', array('fields' => 'team_id', array('conditions' => array('team_id' => $myTeams, 'twitter_account_id' => $twitter_account_id))));
+        if (!empty($permissions)) {
+            $calendars = $this->EditorialCalendar->find('all', array('conditions' => array('twitter_account_id' => $twitter_account_id), 'contain' => array('BankCategory' => array('TweetBank')), 'recursive' => 2));
+
+            foreach ($calendars as $key) {
+                if (!empty($key['BankCategory']['id'])) {
+                    if (!empty($calendars1[$key['BankCategory']['id']])) {
+                        $calendars1[$key['BankCategory']['id']] += $key['BankCategory']['TweetBank'];
+                    } else {
+                        $calendars1[$key['BankCategory']['id']] = $key['BankCategory']['TweetBank'];
+                    }
+                }
+            }
+            $json = json_encode($calendars1);
+            $this->response->statusCode(200);
+            $this->response->type('json');
+            $this->response->body($json);
         } else {
             $this->response->statusCode(500);
         }

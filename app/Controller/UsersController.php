@@ -130,6 +130,15 @@ class UsersController extends AppController {
 
                     $user = $this->User->find('all', array('conditions' => array('User.id' => $this->Session->read('Auth.User.id'))));
                     $this->Session->write('Auth.User.Team', $user[0]['Team']);
+                    $userCookie = $this->Cookie->read('currentUser');
+                    if (!empty($userCookie)) {
+                        if ($userCookie != $id) {
+                            $this->Cookie->delete('currentTeam');
+                            $this->Cookie->delete('currentAccount');
+                            $this->Cookie->delete('currentAccountScreenName');
+                        }
+                    }
+                    $this->Cookie->write('currentUser', $id);
                     if ($this->Session->read('Auth.redirect')) {
                         $this->redirect($this->Session->read('Auth.redirect'));
                     } else {

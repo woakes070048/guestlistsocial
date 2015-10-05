@@ -1,6 +1,7 @@
 <div class="shortenAllUrls" id="shortIt1"><i class="fa fa-code fa-fw"></i>Shorten All URLs</div>
 <?if (!empty($isTeamAdmin)) {?>
     <div class="approveAll"><i class="fa fa-check fa-fw"></i>Approve All</div>
+    <div class="autoPopulate"><i class="fa fa-refresh fa-fw"></i>Auto-Populate</div>
 <?}?>
 <div class='slick'>
     <?
@@ -101,6 +102,7 @@ foreach ($calendar as $time => $key1) {
         $commentCount = 0;
         $present = '';
         $editors = false;
+        $tweet_bank_id = 0;
     } else {
         //foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
         foreach ($key1['Tweet'] as $item => $key2) {
@@ -129,6 +131,7 @@ foreach ($calendar as $time => $key1) {
                 $commentCount = count($key2['Comment']);
                 $present = 'present';
                 $empty = false;
+                $tweet_bank_id = $key2['tweet_bank_id'];
                 if (!empty($key2['Editor'])) {
                     $editors = $key2['Editor'];
                 } else {
@@ -152,6 +155,7 @@ foreach ($calendar as $time => $key1) {
                 $present = '';
                 $editors = false;
                 $empty = true;
+                $tweet_bank_id = 0;
             }
         }   
         if (!empty($empty)) {
@@ -173,7 +177,7 @@ foreach ($calendar as $time => $key1) {
                 }?>
         </div>
         <div class='categoryContainer'>
-            <div class='calendar_topic'><? if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?></div>
+            <div class='calendar_topic' data-category-id="<?echo $key1['BankCategory']['id'];?>"><? if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?></div>
             <!--<div class='calendar_notes'><? //if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?> Some comment</div>-->
         </div>
     </div>
@@ -256,14 +260,7 @@ foreach ($calendar as $time => $key1) {
     echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
     echo $this->Form->input('forceVerified', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][forceVerified]'));
     echo $this->Form->input('tosubmit', array('type' => 'hidden', 'value' => false, 'name' => 'tosubmit'));
-    //echo $this->Form->input('team_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['team_id'], 'name' => 'data[Tweet]['.$value1.'][team_id]'));
-    /*echo $this->Form->input('verfied_by', array(
-    'type' => 'hidden', 
-    'value' => $this->Session->read('Auth.User.first_name'), 
-    'name' => 'data[Tweet]['.$value1.'][verified_by]', 
-    'class' => 'verifiedby', 
-    'id' => $id . '_' . $this->Session->read('Auth.User.first_name')));*/
-    //echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => $img, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
+    echo $this->Form->input('tweet_bank_id', array('type' => 'hidden', 'value' => $tweet_bank_id, 'name' => 'data[Tweet]['.$value1.'][tweet_bank_id]'));
     ?>
 </div><?
 }
@@ -445,6 +442,7 @@ foreach ($calendar as $time => $key1) {
                 $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                 text = $(this).val();
                 id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
+                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
                 /*channel1.bind('body_update',
                     function(data) {
                         alert('data');
@@ -520,6 +518,7 @@ foreach ($calendar as $time => $key1) {
                     color = '#ff0000';
                 }
                 $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
+                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
 
                 //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
                 $(this).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
@@ -541,6 +540,7 @@ foreach ($calendar as $time => $key1) {
 
             $('.TweetImgUrl2').on('change', function() {
                 $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
+                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
             });
 
             /*$('select').selectric();*/
@@ -797,6 +797,41 @@ foreach ($calendar as $time => $key1) {
 
         $('.fa.fa-camera').click(function () {
             $(this).closest('.tweet').find('.imageUpload').show();
+        });
+
+        $('.autoPopulate').click(function () {
+            $.ajax({
+                url: "/tweet_bank/autoPopulate/" + <?echo $this->Session->read('access_token.account_id');?>,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $('.editing').each(function() {
+                        if ($(this).val().length == 0) {//if empty tweet
+                            bank_category_id = $(this).closest('.tweet').find('.calendar_topic').attr('data-category-id');
+                            if (bank_category_id) {//if bank category exists for that calendar
+                                if (data[bank_category_id].length) {//if there are any banked tweets for that calendar
+
+                                    random = Math.floor(Math.random()*data[bank_category_id].length);
+                                    $(this).text(data[bank_category_id][random]["body"]);//set random tweet
+
+                                    if (data[bank_category_id][random]["img_url"]) {//if image exists
+                                        image_url = data[bank_category_id][random]["img_url"];
+                                        $(this).closest('.tweet').find('#TweetImgUrl').val(image_url);
+                                        $(this).closest('.tweet').find('.calendar.verified').after(function () {//hide old image and display new one
+                                            $(this).closest('.tweet').find('.imagecontainer').hide();
+                                            return '<div class="imagecontainer"><img src="' + image_url + '" style="max-width:496px;"></div>';
+                                        });
+                                    } else {//if no image exists
+                                        $(this).closest('.tweet').find('.imagecontainer').hide();
+                                    }
+                                    $(this).closest('.tweet').find('input[name=tosubmit]').val(true);
+                                    $(this).closest('.tweet').find('#TweetTweetBankId').val(data[bank_category_id][random]["id"]);
+                                }
+                            }
+                        }
+                    });
+                }
+            });
         });
 
         });

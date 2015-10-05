@@ -72,7 +72,7 @@ foreach ($tweetBanks as $key => $value) {
 					} else {?>
 						<div style="height: 30px; width: 30px; border: 0; padding: 0; background-color: rgba(255, 255, 255, 0); margin: 0"></div>
 					<?}?>
-					<div><?echo $value['TweetBank']['body'];?></div>
+					<div data-id="<?echo $value['TweetBank']['id'];?>"><?echo $value['TweetBank']['body'];?></div>
 					 <?
 					 if (!empty($tweet_bank_counts[$value['TweetBank']['id']][0]['COUNT(tweet_bank_id)'])) {
 					 	$count = $tweet_bank_counts[$value['TweetBank']['id']][0]['COUNT(tweet_bank_id)'];
@@ -126,6 +126,8 @@ $(document).ready(function () {
 	    } else {
 	    	$('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('.imagecontainer').hide();
 	    }
+	    tweet_bank_id = $(this).attr('data-id');
+	    $('.calendar_topic[data-hasqtip=' + id + ']').closest('.tweet').find('#TweetTweetBankId').val(tweet_bank_id);
 	});
 
 	$('.recycleFilter').on("change", function (e) {

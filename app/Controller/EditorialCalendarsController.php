@@ -346,13 +346,33 @@ class EditorialCalendarsController extends AppController {
                     }
                 }
 
+
                 $toSave = array();
+
+                if (!empty($key['tweet_bank_id'])) {
+
+                } else {
+                    if (!empty($newTweetBank)) {
+                        if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
+                            $toSave['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
+                            $toSave['TweetBank']['body'] = $key['body'];
+                            if (!empty($key['img_url'])) {
+                                $toSave['TweetBank']['img_url'] = $key['img_url'];
+                            }
+                        }
+                    }
+                    unset($key['tweet_bank_id']);
+                }
+
                 $toSave['Tweet']['id'] = $key['id'];
                 $toSave['Tweet']['body'] = $key['body'];
                 $toSave['Tweet']['verified'] = $key['verified'];
                 $toSave['Tweet']['account_id'] = $key['account_id'];
                 $toSave['Tweet']['timestamp'] = $key['timestamp'];
                 $toSave['Tweet']['time'] = $key['time'];
+                if (!empty($key['tweet_bank_id'])) {
+                    $toSave['Tweet']['tweet_bank_id'] = $key['tweet_bank_id'];
+                }
 
 
                 if (!empty($key['img_url'])) {
@@ -387,17 +407,6 @@ class EditorialCalendarsController extends AppController {
 
                 if ($proofed) {
                     $toSave['Editor'][] = array('type' => 'proofed', 'user_id' => $this->Session->read('Auth.User.id'));
-                }
-                
-
-                if (!empty($newTweetBank)) {
-                    if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
-                        $toSave['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
-                        $toSave['TweetBank']['body'] = $key['body'];
-                        if (!empty($key['img_url'])) {
-                            $toSave['TweetBank']['img_url'] = $key['img_url'];
-                        }
-                    }
                 }
 
 
@@ -504,13 +513,17 @@ class EditorialCalendarsController extends AppController {
                     }
                 }
 
+                if (!empty($key['tweet_bank_id'])) {
 
-                if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
-                    $key['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
-                    $key['TweetBank']['body'] = $key['body'];
-                    if (!empty($key['img_url'])) {
-                        $key['TweetBank']['img_url'] = $key['img_url'];
+                } else {
+                    if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
+                        $key['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
+                        $key['TweetBank']['body'] = $key['body'];
+                        if (!empty($key['img_url'])) {
+                            $key['TweetBank']['img_url'] = $key['img_url'];
+                        }
                     }
+                    $key['tweet_bank_id'] = '';
                 }
 
 
@@ -526,6 +539,7 @@ class EditorialCalendarsController extends AppController {
                 $toSave['Tweet']['time'] = $key['time'];
                 $toSave['Tweet']['account_id'] = $key['account_id'];
                 $toSave['Tweet']['first_name'] = $key['first_name'];
+                $toSave['Tweet']['tweet_bank_id'] = $key['tweet_bank_id'];
                 $toSave['Editor'] = array($key['Editor']);
                 $toSave['TweetBank'] = $key['TweetBank'];
 
@@ -542,6 +556,7 @@ class EditorialCalendarsController extends AppController {
                 $test[] = $toSave;
             }
             unset($key);
+            unset($toSave);
         }
 
         if (!empty($test)) {

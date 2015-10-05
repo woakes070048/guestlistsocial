@@ -2186,7 +2186,8 @@ input#CalendarTime {
 }
 
 .approveAll,
-.shortenAllUrls {
+.shortenAllUrls,
+.autoPopulate {
 	display: inline-block;
 	padding: 5px;
 	border: 1px solid #ccc;
@@ -2199,17 +2200,23 @@ input#CalendarTime {
 }
 
 .approveAll i,
-.shortenAllUrls i {
+.shortenAllUrls i,
+.autoPopulate i {
 	margin-right: 5px;
 }
 
 .approveAll:hover,
-.shortenAllUrls:hover {
+.shortenAllUrls:hover,
+.autoPopulate:hover {
 	border: 1px solid #aaa;
 }
 
 .approveAll {
 	margin-left: 135px;
+}
+
+.autoPopulate {
+	margin-left: 243px;
 }
 
 /*In-page tweetBank*/
@@ -2268,7 +2275,7 @@ input#CalendarTime {
 	cursor: pointer;
 	margin: 2px;
 	display: inline-block;
-	max-width: 300px;
+	max-width: 250px;
 }
 
 .recycleBody .rr1 img {
