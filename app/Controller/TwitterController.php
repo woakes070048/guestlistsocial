@@ -1119,8 +1119,7 @@ class TwitterController extends AppController {
             $toSave[] = $x;
             $verified[] = $key['Tweet'];
             unset($x);
-            unset($toSave);
-            unset($verified);
+            unset($key);
         }
         if ($this->Tweet->saveAll($toSave, array('deep' => true))) {
             $this->CronTweet->saveAll($verified);
