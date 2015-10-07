@@ -523,7 +523,7 @@ class EditorialCalendarsController extends AppController {
                             $key['TweetBank']['img_url'] = $key['img_url'];
                         }
                     }
-                    $key['tweet_bank_id'] = '';
+                    unset($key['tweet_bank_id']);
                 }
 
 
@@ -539,7 +539,9 @@ class EditorialCalendarsController extends AppController {
                 $toSave['Tweet']['time'] = $key['time'];
                 $toSave['Tweet']['account_id'] = $key['account_id'];
                 $toSave['Tweet']['first_name'] = $key['first_name'];
-                $toSave['Tweet']['tweet_bank_id'] = $key['tweet_bank_id'];
+                if (!empty($toSave['Tweet']['tweet_bank_id'])) {
+                    $toSave['Tweet']['tweet_bank_id'] = $key['tweet_bank_id'];
+                }
                 $toSave['Editor'] = array($key['Editor']);
                 $toSave['TweetBank'] = $key['TweetBank'];
 
