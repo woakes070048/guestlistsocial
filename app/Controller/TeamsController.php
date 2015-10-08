@@ -311,7 +311,7 @@ class TeamsController extends AppController {
 			$grouphash = $this->Tickets->set($data['invite']['group']);
 
 			$Email = new CakeEmail('default');
-            $Email->from(array('no-reply@tweetproof.com' => 'TweetProof'));
+            $Email->from(array('noreply@tweetproof.com' => 'TweetProof'));
             $Email->to($user);
 
 			if ($count == 0) {

@@ -179,7 +179,7 @@ class UsersController extends AppController {
                 " . Router::url(array('action' => 'resetpw', $this->Tickets->set($user['User']['email'])), true);
 
                 $Email = new CakeEmail('default');
-                $Email->from(array('no-reply@tweetproof.com' => 'TweetProof'));
+                $Email->from(array('noreply@tweetproof.com' => 'TweetProof'));
                 $Email->to($this->request->data['User']['email']);
                 $Email->subject('Password Reset');
                 $Email->send($msg);
@@ -265,6 +265,7 @@ class UsersController extends AppController {
                     $Email = new CakeEmail('default');
                     //$Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
                     $Email->to($user['User']['email']);
+                    $Email->from(array('noreply@tweetproof.com' => 'TweetProof'));
                     $Email->subject('Confirm Registration for TweetProof');
                     $Email->send($msg);
                     $this->Session->setFlash(__('Please check your email to complete registration.'), 'default', array('class' => 'success'));
