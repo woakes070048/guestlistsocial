@@ -311,18 +311,18 @@ class TeamsController extends AppController {
 			$grouphash = $this->Tickets->set($data['invite']['group']);
 
 			$Email = new CakeEmail('default');
-            $Email->from(array('no-reply@guestlistsocial.com' => 'Guestlist Social'));
+            $Email->from(array('no-reply@tweetproof.com' => 'TweetProof'));
             $Email->to($user);
 
 			if ($count == 0) {
-            	$Email->subject('You have been invited to join Guestlist Social');
-				$msg = "You have been invited to join Guestlist Social by $first_name $last_name. $first_name has also invited you to join their team! Click the link below to register and be automatically added to their team.
+            	$Email->subject('You have been invited to join TweetProof');
+				$msg = "You have been invited to join TweetProof by $first_name $last_name. $first_name has also invited you to join their team! Click the link below to register and be automatically added to their team.
 
 				" . Router::url(array('controller' => 'users', 'action' => 'register', 'h' => $hash, 'g' => $grouphash), true);
             	$Email->send($msg);
             	$this->Session->setFlash(__('Invite Sent.'), 'default', array('class' => 'success'));
 			} elseif ($count == 1) {
-            	$Email->subject('You have been invited to join a team at Guestlist Social');
+            	$Email->subject('You have been invited to join a team at TweetProof');
 				$msg = "You have been invited to join the team $teamname by $first_name $last_name. Click the link below to join their team!
 
 				" . Router::url(array('action' => 'addtoTeam/' . $hash . '/' . $grouphash), true);

@@ -45,13 +45,13 @@ class UsersController extends AppController {
                             $this->Tickets->del($this->passedArgs['g']);
                             $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
                         }
-                    $msg = "Please click on the link below to activate you account with Guestlist Social:
+                    $msg = "Please click on the link below to activate you account with TweetProof:
 
                     " . Router::url(array('action' => 'verify', 'id' => $id, 'h' => $hash), true);
                     $Email = new CakeEmail('default');
                     //$Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
                     $Email->to($this->request->data['User']['email']);
-                    $Email->subject('Confirm Registration for Guestlist Social');
+                    $Email->subject('Confirm Registration for TweetProof');
                     $Email->send($msg);
 	                $this->Session->setFlash(__('Please check your email to complete registration.'), 'default', array('class' => 'success'));
 	                $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
@@ -174,12 +174,12 @@ class UsersController extends AppController {
         if ($this->request->data) {
             $user = $this->User->find('first', array('conditions' => array('email' => $this->request->data['User']['email'])));
             if ($user) {
-                $msg = "We have recieved a request to reset your password at Guestlist Social. If this request was not made by you, please ignore this email.
+                $msg = "We have recieved a request to reset your password at TweetProof. If this request was not made by you, please ignore this email.
                 If you would like to reset you password, please click the link below:
                 " . Router::url(array('action' => 'resetpw', $this->Tickets->set($user['User']['email'])), true);
 
                 $Email = new CakeEmail('default');
-                $Email->from(array('no-reply@guestlistsocial.com' => 'Guestlist Social'));
+                $Email->from(array('no-reply@tweetproof.com' => 'TweetProof'));
                 $Email->to($this->request->data['User']['email']);
                 $Email->subject('Password Reset');
                 $Email->send($msg);
@@ -259,13 +259,13 @@ class UsersController extends AppController {
         if ($user['User']['group_id'] == 6) {
             $hash = $user['User']['registration_hash'];
 
-            $msg = "Please click on the link below to activate you account with Guestlist Social:
+            $msg = "Please click on the link below to activate you account with TweetProof:
 
 " . Router::url(array('action' => 'verify', 'id' => $user_id, 'h' => $hash), true);
                     $Email = new CakeEmail('default');
                     //$Email->from(array('connect@guestlistsocial.com' => 'Guestlist Social'));
                     $Email->to($user['User']['email']);
-                    $Email->subject('Confirm Registration for Guestlist Social');
+                    $Email->subject('Confirm Registration for TweetProof');
                     $Email->send($msg);
                     $this->Session->setFlash(__('Please check your email to complete registration.'), 'default', array('class' => 'success'));
                     $this->redirect(array('controller' => 'pages', 'action' => 'landing'));
