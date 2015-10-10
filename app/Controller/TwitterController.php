@@ -17,8 +17,8 @@ class TwitterController extends AppController {
             $this->Session->write('access_token.screen_name', $acc['TwitterAccount']['screen_name']);
             $this->set('account', $acc['TwitterAccount']['screen_name']);
             $this->Session->write('filter.account', $acc['TwitterAccount']['screen_name']);
-            $this->Cookie->write('currentAccount', $this->request->query['accid']);
-            $this->Cookie->write('currentAccountScreenName', $acc['TwitterAccount']['screen_name']);
+            $this->Cookie->write('currentAccount', $this->request->query['accid'], $encrypt = false, $expires = null);
+            $this->Cookie->write('currentAccountScreenName', $acc['TwitterAccount']['screen_name'], $encrypt = false, $expires = null);
         } else {
             $this->set('scroll', 0);
         }

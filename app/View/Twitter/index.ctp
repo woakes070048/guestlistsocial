@@ -498,6 +498,7 @@ $(document).ready(function() {
                 $('html, body').animate({
                         scrollTop: $("." + "<?echo $scroll;?>").offset().top - 30
                     }, 2000);
+                window.history.pushState("object or string", "TweetProof", "/tweets");
         });
         <?}?>
         $('.editing').charCount({css: 'counter counter1'});
