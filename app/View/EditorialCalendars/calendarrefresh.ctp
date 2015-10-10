@@ -320,7 +320,8 @@ foreach ($calendar as $time => $key1) {
                 $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
             });
 
-            $(".TwitterVerified1:checked").click(function() {
+            $(".TwitterVerified1[value='1'] + label").click(function() {
+                $(this).closest(".tweet").find('.TwitterVerified1[value="1"]').prop('checked', true);
                 $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                 $(this).closest(".tweet").find('#TweetForceVerified').val(true);
                     $("#table").css('opacity', '.4');
