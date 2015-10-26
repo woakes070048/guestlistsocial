@@ -390,13 +390,16 @@ hr {
 #UserRegisterForm .input,
 #UserRegisterForm .submit,
 #UserForgotpwForm .input,
-#UserForgotpwForm .submit {
+#UserForgotpwForm .submit,
+#UserRegister1Form .input,
+#UserRegister1Form .submit {
 	width: 266px;
 	margin: 0 auto;
 }
 
 #UserRegisterForm input,
-#UserForgotpwForm input {
+#UserForgotpwForm input,
+#UserRegister1Form input {
 	border: 1px solid #bbb;
 	padding: 7px;
 	font-size: 14px;
@@ -406,25 +409,30 @@ hr {
 	font-family: 'Open Sans';
 }
 
-#UserRegisterForm .dropdownjs {
+#UserRegisterForm .dropdownjs,
+#UserRegister1Form .dropdownjs {
 	width: 266px;
 }
 
-#UserRegisterForm .fakeinput {
+#UserRegisterForm .fakeinput,
+#UserRegister1Form .fakeinput {
 	width: 266px;
 }
 
-#UserRegisterForm .dropdownjs ul {
+#UserRegisterForm .dropdownjs ul,
+#UserRegister1Form .dropdownjs ul {
 	font-size: 14px;
 }
 
 #UserRegisterForm .submit,
-#UserForgotpwForm .submit {
+#UserForgotpwForm .submit,
+#UserRegisterForm .submit {
 	width: 266px;
 }
 
 #UserRegisterForm .submit input,
-#UserForgotpwForm .submit input {
+#UserForgotpwForm .submit input,
+#UserRegister1Form .submit input {
 	background-color: #2EA0E2;
 	color: #fff;
 	width: 266px;

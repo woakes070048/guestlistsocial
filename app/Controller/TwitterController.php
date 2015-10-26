@@ -1112,13 +1112,15 @@ class TwitterController extends AppController {
         $tweets = $this->Tweet->find('all', array('conditions' => array('Tweet.account_id' => $twitter_account_id, 'calendar_id' => $calendarIDs, 'timestamp >=' => $firstdate, 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months'))));
         $toSave = array();
         foreach ($tweets as $key) {
-            $key['Tweet']['verified'] = 1;
-            $x['Tweet']['verified'] = 1;
-            $x['Tweet']['id'] = $key['Tweet']['id'];
-            $x['Editor'][] = array('type' => 'proofed', 'user_id' => $this->Session->read('Auth.User.id'));
-            $toSave[] = $x;
-            $verified[] = $key['Tweet'];
-            unset($x);
+            if ($key['Tweet']['verified'] != 2) {
+                $key['Tweet']['verified'] = 1;
+                $x['Tweet']['verified'] = 1;
+                $x['Tweet']['id'] = $key['Tweet']['id'];
+                $x['Editor'][] = array('type' => 'proofed', 'user_id' => $this->Session->read('Auth.User.id'));
+                $toSave[] = $x;
+                $verified[] = $key['Tweet'];
+                unset($x);
+            }
             unset($key);
         }
         if ($this->Tweet->saveAll($toSave, array('deep' => true))) {

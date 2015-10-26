@@ -1,13 +1,7 @@
-<? 
-echo $this->Html->script("https://code.jquery.com/jquery-1.9.1.min.js");
-echo $this->Html->script('toastr.min');
-echo $this->Html->script('jquery.dropdown');
-echo $this->Html->css('jquery.dropdown');
-?>
 <div id="register">
 <h2>Sign up to TweetProof</h2>
 <hr />
-<?php echo $this->Form->create('User'); ?>
+<?php echo $this->Form->create('User', array('url' => array('controller' => 'users', 'action' => 'register'))); ?>
         <?php echo $this->Form->input('first_name', array('placeholder' => 'First name', 'label' => false));
         echo $this->Form->input('last_name', array('placeholder' => 'Last name', 'label' => false));
         echo $this->Form->input('email', array('value' => $email, 'label' => false, 'placeholder' => 'E-mail'));
@@ -59,22 +53,4 @@ $(document).ready(function() {
 	$('select').dropdown();
 });
 </script>
-<style>
-body {
-	color: #fff;
-}
-
-h2 {
-	margin-top: 30px;
-}
-
-.error-message {
-    color: #E05252;
-    font-size: 12px;
-}
-
-#register a {
-	color: #fff;
-}
-</style>
 </div>

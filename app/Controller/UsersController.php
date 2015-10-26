@@ -11,12 +11,11 @@ class UsersController extends AppController {
     }
 
 	public function register() {
-        $this->layout= "";
+        $this->layout= "landing";
 	        if ($this->request->is('post')) {
                 $hash=sha1($this->request->data['User']['first_name'].rand(0,100));
                 $this->User->data['User']['registration_hash'] = $hash;
 	            if ($this->User->save($this->request->data)) {
-                    debug($this->request->data);
 	            	$this->User->saveField('session_id', $this->Session->id());
 	            	$this->User->saveField('group_id', 6);
                     $this->User->saveField('profile_pic', '/img/profile/default'. rand(0,5) . '.jpg');
@@ -68,6 +67,16 @@ class UsersController extends AppController {
             };
             $this->set('email', $email);
 	}
+
+    public function register1() {
+        $this->layout = "";
+        if (!empty($this->passedArgs['e']) && !empty($this->passedArgs['d'])) {
+            $email = $this->passedArgs['e'] . '@' . $this->passedArgs['d'];
+        } else {
+            $email = false;
+        };
+        $this->set('email', $email);
+    }
 
     public function verify() {
         if (!empty($this->passedArgs['id']) && !empty($this->passedArgs['h'])){

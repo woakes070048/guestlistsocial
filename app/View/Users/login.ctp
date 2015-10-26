@@ -11,7 +11,7 @@ echo $this->Html->css('jquery.dropdown');
 	<div class="sectionContainer">
 		<h1>Complete social media management</h1><span>Content creation, scheduling and proofing software</span>
 		<div class="buttons">
-			<button class="signUp" data-featherlight="/users/register" escape="false">SIGN UP FOR FREE</button>
+			<button class="signUp" data-featherlight="/users/register1" escape="false">SIGN UP FOR FREE</button>
 			<button class="findOut">FIND OUT MORE</button>
 		</div>
 	</div>
@@ -121,7 +121,7 @@ echo $this->Html->css('jquery.dropdown');
 		</div>
 		<div id="signUp">
 			Create an account now for free and get started creating content with TweetProof.
-			<div class="tableButton" data-featherlight="/users/register" escape="false">
+			<div class="tableButton" data-featherlight="/users/register1" escape="false">
 			SIGN UP
 			</div>
 		</div>
@@ -154,7 +154,7 @@ echo $this->Html->css('jquery.dropdown');
 
 <script>
 $(document).ready(function() {
-	$('.tableButton:not(.one)').featherlight('/users/register', {
+	$('.tableButton:not(.one)').featherlight('/users/register1', {
 	});
 
 	$('.forgot').featherlight('/users/forgotpw', {
