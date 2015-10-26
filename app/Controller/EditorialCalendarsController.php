@@ -692,6 +692,7 @@ class EditorialCalendarsController extends AppController {
         $this->set('tweets', $tweets);*/
 
         $this->set('calendar', $calendar);
+        $this->set('session_teams', Hash::combine($this->Session->read('Auth.User.Team'), '{n}.id', '{n}'));
         
 
         if (isset($months)) {
@@ -699,6 +700,7 @@ class EditorialCalendarsController extends AppController {
         }
 
         $team = $this->Cookie->read('currentTeam');
+        $this->set('team', $team);
         if ($this->TeamsUser->hasAny(array('team_id' => $team, 'user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1))) {
             $this->set('isTeamAdmin', 1);
         } else {

@@ -162,12 +162,14 @@ foreach ($calendar as $time => $key1) {
             $allApproved[date('jS', strtotime($key))] -= 1000;
         }
     }
-
-        if ($this->Session->read('Auth.User.group_id') == 2) {
-            $disabled = 'disabled';
-        } else {
-            $disabled = '';
-        }?>
+        if (!empty($team)) {
+            if ($session_teams[$team]['TeamsUser']['group_id'] == 2) {
+                $disabled = 'disabled';
+            } else {
+                $disabled = '';
+            }
+        }
+        ?>
     <div class='tweetTop'>
         <div class="calendar scheduled <?echo date('jS', strtotime($key . $key1['EditorialCalendar']['time']));?>">
                 <i class='fa fa-clock-o'></i>
@@ -443,13 +445,14 @@ foreach ($calendar as $time => $key1) {
                 $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                 text = $(this).val();
                 id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
+                user_id = "<?echo $this->Session->read('Auth.User.id');?>";
                 $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
                 /*channel1.bind('body_update',
                     function(data) {
                         alert('data');
                     }
                 );*/
-                var triggered = channel1.trigger('client-body_update', { 'tweet_id' : id, 'body': text });
+                var triggered = channel1.trigger('client-body_update', { 'tweet_id' : id, 'body': text, 'user_id' : user_id});
 
             });
 
@@ -459,16 +462,17 @@ foreach ($calendar as $time => $key1) {
             function userTyping() {
                 first_name =  '<?echo $this->Session->read("Auth.User.first_name");?>';
                 last_name = '<?echo $this->Session->read("Auth.User.last_name");?>';
+                user_id = "<?echo $this->Session->read('Auth.User.id');?>";
                 tweet_id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
                 if (!typingTimeout) {
-                    channel1.trigger('client-body_typing', {'typing' : true, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name});
+                    channel1.trigger('client-body_typing', {'typing' : true, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name, 'user_id' : user_id});
                 } else {
                     window.clearTimeout(typingTimeout);
                     typingTimeout = null;
                 }
 
                 typingTimeout = window.setTimeout(function () {
-                    channel1.trigger('client-body_typing', {'typing' : false, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name});
+                    channel1.trigger('client-body_typing', {'typing' : false, 'tweet_id' : tweet_id, 'first_name' : first_name, 'last_name' : last_name, 'user_id' : user_id});
                     typingTimeout = null;
                 }, 3000);
 
@@ -476,19 +480,25 @@ foreach ($calendar as $time => $key1) {
 
             channel1.bind('client-body_update',
                 function(data) {
-                    $('#TweetId[data-id="' + data['tweet_id'] + '"]').closest('.tweet').find('.editing').text(data['body']);
+                    user_id = "<?echo $this->Session->read('Auth.User.id');?>";
+                    if (user_id != data['user_id']) {
+                        $('#TweetId[data-id="' + data['tweet_id'] + '"]').closest('.tweet').find('.editing').text(data['body']);
+                    }
                 }
             );
 
             channel1.bind('client-body_typing',
                 function(data) {
-                    if (data['typing'] == true) {  
-                        string = data['first_name'] + ' ' + data['last_name'] + ' is typing...'; 
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.isTyping').text(string).slideDown();
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.editing').attr('disabled', 'disabled');
-                    } else {
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.isTyping').slideUp();
-                        $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.editing').attr('disabled', false);
+                    user_id = "<?echo $this->Session->read('Auth.User.id');?>";
+                    if (user_id != data['user_id']) {
+                        if (data['typing'] == true) {  
+                            string = data['first_name'] + ' ' + data['last_name'] + ' is typing...'; 
+                            $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.isTyping').text(string).slideDown();
+                            $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.editing').attr('disabled', 'disabled');
+                        } else {
+                            $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.isTyping').slideUp();
+                            $('#TweetId[data-id=' + data['tweet_id'] + ']').closest('.tweet').find('.editing').attr('disabled', false);
+                        }
                     }
                 }
             );
@@ -806,11 +816,26 @@ foreach ($calendar as $time => $key1) {
                 processData: false,
                 contentType: false,
                 success: function(data) {
+                    data1 = $.extend(true, {}, data);
+                    console.log(JSON.stringify(data));
                     $('.editing').each(function() {
                         if ($(this).val().length == 0) {//if empty tweet
                             bank_category_id = $(this).closest('.tweet').find('.calendar_topic').attr('data-category-id');
                             if (bank_category_id) {//if bank category exists for that calendar
+                                console.log(JSON.stringify(data[bank_category_id]));
                                 if (data[bank_category_id].length) {//if there are any banked tweets for that calendar
+                                    noTweets = false;
+                                } else {
+                                    if (data1[bank_category_id].length) {
+                                        //console.log(JSON.stringify(data[bank_category_id]));
+                                        data = $.extend(true, {}, data1);
+                                        noTweets = false;
+                                    } else {
+                                        noTweets = true;
+                                    }
+                                }
+
+                                if (noTweets == false) {
 
                                     random = Math.floor(Math.random()*data[bank_category_id].length);
                                     $(this).text(data[bank_category_id][random]["body"]);//set random tweet
@@ -827,6 +852,7 @@ foreach ($calendar as $time => $key1) {
                                     }
                                     $(this).closest('.tweet').find('input[name=tosubmit]').val(true);
                                     $(this).closest('.tweet').find('#TweetTweetBankId').val(data[bank_category_id][random]["id"]);
+                                    data[bank_category_id].splice(random, 1);
                                 }
                             }
                         }
