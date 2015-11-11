@@ -57,13 +57,25 @@ class TwitterController extends AppController {
 
         $dropdownaccounts = $this->TwitterAccount->find('list', array('fields' => array('TwitterAccount.account_id', 'screen_name'), 'conditions' => $conditions, 'order' => array('screen_name' => 'ASC')));
         $this->set('dropdownaccounts', $dropdownaccounts);
-        $stats = $this->Statistic->find('all', array('conditions' => array('twitter_account_id' => $permissions), 'recursive' => -1, 'fields' => array('id', 'twitter_account_id', 'MAX(timestamp) as timestamp', 'time', 'followers_count', 'following_count', 'favourites_count'), 'group' => 'twitter_account_id'));
-        $stats = Hash::combine($stats, '{n}.Statistic.twitter_account_id', '{n}');
+
+        $queryPermissions = join(',', $permissions);
+        //$stats = $this->Statistic->find('all', array('conditions' => array('twitter_account_id' => $permissions), 'recursive' => -1, 'fields' => array('id', 'twitter_account_id', 'MAX(timestamp) as timestamp', 'time', 'followers_count', 'following_count', 'favourites_count'), 'group' => 'twitter_account_id'));
+        $stats = $this->Statistic->query("select statistics.id, statistics.twitter_account_id, statistics.timestamp, statistics.time, statistics.followers_count, statistics.following_count, statistics.favourites_count
+from statistics
+inner join 
+    (select twitter_account_id, max(timestamp) as timestamp
+    from statistics
+    group by twitter_account_id) maxt
+on (statistics.twitter_account_id = maxt.twitter_account_id and statistics.timestamp = maxt.timestamp) WHERE maxt.twitter_account_id IN ($queryPermissions)");
+        $stats = Hash::combine($stats, '{n}.statistics.twitter_account_id', '{n}');
         foreach ($stats as $value => $key) {
+            $key['Statistic'] = $key['statistics'];
+            unset($key['statistics']);
             $key['Statistic']['followers_count'] = $this->abreviateTotalCount($key['Statistic']['followers_count']);
             $key['Statistic']['following_count'] = $this->abreviateTotalCount($key['Statistic']['following_count']);
             $key['Statistic']['favourites_count'] = $this->abreviateTotalCount($key['Statistic']['favourites_count']);
             $stats[$value] = $key;
+            unset($stats[$value]['statistics']);
         }
         $allaccounts = $this->TwitterAccount->find('all', array('conditions' => array('TwitterAccount.account_id' => $permissions), 'recursive' => -1));
         $allaccounts = Hash::combine($allaccounts, '{n}.TwitterAccount.account_id', '{n}');
