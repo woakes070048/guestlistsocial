@@ -7,6 +7,11 @@
     <?
     $base = strtotime(date('Y-m',time()) . '-01 00:00:01'); 
     $monthsarray = array(
+        -5 => date('F Y', strtotime('-5 month', $base)),
+        -4 => date('F Y', strtotime('-4 month', $base)),
+        -3 => date('F Y', strtotime('-3 month', $base)),
+        -2 => date('F Y', strtotime('-2 month', $base)),
+        -1 => date('F Y', strtotime('-1 month', $base)),
         0 => date('F Y', strtotime('+0 month', $base)),
         1 => date('F Y', strtotime('+1 month', $base)),
         2 => date('F Y', strtotime('+2 month', $base)),
@@ -789,7 +794,7 @@ foreach ($calendar as $time => $key1) {
         $('.slick').slick({
             prevArrow: "<div class='slick-arrowleft'></div>",
             nextArrow: "<div class='slick-arrowright'></div>",
-            initialSlide: <? echo $this->Session->read('Auth.User.monthSelector');?>
+            initialSlide: <? echo $this->Session->read('Auth.User.monthSelector');?> + 5
         });
 
         $('.slick-arrowright, .slick-arrowleft').click(function () {

@@ -28,7 +28,7 @@ $days = array(
     6 => 'sunday'
 );
 //Select Twitter Account
-echo $this->Form->create('TwitterAccount');
+/*echo $this->Form->create('TwitterAccount');
         echo $this->Form->input('Select Account:', array(
         'name' => 'accountSubmit',
         'onchange' => 'this.form.submit()',
@@ -38,7 +38,7 @@ echo $this->Form->create('TwitterAccount');
 echo $this->Form->end();
 if (isset($info[0]['TwitterAccount']['infolink'])) {
 echo $this->Html->link('Info', $info[0]['TwitterAccount']['infolink'], array('target' => '_blank'));
-} ?>
+} */?>
 
 <br/>
 <br/>

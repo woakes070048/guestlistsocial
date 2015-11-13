@@ -668,7 +668,11 @@ class EditorialCalendarsController extends AppController {
 
     public function calendarRefresh ($months) {        
         $this->Session->write('Auth.User.monthSelector', $months);
-        $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC'), 'contain' => array('TwitterAccount', 'BankCategory', 'Tweet' => array('conditions' => array('timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'Comment', 'Editor' => array('User')))));
+        if ($months >= 0) {
+            $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC'), 'contain' => array('TwitterAccount', 'BankCategory', 'Tweet' => array('conditions' => array('timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'Comment', 'Editor' => array('User')))));
+        } elseif ($months < 0) {
+            $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC'), 'contain' => array('TwitterAccount', 'BankCategory', 'Tweet' => array('conditions' => array('timestamp >=' => strtotime(date('M Y') . ' - ' . (abs($months)) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' - ' . abs(($months + 1)) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'Comment', 'Editor' => array('User')))));
+        }
         $calendarx = array();
         $c = array();
         foreach ($calendar as $key) {
