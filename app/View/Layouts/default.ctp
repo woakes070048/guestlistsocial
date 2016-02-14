@@ -115,9 +115,9 @@ $(document).ready(function() {
 
 <? if (!empty($notificationCount)) {?>
 	<?if ($notificationCount > 9) {
-		$notificationCount = '9+';
+		$notificationCount = '9plus';
 	}?>
-	$('.navbell').addClass('badge badge' + <?echo strval($notificationCount);?>);
+	$('.navbell').addClass('badge badge' + "<?echo strval($notificationCount);?>");
 <?}?>
 
 $('.navbell').click(function () {
@@ -127,7 +127,7 @@ $('.navbell').click(function () {
     if ($('#notificationbox').css('display') == 'none') {
         str = $(".navbell").attr('class');
         str1 = str.substr(32);
-        if (str1 != "9+") {
+        if (str1 != "9plus") {
             str2 =  Number(str1.split('.')[0]) - 5;
             if (str2 < 0) {
                 $('.navbell').removeClass('badge badge' + str2);

@@ -58,7 +58,7 @@ $(document).ready(function() {
 	            } else if ($(comment).hasClass('badge8')) {
 	            	$(comment).removeClass('badge8').addClass('badge9');
 	            } else if ($(comment).hasClass('badge9')) {
-	            	$(comment).removeClass('badge9').addClass('badge9+');
+	            	$(comment).removeClass('badge9').addClass('badge9plus');
 	            } 
             }});
         });

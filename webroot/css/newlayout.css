@@ -1350,7 +1350,7 @@ span.counter1.exceeded {
 	content: "9";
 }
 
-.badge9+:after {
+.badge9plus:after {
 	content: "9+";
 }
 

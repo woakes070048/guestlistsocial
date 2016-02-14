@@ -37,8 +37,8 @@ if ($months == 0) {
 } elseif ($months !== 0) {
     $day = 1;
 } 
-$year = date('Y', strtotime('+' . $months . ' month', $base));
-//$year = date('Y');
+//$year = date('Y', strtotime('+' . $months . ' month', $base));
+$year = date('Y');
 
 $count = $daysinmonth - $day;
 for ($i=$day; $i<=$daysinmonth; $i++) {
@@ -199,7 +199,7 @@ foreach ($calendar as $time => $key1) {
         <div class='isTyping' style="display: inline-block"></div>
         <div class="tweetButtons">
         <?if ($commentCount > 9) {
-            $commentCount = '9+';
+            $commentCount = '9plus';
         }?>
             <i class="empty comments <?echo $present;?> fa fa-comments commentBadge badge<?echo $commentCount;?>" id="<? echo $id; ?>"></i>
             <i class="smallSaveButton fa fa-floppy-o"></i>
