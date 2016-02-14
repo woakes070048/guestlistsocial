@@ -199,9 +199,9 @@ foreach ($calendar as $time => $key1) {
         <div class='isTyping' style="display: inline-block"></div>
         <div class="tweetButtons">
         <?if ($commentCount > 9) {
-            $commentCount = '9plus';
+            $commentCount = '9+';
         }?>
-            <i class="empty comments <?echo $present;?> fa fa-comments" id="<? echo $id; ?>"></i>
+            <i class="empty comments <?echo $present;?> fa fa-comments commentBadge badge<?echo $commentCount;?>" id="<? echo $id; ?>"></i>
             <i class="smallSaveButton fa fa-floppy-o"></i>
             <i class="urlSubmit1 shortsingle fa fa-code"></i>
             <? //echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false, 'class' => 'imgupload')); ?>

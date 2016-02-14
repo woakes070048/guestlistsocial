@@ -5,7 +5,7 @@
 			<tr>
 				<td class='commentName'>
 					<div style='margin:0'>
-						<?echo $this->Html->image($key['User']['profile_pic'], array('style' => 'height: 19px'));?>
+						<?echo $this->Html->image($key['User']['profile_pic'], array('style' => 'height: 24px'));?>
 					<span><?echo $key['User']['first_name'] . ': ';?></span>
 				</div>
 				</td>
@@ -37,14 +37,29 @@ $(document).ready(function() {
 
                 idx = $(this).closest('.qtip-default').attr('id');
 	            idx = idx.split('-')[1];
-	            image = $('.comments[data-hasqtip=' + idx + ']').css('background-image');
-	            image = image.substr(-6);
-	            if (image != "s.png)") {
-	                    image =  Number(image.split('.')[0]) + 1;
-	                } else {
-	                	image = '9plus';
-	                }
-	            $('.comments[data-hasqtip=' + idx + ']').css('background-image', 'url(/img/comment' + String(image) + '.png)');
+	            comment = '.comments[data-hasqtip=' + idx + ']'
+
+	            if ($(comment).hasClass('badge0')) {
+	            	$(comment).removeClass('badge0').addClass('badge1');
+	            } else if ($(comment).hasClass('badge1')) {
+	            	$(comment).removeClass('badge1').addClass('badge2');
+	            } else if ($(comment).hasClass('badge2')) {
+	            	$(comment).removeClass('badge2').addClass('badge3');
+	            } else if ($(comment).hasClass('badge3')) {
+	            	$(comment).removeClass('badge3').addClass('badge4');
+	            } else if ($(comment).hasClass('badge4')) {
+	            	$(comment).removeClass('badge4').addClass('badge5');
+	            } else if ($(comment).hasClass('badge5')) {
+	            	$(comment).removeClass('badge5').addClass('badge6');
+	            } else if ($(comment).hasClass('badge6')) {
+	            	$(comment).removeClass('badge6').addClass('badge7');
+	            } else if ($(comment).hasClass('badge7')) {
+	            	$(comment).removeClass('badge7').addClass('badge8');
+	            } else if ($(comment).hasClass('badge8')) {
+	            	$(comment).removeClass('badge8').addClass('badge9');
+	            } else if ($(comment).hasClass('badge9')) {
+	            	$(comment).removeClass('badge9').addClass('badge9+');
+	            } 
             }});
         });
 });

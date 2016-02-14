@@ -675,6 +675,7 @@ class EditorialCalendarsController extends AppController {
         }
         $calendarx = array();
         $c = array();
+
         foreach ($calendar as $key) {
             $calendarx[$key['EditorialCalendar']['time']][$key['EditorialCalendar']['day']] = $key;
             $c[] = $key['EditorialCalendar']['id'];

@@ -1299,6 +1299,21 @@ span.counter1.exceeded {
     border: 1px solid #0788D3;
 }
 
+.commentBadge:after {
+    position: absolute;
+    margin-top: -5px;
+    margin-left: -5px;
+    background: #39AAEC;
+    height: 12px;
+    width: 12px;
+    text-align: center;
+    line-height: 12px;
+    font-size: 10px;
+    border-radius: 8px;
+    color: white;
+    border: 1px solid #0788D3;
+}
+
 .badge1:after {
 	content: "1";
 }
@@ -2352,3 +2367,79 @@ input#CalendarTime {
 	width: 0;
 	height: 0;
 }
+
+/* COMMENTS */
+form .submit #commentSaveButton {
+	background-color: #2EA0E2;
+	float: none;
+	margin: 0 0 0 -1px;
+	width: auto;
+	border: 1px solid #2EA0E2;
+	border-radius: 5px;
+	border-top-left-radius: 0;
+	border-bottom-left-radius: 0;
+	padding: 0 8px;
+	height: 24px;
+}
+
+#CommentBody {
+	width: 250px;
+	font-size: 11pt;
+	float: left;
+	border: 1px solid #aaa;
+	padding: 4px;
+	border-right: none;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.commentTable {
+	width: 296px;
+	font-size: 10pt;
+}
+
+.commentTable td {
+	border: 0;
+	text-align: left;
+	table-layout: fixed;
+	padding-bottom: 15px;
+}
+
+.commentTable .commentName {
+	width: 100px;
+	font-weight: 600;
+	background-color: #fff;
+}
+
+.commentTable .commentName span {
+	margin-top: 3px;
+	vertical-align: middle;
+	padding-left: 5px;
+}
+
+.commentTable .commentName div {
+	width: 100px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.commentTable .commentName div img {
+	vertical-align: middle;
+}
+
+.commentTable .commentBody {
+	background-color: #fff;
+}
+
+.commentTable .commentBody div {
+	background-color: #dcdcdc;
+	border-radius: 4px;
+	padding: 6px 10px;
+	margin: 0;
+	float: left;
+	width: 165px;
+	margin-left: 5px;
+}
+
+/* END OF COMMENTS */
