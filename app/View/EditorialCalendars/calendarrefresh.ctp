@@ -37,8 +37,8 @@ if ($months == 0) {
 } elseif ($months !== 0) {
     $day = 1;
 } 
-//$year = date('Y', strtotime('+' . $months . ' month', $base));
-$year = date('Y');
+$year = date('Y', strtotime('+' . $months . ' month', $base));
+//$year = date('Y');
 
 $count = $daysinmonth - $day;
 for ($i=$day; $i<=$daysinmonth; $i++) {
