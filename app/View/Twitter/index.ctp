@@ -14,6 +14,7 @@ echo $this->Html->script('jquery.scrollbar');
 echo $this->Html->script('jquery.hideseek');
 echo $this->Html->script('slick.min');
 echo $this->Html->script('jquery.selectBoxIt');
+echo $this->Html->script('jquery.lazyload.min');
 echo $this->Html->css('jquery.qtip.min');
 echo $this->Html->css('calendar');
 echo $this->Html->css('toastr.min');
@@ -499,8 +500,9 @@ $(document).ready(function() {
                         scrollTop: $("." + "<?echo $scroll;?>").offset().top - 30
                     }, 2000);
                 window.history.pushState("object or string", "TweetProof", "/tweets");
-        });
+            });
         <?}?>
+
         $('.editing').charCount({css: 'counter counter1'});
 
         $(".TwitterVerified1").each( function() {
@@ -529,7 +531,7 @@ $(document).ready(function() {
             window.location.reload(true);}});
         });
 
-        $("#table").on("change", ".TwitterVerified1", function() {
+        /*$("#table").on("change", ".TwitterVerified1", function() {
             <? if ($params == 'h:nocalendar') {?>
                 $("#table").css('opacity', '.4');
                 $('#edit').ajaxSubmit({success: function() {
@@ -577,7 +579,7 @@ $(document).ready(function() {
                     });
                     $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
                 <?} ?>
-        });
+        });*/
 
         $(".editing").on('change', function () {
             warnMessage = "You have unsaved changes on this page, if you leave your changes will be lost.";

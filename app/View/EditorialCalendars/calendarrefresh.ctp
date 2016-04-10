@@ -1,318 +1,157 @@
 <div class="shortenAllUrls" id="shortIt1"><i class="fa fa-code fa-fw"></i>Shorten All URLs</div>
-<?if (!empty($isTeamAdmin)) {?>
+<?
+if ($isTeamAdmin) {
+?>
     <div class="approveAll"><i class="fa fa-check fa-fw"></i>Approve All</div>
     <div class="autoPopulate"><i class="fa fa-refresh fa-fw"></i>Auto-Populate</div>
-<?}?>
+<?
+}
+?>
+
 <div class='slick'>
     <?
-    $base = strtotime(date('Y-m',time()) . '-01 00:00:01'); 
-    $monthsarray = array(
-        -5 => date('F Y', strtotime('-5 month', $base)),
-        -4 => date('F Y', strtotime('-4 month', $base)),
-        -3 => date('F Y', strtotime('-3 month', $base)),
-        -2 => date('F Y', strtotime('-2 month', $base)),
-        -1 => date('F Y', strtotime('-1 month', $base)),
-        0 => date('F Y', strtotime('+0 month', $base)),
-        1 => date('F Y', strtotime('+1 month', $base)),
-        2 => date('F Y', strtotime('+2 month', $base)),
-        3 => date('F Y', strtotime('+3 month', $base)),
-        4 => date('F Y', strtotime('+4 month', $base)),
-        5 => date('F Y', strtotime('+5 month', $base))
-        );
-    foreach ($monthsarray as $key => $value) {?>
+    foreach ($monthsarray as $key => $value) {
+    ?>
         <div data-month=<?echo $key;?>>
             <?echo $value;?>
         </div>
-    <?}?>
+    <?
+    }
+    ?>
 </div>
-<?
-if (!isset($months)) {
-    $months = 0;
-}
-$daysinmonth = (int)date('t', strtotime('+' . $months . ' month', $base));
-$days = array();
-$month = date('m', strtotime('+' . $months . ' month', $base));
-if ($months == 0) {
-    $day = date('d');
-} elseif ($months !== 0) {
-    $day = 1;
-} 
-//$year = date('Y', strtotime('+' . $months . ' month', $base));
-$year = date('Y');
+<div class="loadingTweets">
+    <div class="loader1">
+        <svg class="circular1">
+            <circle class="path" cx="5" cy="5" r="4" fill="none" stroke-width="1" stroke-miterlimit="2"/>
+        </svg>
+    </div>
+    Loading your tweets, please wait.
+</div>
+<?php 
+if (!empty($calendar)) { 
+?>
+    <?
+    echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet1', 'id' => 'submitTweets', 'type' => 'file'));
+    ?>
+    <?
 
-$count = $daysinmonth - $day;
-for ($i=$day; $i<=$daysinmonth; $i++) {
-    $days[date('d-m-Y',mktime(0,0,0,$month,$i,$year))] = date('l',mktime(0,0,0,$month,$i,$year));
-}
-?>
-<!--<div id='calendarbuttons'>
-<? echo $this->Form->button('Shorten all URLs', array('id' => 'shortIt1', 'class' => 'urlSubmit1', 'type' => 'button'));
-echo $this->Form->button('Approve All', array('class' => 'urlSubmit1 approveAll', 'type' => 'button'));
-?>
-</div>-->
-<?php if (!empty($calendar)) { ?>
-<?
-echo $this->Form->create('Tweet', array('url' => '/editorial_calendars/editcalendartweet1', 'id' => 'submitTweets', 'type' => 'file'));
-?>
-<?
-$testid = 1;
-$allApproved = array();
-foreach ($days as $key => $value) {
-$allApproved[date('jS', strtotime($key))] = 0; ?>
-<div class='bigdate'><?echo date('jS ', strtotime($key)) . date('F Y', strtotime('+' . $months .' month', $base));?></div>
-<?php
-foreach ($calendar as $time => $key1) {
-    $testid = $testid + 1;?>
-    <div class='tweet'>
-<?
-    $key1 = $key1[strtolower($value)];
-    //debug($key1);
-    /*foreach ($key1['Tweet'] as $key2) {
-        if ($key2['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
-            $value2 = $key2['body'];
-            $value1 = $testid;
-            $id = $key2['id'];
-            $img = $key2['img_url'];
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing'));
-            $firstName = $key2['first_name'];
-            $verified = $key2['verified'];
-            $verified_by = $key2['verified_by'];
-            $published = $key2['published'];
-            break;
-        } else {
-            $value2 = '';
-            $value1 = $testid;
-            $id = '';
-            $img = '';
-            $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing')); 
-            $firstName = '';
-            $verified = 0;
-            $verified_by = "";
-            $published = false;
-        }
-    }*/
-
-    //if (empty($tweets[$key1['EditorialCalendar']['id']])) {
-    if (empty($key1['Tweet'])) {
-        $value2 = '';
-        $value1 = $testid;
-        $id = '';
-        $idForPusher = md5($this->Session->read('access_token.account_id') . 'x' . $value1);
-        $img = '';
-        $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
-        $firstName = '';
-        $verified = 0;
-        $allApproved[date('jS', strtotime($key))] -= 1000;
-        $published = false;
-        $commentCount = 0;
-        $present = '';
-        $editors = false;
-        $tweet_bank_id = 0;
-    } else {
-        //foreach ($tweets[$key1['EditorialCalendar']['id']] as $item => $key2) {
-        foreach ($key1['Tweet'] as $item => $key2) {
-            if ($key2['time'] === date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time']))) {
-                $value2 = $key2['body'];
-                $value1 = $testid;
-                $id = $key2['id'];
-                $idForPusher = $key2['id'];
-                $img = $key2['img_url'];
-                if (!empty($img)) {
-                    $txtareaClass = 'withImage';
-                } else {
-                    $txtareaClass = 'withoutImage';
-                }
-                $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing ' . $txtareaClass));
-                $firstName = $key2['first_name'];
-                $verified = $key2['verified'];
-                if ($verified == 1) {
-                    $allApproved[date('jS', strtotime($key))] += 1;
-                } elseif ($verified == 0) {
-                    $allApproved[date('jS', strtotime($key))] -= 0.01;
-                } elseif ($verified == 2) {
-                    $allApproved[date('jS', strtotime($key))] -= 1000000;
-                }
-                $published = $key2['published'];
-                $commentCount = count($key2['Comment']);
-                $present = 'present';
-                $empty = false;
-                $tweet_bank_id = $key2['tweet_bank_id'];
-                if (!empty($key2['Editor'])) {
-                    $editors = $key2['Editor'];
-                } else {
-                    $editors = false;
-                }
-                //unset($tweets[$key1['EditorialCalendar']['id']][$item]);
-                unset($key1['Tweet'][$item]);
-                break;
-            } else {
-                $value2 = '';
-                $value1 = $testid;
-                $id = '';
-                $idForPusher = md5($this->Session->read('access_token.account_id') . 'x' . $value1);
-                $img = '';
-                $body = $this->Form->textarea('body', array('label' => false, 'value' => $value2, 'name' => 'data[Tweet]['.$value1.'][body]', 'class' => 'calendar editing withoutImage')); 
-                $firstName = '';
-                $verified = 0;
-                //$allApproved[date('jS', strtotime($key))] -= 1000;
-                $published = false;
-                $commentCount = 0;
-                $present = '';
-                $editors = false;
-                $empty = true;
-                $tweet_bank_id = 0;
-            }
-        }   
-        if (!empty($empty)) {
-            $allApproved[date('jS', strtotime($key))] -= 1000;
+    $allApproved = array();
+    foreach ($days as $key => $value) {
+        //$allApproved[date('jS', strtotime($key))] = 0; ?>
+            <div class='bigdate'>
+                <?echo date('jS F Y', strtotime($key));?>
+            </div>
+        <?php
+        foreach ($calendar as $time => $key1) {
+            $timestamp = strtotime("$key $time");
+            $class = $key1[strtolower($value)]['EditorialCalendar']['id'] . '-' . $timestamp;?>
+            <div class="tweetWrapper <? echo $class;?>">
+            </div>
+        <?
         }
     }
-        if (!empty($team)) {
-            if ($session_teams[$team]['TeamsUser']['group_id'] == 2) {
-                $disabled = 'disabled';
-            } else {
-                $disabled = '';
-            }
-        }
-        ?>
-    <div class='tweetTop'>
-        <div class="calendar scheduled <?echo date('jS', strtotime($key . $key1['EditorialCalendar']['time']));?>">
-                <i class='fa fa-clock-o'></i>
-                <?echo date('H:i ', strtotime($key . $key1['EditorialCalendar']['time'])) . '<b class="' .date('l', strtotime($key . $key1['EditorialCalendar']['time'])) . '">' . date('l ', strtotime($key . $key1['EditorialCalendar']['time'])) . '</b>' . date('jS F Y', strtotime($key . $key1['EditorialCalendar']['time']));?>
-                <? if($published == 1) {
-                    echo '<small>[Published]</small>';
-                }?>
-        </div>
-        <div class='categoryContainer'>
-            <div class='calendar_topic' data-category-id="<?echo $key1['BankCategory']['id'];?>"><? if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?></div>
-            <!--<div class='calendar_notes'><? //if (!empty($key1['BankCategory']['category'])) {echo $key1['BankCategory']['category'];} ?> Some comment</div>-->
-        </div>
-    </div>
-    <div class="topic">
-    
-
-    <!--<div class='calendar_content_type'><? echo $key1['EditorialCalendar'][strtolower($value) . '_content_type']; ?></div>
-
-    <div class='calendar_notes'><? echo $key1['EditorialCalendar'][strtolower($value) . '_notes']; ?></div>--></div>
-    <div class="textBoxAndButtons">
-        <?echo $body;?>
-        <div class='isTyping' style="display: inline-block"></div>
-        <div class="tweetButtons">
-        <?if ($commentCount > 9) {
-            $commentCount = '9plus';
-        }?>
-            <i class="empty comments <?echo $present;?> fa fa-comments commentBadge badge<?echo $commentCount;?>" id="<? echo $id; ?>"></i>
-            <i class="smallSaveButton fa fa-floppy-o"></i>
-            <i class="urlSubmit1 shortsingle fa fa-code"></i>
-            <? //echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => false, 'class' => 'imgupload')); ?>
-            <i class="fa fa-camera"></i>
-        </div>
-    </div>
-    <div class="imageUpload" style="display:none">
-        <? echo $this->Form->input('img_url1', array('type' => 'file', 'name' => 'data[Tweet]['.$value1.'][img_url1]', 'label' => "<span class='button'>Upload Image</span>", 'class' => 'button', 'id' => 'TweetImgUrl1' . $idForPusher)); ?>
-        <span>OR</span>
-        <? echo $this->Form->input('img_url2', array('name' => 'data[Tweet]['.$value1.'][img_url2]', 'label' => false, 'placeholder' => 'Paste Link...', 'class' => 'TweetImgUrl2'));?>
-    </div>
-    <div class="calendar verified">
-    <? echo $this->Form->input('verified', 
-            array(
-                'type' => 'radio',
-                'options' => array(
-                    1 => 'Approved',
-                    0 => 'Pending',
-                    2 => 'Improve'
-                ),
-                'legend' => false,
-                'name' => 'data[Tweet]['.$value1.'][verified]',
-                'class' => 'calendar TwitterVerified1',
-                'id' => $id,
-                'default' => $verified,
-                $disabled,
-                'before' => '<div class="verifiedLabel">',
-                'separator' => '</div><div class="verifiedLabel">',
-                'after' => '</div>'
-            )
-    );?>
-        
-        <?if (!empty($editors)) {?>
-        <ul style='list-style: none; font-size: 9px; margin: 5px 0 5px 5px;'><?
-            foreach ($editors as $keyx) {
-                if ($keyx['type'] == 'written') {
-                    $x = 'Written By';
-                } elseif ($keyx['type'] == 'edited') {
-                    $x = 'Edited By';
-                } elseif ($keyx['type'] == 'proofed') {
-                    $x = 'Approved By';
-                } elseif ($keyx['type'] == 'improve') {
-                    $x = 'Set to Improve';
-                }?>
-            <li style='margin: 0;'><b style='width: 110px; overflow: hidden; text-overflow: ellipsis;'><? echo $x . ': ' ?></b><? echo $keyx['User']['first_name'];?></li>
-            <?}?>
-        </ul>
-        <?}?>
-    </div>
-    <? if (!empty($img)) {?>
-        <div class='imagecontainer'>
-            <? echo $this->Html->link("<i class='deleteimage fa fa-times'></i>", array('controller' => 'twitter', 'action' => 'deleteImage', $id), array('escape' => false));?>
-            <? echo $this->Html->image($img, array('style' => 'max-width:496px')); ?>
-        </div>
-    <?}?>
-        <div id="imagePreview<?echo$idForPusher;?>" class='imagecontainer' style="display: none">
-            <img src='' style='max-width:496px'>
-        </div>
-    <?
-    echo $this->Form->input('timestamp', array('type' => 'hidden', 'value' => date('d-m-Y H:i', strtotime($key . $key1['EditorialCalendar']['time'])), 'name' => 'data[Tweet]['.$value1.'][timestamp]'));
-    echo $this->Form->input('id', array('type' => 'hidden', 'value' => $id, 'name' => 'data[Tweet]['.$value1.'][id]', 'data-id' => $idForPusher));
-    echo $this->Form->input('calendar_id', array('type' => 'hidden', 'value' => $key1['EditorialCalendar']['id'], 'name' => 'data[Tweet]['.$value1.'][calendar_id]'));
-    echo $this->Form->input('img_url', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][img_url]'));
-    echo $this->Form->input('forceVerified', array('type' => 'hidden', 'value' => false, 'name' => 'data[Tweet]['.$value1.'][forceVerified]'));
-    echo $this->Form->input('tosubmit', array('type' => 'hidden', 'value' => false, 'name' => 'tosubmit'));
-    echo $this->Form->input('tweet_bank_id', array('type' => 'hidden', 'value' => $tweet_bank_id, 'name' => 'data[Tweet]['.$value1.'][tweet_bank_id]'));
     ?>
-</div><?
-}
+    <? echo $this->Form->end(array('id' => 'tweetsubmit1', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); ?>
+
+    <div class='fixedTwitterAccount' style='display: none;'><span class='screenName'>@<?echo $this->Session->read('access_token.screen_name');?></span></div>
+    <div class='fixedScroller'>
+        <table>
+                <tr>
+                    <td class='gototop'><img src='/img/arrow-up-down.png'></td>
+                </tr>
+            <?foreach ($days as $key => $value) {
+                /*if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
+                    $class = 'allApproved';
+                } elseif ($allApproved[date('jS', strtotime($key))] > -1000 && is_float($allApproved[date('jS', strtotime($key))])) {
+                    $class = 'notAllApproved';
+                } elseif ($allApproved[date('jS', strtotime($key))] < -900000) {
+                    $class = 'improveApproved';
+                } elseif ($allApproved[date('jS', strtotime($key))] < 0) {
+                    $class = '';
+                } else {
+                    $class = '';
+                }*/?>
+                <tr>
+                    <td class='scroll<?echo date('jS', strtotime($key));?>'><?echo date('jS', strtotime($key));?></td>
+                </tr>
+            <?}?>
+        </table>
+    </div>
+<?
+} else {
+?>
+    <!--<div id='noaccount' style="display: none;" class="calendarrefresh">
+        <?echo $this->Html->image('/img/logogrey.png', array('width' => '35px'));?>
+        You have not created an editorial calendar. Please click on the button to the left to create one or switch calendar view off.
+    </div>-->
+<?
 }
 ?>
-<? echo $this->Form->end(array('id' => 'tweetsubmit1', 'label' => 'SAVE', 'value' => 'Save', 'class' => 'longbutton')); ?>
-
-<div class='fixedTwitterAccount' style='display: none;'><span class='screenName'>@<?echo $this->Session->read('access_token.screen_name');?></span></div>
-<div class='fixedScroller'>
-    <table>
-            <tr>
-                <td class='gototop'><img src='/img/arrow-up-down.png'></td>
-            </tr>
-        <?foreach ($days as $key => $value) {
-            if ($allApproved[date('jS', strtotime($key))] == count($calendar)) {
-                $class = 'allApproved';
-            } elseif ($allApproved[date('jS', strtotime($key))] > -1000 && is_float($allApproved[date('jS', strtotime($key))])) {
-                $class = 'notAllApproved';
-            } elseif ($allApproved[date('jS', strtotime($key))] < -900000) {
-                $class = 'improveApproved';
-            } elseif ($allApproved[date('jS', strtotime($key))] < 0) {
-                $class = '';
-            } else {
-                $class = '';
-            }?>
-            <tr>
-            <td class='<? echo $class;?>'><?echo date('jS', strtotime($key));?></td>
-            </tr>
-        <?}?>
-    </table>
-</div>
-<?} else {?>
-<div id='noaccount' style="display: none;" class="calendarrefresh">
-    <?echo $this->Html->image('/img/logogrey.png', array('width' => '35px'));?>
-    You have not created an editorial calendar. Please click on the button to the left to create one or switch calendar view off.
-</div>
-<?}?>
 
 
 
 <script> 
         // wait for the DOM to be loaded 
         $(document).ready(function () {
-            $('.editing.withoutImage').charCount({css: 'counter counter1', allowed: 140});
-            $('.editing.withImage').charCount({css: 'counter counter2', allowed: 117});
+            verified = {};
+            calendarCount = {};
+            <?
+            $j = 0;
+            foreach ($days as $key => $value) {
+                $jSdate = date('jS', strtotime($key));?>
+                verified["<?echo date('jS', strtotime($key));?>"] = {0 : 0, 1 : 0, 2 : 0};
+                calendarCount["<?echo $jSdate;?>"] = 0;
+                <?
+                $i = 0;
+                $j++;
+                foreach ($calendar as $time => $key1) {
+                    $i++;
+                    $timestamp = strtotime("$key $time");
+                    ?>
+                    $(".<?echo $key1[strtolower($value)]['EditorialCalendar']['id'];?>-<?echo $timestamp;?>").load("/editorial_calendars/tweet/<?echo $key1[strtolower($value)]['EditorialCalendar']['id'];?>/<?echo $timestamp;?>", function () {
+                            $(".tweetWrapper.<?echo $key1[strtolower($value)]['EditorialCalendar']['id'];?>-<?echo $timestamp;?>").css('opacity', '1');
+
+                            v = $(".tweetWrapper.<?echo $key1[strtolower($value)]['EditorialCalendar']['id'];?>-<?echo $timestamp;?>").find('.TwitterVerified1:checked').val();
+
+                            body = $(".tweetWrapper.<?echo $key1[strtolower($value)]['EditorialCalendar']['id'];?>-<?echo $timestamp;?>").find('#TweetBody').val();
+
+                            if (v == 1) {
+                                verified["<?echo $jSdate;?>"][1] = verified["<?echo $jSdate;?>"][1] + 1;
+                            } else if (v == 0 && body) {
+                                verified["<?echo $jSdate;?>"][0] = verified["<?echo $jSdate;?>"][0] + 1;
+                            } else if (v == 2) {
+                                verified["<?echo $jSdate;?>"][2] = verified["<?echo $jSdate;?>"][2] + 1;
+                            }
+                            calendarCount["<?echo $jSdate;?>"] = calendarCount["<?echo $jSdate;?>"] + 1;
+
+                            <? if ($i == count($calendar)) {?>
+                                initiateScroller(verified, calendarCount, "<?echo $jSdate;?>");
+
+                                <?if ($j == count($days)) {?>
+                                    $(".loadingTweets").fadeOut();
+                                    verified = null;
+                                    calendarCount = null;
+                                <?}?>
+                            <?}?>
+                            v = null;
+                            body = null;
+                    });
+                    <?
+                }
+            }
+            ?>
+
+            function initiateScroller(verified, calendarCount, jSdate, body) {
+                if (verified[jSdate][1] == calendarCount[jSdate] && calendarCount[jSdate] != 0) {
+                    $(".scroll" + jSdate).addClass('allApproved');
+                } else if (verified[jSdate][2] == calendarCount[jSdate]) {
+                    $(".scroll" + jSdate).addClass('improveApproved');
+                } else if ((verified[jSdate][0] + verified[jSdate][1]) == calendarCount[jSdate]) {
+                    $(".scroll" + jSdate).addClass('notAllApproved');
+                } else {
+                    $(".scroll" + jSdate).css('background', "#fff");
+                }
+            }
 
             var pusher = new Pusher('67904c5b4e0608620f41', { authEndpoint: '/pusher/pusher/auth.json' });
 
@@ -327,69 +166,94 @@ foreach ($calendar as $time => $key1) {
                 $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
             });
 
+            //save on radio click
             $(".TwitterVerified1[value='1'] + label").click(function() {
                 $(this).closest(".tweet").find('.TwitterVerified1[value="1"]').prop('checked', true);
                 $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
                 $(this).closest(".tweet").find('#TweetForceVerified').val(true);
-                    $("#table").css('opacity', '.4');
-                    $('#loading').show();
-                    var dat = new FormData();
-                    $('input[name=tosubmit][value=true]').each(function () {
-                        //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
-                        $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
-                            if ($(this).attr('type') == 'file') {
-                                dat.append($(this).attr('name'), this.files[0]);
-                            } else {
-                                dat.append($(this).attr('name'), $(this).val());
-                            }
+                $(this).closest(".tweet").css('opacity', '.4');
+                //$('#loading').show();
+                var dat = new FormData();
+                $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                    if ($(this).attr('type') == 'file') {
+                        dat.append($(this).attr('name'), this.files[0]);
+                    } else {
+                        dat.append($(this).attr('name'), $(this).val());
+                    }
+                });
+                
+                $.ajax({
+                    type: "POST",
+                    url: "/editorial_calendars/editcalendartweet",
+                    data: dat,
+                    context: this,
+                    processData: false,
+                    contentType: false,
+                    success: function(data) {
+                        calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
+                        timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
+                        $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
+                            warnMessage = null;
+                            $(this).closest('.tweet').css('opacity', 1);
+                            toastr.success('Saved successfully');
+                            //pusher.disconnect();
+                            //$('#loading').hide();
                         });
-                    });
-                    
-                    $.ajax({
-                        type: "POST",
-                        url: "/editorial_calendars/editcalendartweet1",
-                        data: dat,
-                        processData: false,
-                        contentType: false,
-                        success: function(data) {
-                            var month = $('.slick-current').attr('data-month');
-                            $('#table').load('/editorial_calendars/calendarrefresh/' + month, function() {
-                                warnMessage = null;
-                                $("#table").css('opacity', '1');
-                                $('#loading').hide();
-                                toastr.success('Saved successfully');
-                                pusher.disconnect();
-                            });
-                        },
-                        error: function(data) {
-                            $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
-                                warnMessage = null;
-                                $("#table").css('opacity', '1');
-                                $('#loading').hide();
-                                toastr.error('Not saved successfully. Please try again');
-                                pusher.disconnect();
-                            });
-                        }
-                    });
+                    },
+                    error: function(data) {
+                        toastr.error('There was a problem saving your tweet. Please try again.');
+                        warnMessage = null;
+                        $(this).closest('.tweet').css('opacity', 1);
+                    }
+                });
             });
-
+    
+            //won't need hopefully
             $("#table").on("change", ".TwitterVerified1", function() {
                 pusher.disconnect();
             });
 
-            //$(".verifiedby").prop('disabled', true);
 
-            $('#table1').on('click', '#tweetsubmit', function() {
+            //submit all
+            /*$('#table1').on('click', '#tweetsubmit', function() {
                 $('#submitTweets').submit();
-            });
+            });*/
 
-            $('#table1').on('change', '#monthSelector', function() {
+            //switch months
+            /*$('#table1').on('change', '#monthSelector', function() {
                 $('#monthForm').submit(); 
+            });*/
+        
+            $(".tweetWrapper").on("click", ".shortsingle", function () {
+                regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
+                textbox = $(this).closest('.tweet').find('.editing');
+                $(this).closest('.tweet').find('input[name=tosubmit]').val(true);
+                var longUrlLink = textbox.val().match(regex);
+                $.ajax({
+                    url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: '{ longUrl: "' + longUrlLink + '"}',
+                    dataType: 'json',
+                    success: function(response) {
+                         textbox.val(textbox.val().replace(longUrlLink, response.id));
+                         classs = $(textbox).closest(".tweet").find('.counter').first().attr('class');
+                         $(textbox).closest(".tweet").find('.counter').first().hide();
+                         if (classs == "counter counter2") {
+                            $(textbox).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
+                         } else if (classs == "counter counter1") {
+                            $(textbox).closest(".tweet").find('.editing').charCount({css: 'counter counter1', allowed: 140});
+                         }
+                         toastr.success("URL successfully shortened: <br/>" + longUrlLink + " -> " + response.id);
+                    },
+                    error: function(response) {
+                        taostr.warning("Error while trying to shorten URL. Please try again");
+                    }
+                });
             });
-
             
             //shorten all URLs
-            $("#shortIt1").click(function () {
+            /*$("#shortIt1").click(function () {
                 regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
                 $(".editing").each(function() {
                     var longUrlLink = $(this).val().match(regex);
@@ -409,37 +273,50 @@ foreach ($calendar as $time => $key1) {
                      });
 
                 });
+            });*/
+
+            $('.tweetWrapper').on('change', '.input.file input', function() {
+                $(this).parent().css('color', "#0788D3");
+                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
+                $(this).closest(".tweet").find('.editing').addClass('withImage').removeClass('withoutImage');
+                $(this).closest(".tweet").find('.counter1').hide();
+                $(this).closest(".tweet").find('.counter2').hide();
+                val = $(this).closest(".tweet").find('.TwitterVerified1:checked').val();
+                if (val == 0) {
+                    color = '#ffcc00';
+                } else if (val == 1) {
+                    color = '#21a750';
+                } else if (val == 2) {
+                    color = '#ff0000';
+                }
+                $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
+                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
+
+                //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
+                $(this).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
+
+                var files = !!this.files ? this.files : [];
+                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
+         
+                if (/^image/.test( files[0].type)){ // only image file
+                    var reader = new FileReader(); // instance of the FileReader
+                    reader.readAsDataURL(files[0]); // read the local file
+                    var id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
+                    reader.onloadend = function(){ // set image data as background of div
+                        $("#imagePreview" + id + " img").closest('.tweet').find('.imagecontainer').hide();
+                        $("#imagePreview" + id + " img").attr('src', this.result);
+                        $("#imagePreview" + id).show();
+                    }
+                }
             });
 
-            $(".shortsingle").click(function () {
-            regex = /(https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,})/g ;
-            textbox = $(this).closest('.tweet').find('.editing');
-            $(this).closest('.tweet').find('input[name=tosubmit]').val(true);
-            var longUrlLink = textbox.val().match(regex);
-            $.ajax({
-                url: 'https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyC27e05Qg5Tyghi1dk5U7-nNDC0_wift08',
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                data: '{ longUrl: "' + longUrlLink + '"}',
-                dataType: 'json',
-                success: function(response) {
-                     textbox.val(textbox.val().replace(longUrlLink, response.id));
-                     classs = $(textbox).closest(".tweet").find('.counter').first().attr('class');
-                     $(textbox).closest(".tweet").find('.counter').first().hide();
-                     if (classs == "counter counter2") {
-                        $(textbox).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
-                     } else if (classs == "counter counter1") {
-                        $(textbox).closest(".tweet").find('.editing').charCount({css: 'counter counter1', allowed: 140});
-                     }
-                     toastr.success("URL successfully shortened: <br/>" + longUrlLink + " -> " + response.id);
-                },
-                error: function(response) {
-                    taostr.warning("Error while trying to shorten URL. Please try again");
-                }
-             });
-        });
-
+            $('.TweetImgUrl2').on('change', function() {
+                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
+                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
+            });
+            
             var channel1 = pusher.subscribe('private-body_channel_<?echo $this->Session->read("access_token.account_id");?>');
+
             warnMessage = null;
             window.onbeforeunload = function () {
                 if (warnMessage != null) return warnMessage;
@@ -519,78 +396,52 @@ foreach ($calendar as $time => $key1) {
                 warnMessage = null;
             });
 
-            $('.input.file input').on('change', function() {
-                $(this).parent().css('color', "#0788D3");
-                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
-                $(this).closest(".tweet").find('.editing').addClass('withImage').removeClass('withoutImage');
-                $(this).closest(".tweet").find('.counter1').hide();
-                $(this).closest(".tweet").find('.counter2').hide();
-                val = $(this).closest(".tweet").find('.TwitterVerified1:checked').val();
-                if (val == 0) {
-                    color = '#ffcc00';
-                } else if (val == 1) {
-                    color = '#21a750';
-                } else if (val == 2) {
-                    color = '#ff0000';
-                }
-                $(this).closest(".tweet").find('#TweetBody').css("border", "1px solid" + color);
-                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
+            
 
-                //$('.editing.withImage').charCount({css: 'counter counter1', allowed: 117});
-                $(this).closest(".tweet").find('.editing').charCount({css: 'counter counter2', allowed: 117});
-
-                var files = !!this.files ? this.files : [];
-                if (!files.length || !window.FileReader) return; // no file selected, or no FileReader support
-         
-                if (/^image/.test( files[0].type)){ // only image file
-                    var reader = new FileReader(); // instance of the FileReader
-                    reader.readAsDataURL(files[0]); // read the local file
-                    var id = $(this).closest(".tweet").find('#TweetId').attr('data-id');
-                    reader.onloadend = function(){ // set image data as background of div
-                        $("#imagePreview" + id + " img").closest('.tweet').find('.imagecontainer').hide();
-                        $("#imagePreview" + id + " img").attr('src', this.result);
-                        $("#imagePreview" + id).show();
-                    }
-                }
-            });
-
-            $('.TweetImgUrl2').on('change', function() {
-                $(this).closest(".tweet").find('input[name=tosubmit]').val(true);
-                $(this).closest(".tweet").find('#TweetTweetBankId').val(0);
-            });
+            
 
             /*$('select').selectric();*/
 
-            /*$("#table").on("change", ".TwitterVerified1", function() {
-                $(this).closest("tr").find('input[name=tosubmit]').val(true);
-                $("#table").css('opacity', '.4');
-                $('#loading').show();
+            $(".tweetWrapper").on("change", ".TwitterVerified1", function() {
+                $(this).closest(".tweet").css('opacity', '.4');
+                //$('#loading').show();
                 var dat = new FormData();
-                $('input[name=tosubmit][value=true]').each(function () {
+                //$('input[name=tosubmit][value=true]').each(function () {
                     //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
-                    $(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                    $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
                         if ($(this).attr('type') == 'file') {
                             dat.append($(this).attr('name'), this.files[0]);
                         } else {
                             dat.append($(this).attr('name'), $(this).val());
                         }
                     });
-                });
+                //});
                 
                 $.ajax({
                     type: "POST",
-                    url: "/editorial_calendars/editcalendartweet1",
+                    url: "/editorial_calendars/editcalendartweet",
                     data: dat,
+                    context: this,
                     processData: false,
                     contentType: false,
                     success: function(data) {
-                        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
-                            $("#table").css('opacity', '1');
-                            $('#loading').hide();
+                        calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
+                        timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
+                        $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
+                            warnMessage = null;
+                            $(this).closest('.tweet').css('opacity', 1);
+                            toastr.success('Saved successfully');
+                            //pusher.disconnect();
+                            //$('#loading').hide();
                         });
+                    },
+                    error: function(data) {
+                        toastr.error('There was a problem saving your tweet. Please try again.');
+                        warnMessage = null;
+                        $(this).closest('.tweet').css('opacity', 1);
                     }
                 });
-            });*/
+            });
 
             /*$(".smallSaveButton").click(function () {
                 $("#table").css('opacity', '.4');
@@ -609,12 +460,13 @@ foreach ($calendar as $time => $key1) {
 
                 $('#progress table').load('/twitter/progressrefresh');
             });*/
-
-            $(".smallSaveButton").click(function () {
-                $("#table").css('opacity', '.4');
-                $('#loading').show();
+    
+            //single save button
+            $(".tweetWrapper").on("click", ".tweet .tweetButtons .smallSaveButton", function () {
+                $(this).closest(".tweet").css('opacity', '.4');
+                //$('#loading').show();
                 var dat = new FormData();
-                $('input[name=tosubmit][value=true]').each(function () {
+                //$('input[name=tosubmit][value=true]').each(function () {
                     //dat = dat + '&' + $.param($(this).closest("tr").find('input:not([type=radio]), textarea, input[type=radio]:checked'));
                     $(this).closest(".tweet").find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
                         if ($(this).attr('type') == 'file') {
@@ -623,56 +475,35 @@ foreach ($calendar as $time => $key1) {
                             dat.append($(this).attr('name'), $(this).val());
                         }
                     });
-                });
+                //});
                 
                 $.ajax({
                     type: "POST",
-                    url: "/editorial_calendars/editcalendartweet1",
+                    url: "/editorial_calendars/editcalendartweet",
                     data: dat,
+                    context: this,
                     processData: false,
                     contentType: false,
                     success: function(data) {
-                        $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function() {
+                        calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
+                        timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
+                        $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
                             warnMessage = null;
-                            $("#table").css('opacity', '1');
-                            $('#loading').hide();
+                            $(this).closest('.tweet').css('opacity', 1);
                             toastr.success('Saved successfully');
-                            pusher.disconnect();
+                            console.log(data);
+                            //pusher.disconnect();
+                            //$('#loading').hide();
                         });
+                    },
+                    error: function(data) {
+                        console.log(data);
                     }
                 });
-                $('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
+                //$('#progress table').load('/twitter/progressrefresh/daybyday/<?echo $this->Session->read("Auth.User.monthSelector");?>');
             });
 
-            $('.comments.present').qtip({ 
-                content: {
-                    text: function(event, api) {
-                        id = $(this).attr('id'); 
-                        //return $('#' + id + '-comments').clone();
-                        $.ajax({
-                            url: '/comments/commentrefresh/' + id
-                        })
-                        .then(function(content) {
-                        // Set the tooltip content upon successful retrieval
-                        api.set('content.text', content);
-                        }, function(xhr, status, error) {
-                        // Upon failure... set the tooltip content to the status and error value
-                        api.set('content.text', status + ': ' + error);
-                        });
 
-                        return 'Loading...'; // Set some initial text
-                    }, 
-                    button: true
-                },
-                hide: {
-                    event: false
-                },
-                position: {
-                    my: 'bottom center',
-                    at: 'top center', 
-                    target: 'event'
-                }
-            });
 
             /*$(".smallSaveButton").click(function () {
                 $("#table").css('opacity', '.4');
@@ -695,15 +526,6 @@ foreach ($calendar as $time => $key1) {
             });*/
 
             $(".approveAll").click(function () {
-            /*$(".verified").each(function () {
-                $(this).find(".input.radio input:radio[value=1]").prop('checked', true);
-                //$("#table").css('opacity', '.4');
-                    id = $(this).find(".input.radio input:radio[value=1]").attr('id');
-                    id = id.slice(0, -1);
-                    $("#" + id + "_" + "<? echo $this->Session->read('Auth.User.first_name'); ?>").prop('disabled', false);
-
-                    
-            });*/
                 r = confirm('Clicking this button will delete any unsaved changes that you have made. Please save your changes before you continue.');
                 if (r == true) {
                     $("#table").css('opacity', '.4');
@@ -736,36 +558,7 @@ foreach ($calendar as $time => $key1) {
             }
         );
 
-        $('.calendar_topic').qtip({
-            content: {
-                    text: function(event, api) {
-                        id = $(this).closest('.tweet').find('#TweetCalendarId').attr('value');
-                        //return $('#' + id + '-comments').clone();
-                        $.ajax({
-                            url: '/editorial_calendars/recycle/' + id
-                        })
-                        .then(function(content) {
-                        // Set the tooltip content upon successful retrieval
-                        api.set('content.text', content);
-                        }, function(xhr, status, error) {
-                        // Upon failure... set the tooltip content to the status and error value
-                        api.set('content.text', status + ': ' + error);
-                        });
 
-                        return 'Loading...'; // Set some initial text
-                    }, 
-                    button: true
-                },
-                hide: {
-                    event: 'unfocus'
-                },
-                position: {
-                    my: 'left top',
-                    at: 'right top', 
-                    target: 'event'
-                },
-                show: 'click'
-        });
 
         $(document).scroll(function() {
           var y = $(this).scrollTop();
@@ -778,7 +571,7 @@ foreach ($calendar as $time => $key1) {
           }
         });
 
-        $(".fixedScroller td").click(function() {
+        $("#tableContainer").on("click", ".fixedScroller td", function() {
             if ($(this).attr('class') == 'gototop') {
                 $('html, body').animate({
                     scrollTop: 0
@@ -811,11 +604,87 @@ foreach ($calendar as $time => $key1) {
             $('#noaccount.calendarrefresh').show();
         <?}?>
 
-        $('.fa.fa-camera').click(function () {
+        $('.tweetWrapper').on("click", '.fa.fa-camera', function () {
             $(this).closest('.tweet').find('.imageUpload').show();
         });
 
+        $(".tweetWrapper").on("click", ".deleteImagelink", function(event) {
+            event.preventDefault();
+            $(this).closest(".tweet").css('opacity', '.4');
+            id = $(this).closest('.tweet').find('#TweetId').val();
+            $.ajax({
+                url: "/twitter/deleteImage/" + id, 
+                context: this,
+                success: function(data) {
+                    calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
+                    timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
+                    $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
+                        warnMessage = null;
+                        $(this).closest('.tweet').css('opacity', 1);
+                        toastr.success(data);
+                        //pusher.disconnect();
+                        //$('#loading').hide();
+                    });
+                },
+                error: function(data) {
+                    calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
+                    timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
+                    $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
+                        warnMessage = null;
+                        $(this).closest('.tweet').css('opacity', 1);
+                        toastr.error(data);
+                    });
+                }
+            });
+
+
+
+
+        });
+
+
+        $("#table").on("click", ".longbutton", function(event) {
+            $("#table").css('opacity', '.4');
+            $('#loading').show();
+            event.preventDefault();
+            var dat = new FormData();
+            $('input[name=tosubmit][value=true]').each(function () {
+                $(this).closest('.tweet').find('input:not([type=radio]), textarea, input[type=radio]:checked').each(function () {
+                    if ($(this).attr('type') == 'file') {
+                        dat.append($(this).attr('name'), this.files[0]);
+                    } else {
+                        dat.append($(this).attr('name'), $(this).val());
+                    }
+                });
+            });
+
+            $.ajax({
+                url: "/editorial_calendars/editMultipleCalendarTweet", 
+                context: this,
+                type: "POST",
+                data: dat,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function () {
+                        $('#table').css('opacity', '1');
+                        $('#loading').hide();
+                        toastr.success("Saved successfully");
+                    });
+                },
+                error: function(data) {
+                    $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function () {
+                        $('#table').css('opacity', '1');
+                        $('#loading').hide();
+                        toastr.error("Error, please try again.");
+                    });
+                }
+            });
+        });
+
         $('.autoPopulate').click(function () {
+            $("#table").css('opacity', '.4');
+            $('#loading').show();
             $.ajax({
                 url: "/tweet_bank/autoPopulate/" + <?echo $this->Session->read('access_token.account_id');?>,
                 processData: false,
@@ -862,6 +731,8 @@ foreach ($calendar as $time => $key1) {
                             }
                         }
                     });
+                    $("#table").css('opacity', '1');
+                    $('#loading').hide();
                 }
             });
         });

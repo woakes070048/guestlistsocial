@@ -1056,10 +1056,29 @@ on (statistics.twitter_account_id = maxt.twitter_account_id and statistics.times
     public function deleteImage($tweet_id) {
         $this->Tweet->id = $tweet_id;
         $this->CronTweet->id = $tweet_id;
-        $this->Tweet->saveField('img_url', '');
-        $this->CronTweet->saveField('img_url', '');
+        $teamsarray = array();
+        foreach ($this->Session->read('Auth.User.Team') as $key) {
+            $teamsarray[] = $key['id'];
+        }
+        if ($this->TwitterPermission->hasAny(array('team_id' => $teamsarray, 'twitter_account_id' => $this->Session->read('access_token.account_id')))) {
+            if ($this->Tweet->saveField('img_url', '')) {
+                if ($this->CronTweet->saveField('img_url', '')) {
+                    $this->response->statusCode(200);
+                    $this->response->body("Image deleted successfully.");
+                } else {
+                    $this->response->statusCode(500);
+                    $this->response->body("Error deleting image, please try again");
+                }
+            } else {
+                $this->response->statusCode(500);
+                $this->response->body("Error deleting image, please try again");
+            }
+        } else {
+            $this->response->statusCode(500);
+            $this->response->body("You don't have permission to make changes to this account");
+        }
 
-        $this->redirect(Controller::referer());
+        return $this->response;
     }
 
     public function progressrefresh($daybyday = null, $months = 0) {

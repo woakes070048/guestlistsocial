@@ -5,7 +5,6 @@ class EditorialCalendarsController extends AppController {
     public $helpers =  array('Html' , 'Form', 'Session', 'Pusher.Pusher');
     var $uses = array('TwitterAccount', 'CronTweet', 'Tweet', 'User', 'TwitterPermission', 'EditorialCalendar', 'Editor', 'TeamsUser', 'BankCategory', 'TweetBank');
 
-
     //saving editorial calendars
 
     public function calendarsave() {
@@ -99,113 +98,645 @@ class EditorialCalendarsController extends AppController {
     }
 
 
-    //old save process that had a lot of errors
+    public function editcalendartweet() {
+        $id = key($this->request->data['Tweet']);
+        $data['Tweet'] = $this->request->data['Tweet'][$id];
+        if (ctype_digit($id)) {
+            $original = $this->Tweet->find('first', array('conditions' => array('Tweet.id' => $id)));   
+        }
+        $calendar = $this->EditorialCalendar->find('first', array('conditions' => array('EditorialCalendar.id' => $data['Tweet']['calendar_id']), 'contain' => 'BankCategory'));
 
-    /*public function editcalendartweet() {
-        foreach ($this->request->data['Tweet'] as $key) {
-            if (!empty($key['id']) || !empty($key['body'])) {
-                if ($key['id']) {
-                    $id = $key['id'];
-                    $this->Tweet->id = $id;
-                    $this->CronTweet->id = $id;
-                    $tweet = $this->Tweet->find('first', array('conditions' => array('id' => $id)));
+        if (empty($data['Tweet']['body']) && empty($data['Tweet']['id'])) { //Empty Tweets
+
+            unset($this->request->data);
+
+        } elseif (ctype_digit($data['Tweet']['id']) && !empty($data['Tweet']['body'])) { //Edited Tweets
+
+            $save['Tweet']['id'] = $id;
+            $save['Tweet']['body'] = trim($data['Tweet']['body']);
+            $save['Tweet']['account_id'] = $this->Session->read('access_token.account_id');
+            $save['Tweet']['time'] = $data['Tweet']['time'];
+            $save['Tweet']['timestamp'] = strtotime($data['Tweet']['time']);
+            if ($original['Tweet']['body'] != $data['Tweet']['body']) {//Has the body been changed? If body is changed, tweet becomes unverified
+                if ($original['Tweet']['verified'] == 0 && $data['Tweet']['verified'] == 1) {//force verified
+                    $save['Tweet']['verified'] = 1;
+                } elseif ($data['Tweet']['verified'] == 1 && $data['Tweet']['forceVerified'] == 'true') {//force verified
+                    $save['Tweet']['verified'] = 1;
                 } else {
-                    $key['first_name'] = $this->Session->read('Auth.User.first_name');
+                    $save['Tweet']['verified'] = 0;
                 }
-    
+                $save['Tweet']['first_name'] = $this->Session->read('Auth.User.first_name');
+                $edited = true;
+            } else {
+                $edited = false;
+                if ($original['Tweet']['verified'] == $data['Tweet']['verified'] && empty($data['Tweet']['img_url1']['name']) && empty($data['Tweet']['img_url2'])) {
 
-                if ($key['timestamp']) {
-                    $key['time'] = $key['timestamp'];
-                    $key['timestamp'] = strtotime($key['timestamp']);
-                } else {
-                    $key['timestamp'] = 0;
+                    $edited = false;
+
+                } elseif ($original['Tweet']['verified'] == $data['Tweet']['verified'] && (!empty($data['Tweet']['img_url1']['name']) || !empty($data['Tweet']['img_url2']))) {//only changed image
+
+                    $save['Tweet']['verified'] = 0;
+                    $edited = true;
+
+                } elseif ($original['Tweet']['verified'] != $data['Tweet']['verified']) {
+                    $save['Tweet']['verified'] = $data['Tweet']['verified'];
+                    $edited = true;
                 }
-    
-
-                    //if (!isset($key['verified'])) {
-                    //    $key['verified'] = 0;
-                    //}
-    
-
-    
-
-                            //debug($tweet);
-                            //debug($key);
-                    //if tweet is set to 'needs improving' and body has been changed, set back to 'awaiting proof'
-
-                    if (!empty($tweet)) {
-                        if ($tweet['Tweet']['verified'] == 2 && $key['verified'] == 2) {
-                            if ($tweet['Tweet']['body'] != $key['body']) {
-                                $key['verified'] = 0;
-                            }
-                        }
-                    }
-    
-
-                    //If it's a new tweet OR if you've altered the tweet body
-
-                    if (empty($tweet) || $tweet['Tweet']['body'] != $key['body']) {
-                        $key['user_id'] = $this->Session->read('Auth.User.id');
-                        $key['verified'] = 0;
-                    }
-
-
-                    if (empty($key['verified'])) {
-                        $key['verified'] = 0;
-                    }
-    
-
-                    $key['account_id'] = $this->Session->read('access_token.account_id');
-    
-
-                    //Handling images
-
-                if ($key['img_url1']['error'] == 0) {
-                    $z = explode(".", $key['img_url1']['name']);
-                    $extension = end($z);
-                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");
-    
-
-                    if (in_array($extension, $allowed_extensions)) {
-                        $newFileName = $this->Session->read('Auth.User.id') . md5(mt_rand(1000000000,9999999999)) . "." . $extension;
-                        move_uploaded_file($key['img_url1']['tmp_name'], '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName);
-                        $key['img_url'] = "http://social.guestlist.net/img/uploads/".$newFileName;
-                    } else {
-                        $this->Session->setFlash('You can only upload images.');
-                    }
-
-
-                } elseif ($key['img_url1']['error'] == 1) {
-                    $this->Session->setFlash('Image too large, please try another image (Max 2MB)');
-                }
-                
-
-                if ($key['body']) {
-                    if ($this->Tweet->save($key)) {
-                        if ($key['verified'] == 1) {
-                            $this->CronTweet->save($key);
-                            $this->CronTweet->deleteAll(array('timestamp' => 0));
-                        }
-                    } else {
-                    $this->Session->setFlash('Unable to update your post.');
-                    }
-                } elseif ($key['id'] && !$key['body']) {
-                    $this->Tweet->delete($key['id']);
-                    $this->CronTweet->delete($key['id']);
-                }
-
-
             }
-            unset($key);
+
+            if ($data['Tweet']['verified'] == 2) {
+                $improve = true;
+            } else {
+                $improve = false;
+            }
+
+
+            if ($original['Tweet']['verified'] != $data['Tweet']['verified'] && $data['Tweet']['verified'] == 1) {
+                $proofed = true;
+            } else {
+                $proofed = false;
+            }
+
+
+            if (!isset($save['Tweet']['verified'])) {
+                $save['Tweet']['verified'] = $original['Tweet']['verified'];
+            } else {
+                if ($save['Tweet']['verified'] == 1 && !empty($data['Tweet']['tweet_bank_id']) && $edited == false) {//tweet bank id present, not edited
+                    $save['Tweet']['tweet_bank_id'] = $original['Tweet']['tweet_bank_id'];
+                } elseif ($save['Tweet']['verified'] == 1 && !empty($data['Tweet']['tweet_bank_id']) && $edited == true) {//tweet bank id present, edited
+                    $save['Tweet']['tweet_bank_id'] = $data['Tweet']['tweet_bank_id'];
+                } elseif ($save['Tweet']['verified'] == 1 && empty($data['Tweet']['tweet_bank_id'])) {//new tweet with no tweet bank id
+                    $newTweetBank = true;
+                } elseif ($save['Tweet']['verified'] == 1 && $edited == true) {//edited tweet with no tweet bank id
+                    $newTweetBank = true;
+                }
+            }
+
+            //Image Handling
+            if (!empty($data['Tweet']['img_url1']['name']) && empty($save['Tweet']['img_url'])) {
+                if ($x = $this->imageHandling($data['Tweet'])) {
+                    $save['Tweet']['img_url'] = $x;
+                    $edited = true;
+                    $newTweetBank = true;
+                } else {
+                    //$this->Session->setFlash('There was an error processing your image, please try again.');
+                }
+            } elseif (!empty($data['Tweet']['img_url2'])) {
+                $z = explode(".", $data['Tweet']['img_url2']);
+                $extension = end($z);
+                $allowed_extensions = array("gif", "jpeg", "jpg", "png");
+
+
+                $arrContextOptions=array(
+                    "ssl"=>array(
+                        //"cafile"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.ca-bundle",
+                        //"local_cert"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.pem",
+                        "verify_peer"=>false,
+                        "verify_peer_name"=>false,
+                    ),
+                ); 
+            
+                if (in_array(strtolower($extension), $allowed_extensions)) {
+                    $newFileName = $this->Session->read('Auth.User.id') . "-" . $data['Tweet']['account_id'] . "-" . $data['Tweet']['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                    $save['Tweet']['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
+                    if (copy($data['Tweet']['img_url2'], $save['Tweet']['img_url'], stream_context_create($arrContextOptions))) {
+                        $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
+                        $edited = true;
+                        $newTweetBank = true;
+                    } else {
+                        unset($save['Tweet']['img_url']);
+                        $this->Session->setFlash('Image failed to upload. Please try again');
+                    }
+                } else {
+                    $this->Session->setFlash('You can only use images');
+                }
+            } else {
+                if (empty($data['img_url'])) {
+                    $data['img_url'] = $original['Tweet']['img_url'];
+                }
+            }
+
+            //error if tweet is over 140 chars
+            if (!empty($save['Tweet']['img_url'])) {
+                if (strlen($save['Tweet']['body']) > 117 && $save['Tweet']['verified'] == 1) {
+                    $save['Tweet']['verified'] = 0;
+                }
+            } else {
+                if (strlen($save['Tweet']['body']) > 140 && $save['Tweet']['verified'] == 1) {
+                    $save['Tweet']['verified'] = 0;
+                }
+            }
+
+            if (isset($newTweetBank)) {
+                if (!empty($calendar['EditorialCalendar']['bank_category_id'])) {
+                    $save['TweetBank']['bank_category_id'] = $calendar['EditorialCalendar']['bank_category_id'];
+                    $save['TweetBank']['body'] = $save['Tweet']['body'];
+                    if (!empty($save['Tweet']['img_url'])) {
+                        $save['TweetBank']['img_url'] = $save['Tweet']['img_url'];
+                    }
+                }
+            }
+
+            foreach ($original['Editor'] as $editor) {
+                if ($editor['type'] == 'written') {
+                    $written_by = $editor['user_id'];
+                }
+            }
+            
+
+            if ($improve) {
+                $save['Editor'][] = array('type' => 'improve', 'user_id' => $this->Session->read('Auth.User.id'));
+            } else {
+                if ($edited) {
+                    if (!empty($written_by)) {
+                        if ($written_by != $this->Session->read('Auth.User.id')) {
+                            $save['Editor'][] = array('type' => 'edited', 'user_id' => $this->Session->read('Auth.User.id'));
+                        }
+                    } else {
+                        $save['Editor'][] = array('type' => 'edited', 'user_id' => $this->Session->read('Auth.User.id'));
+                    }
+                } 
+            }
+
+            if ($proofed) {
+                $save['Editor'][] = array('type' => 'proofed', 'user_id' => $this->Session->read('Auth.User.id'));
+            }
+
+
+            if (!empty($save['Tweet']['body'])) {
+                //$this->Tweet->save($toSave);
+                if ($save['Tweet']['verified'] == 1 && $save['Tweet']['timestamp'] > time()) {
+                    //$this->CronTweet->save($key);
+                    $CronTweet[] = $save['Tweet'];
+                } elseif ($save['Tweet']['verified'] != 1 && $original['Tweet']['verified'] == 1) {
+                    $this->CronTweet->delete($data['Tweet']['id']);
+                }
+            }
+
+            if (!$edited) {
+                unset($save);
+            }
+
+        } elseif (!ctype_digit($data['Tweet']['id']) && !empty($data['Tweet']['body'])) { //New Tweets
+            $save['Tweet']['body'] = trim($data['Tweet']['body']);
+            $save['Tweet']['first_name'] = $this->Session->read('Auth.User.first_name');
+
+            $save['Tweet']['calendar_id'] = $data['Tweet']['calendar_id'];
+            $save['Tweet']['time'] = $data['Tweet']['time'];
+            $save['Tweet']['timestamp'] = strtotime($data['Tweet']['time']);
+            $save['Tweet']['user_id'] = $this->Session->read('Auth.User.id');
+            $save['Tweet']['account_id'] = $this->Session->read('access_token.account_id');
+
+
+            $save['Editor'][] = array(
+                "user_id" => $this->Session->read('Auth.User.id'),
+                "type" => "written"
+                );
+
+
+            if (empty($data['Tweet']['verified'])) {
+                $save['Tweet']['verified'] = 0;
+            }
+
+
+            if (empty($data['Tweet']['img_url'])) {
+                unset($save['Tweet']['img_url']);
+            }
+
+            //Image Handling
+
+            if (!empty($data['Tweet']['img_url1']['name']) && empty($data['Tweet']['img_url'])) {
+                if ($x = $this->imageHandling($data['Tweet'])) {
+                    $save['Tweet']['img_url'] = $x;
+                } else {
+                    //$this->Session->setFlash('There was an error processing your image, please try again.');
+                }
+            } elseif (!empty($data['Tweet']['img_url2'])) {
+                $z = explode(".", $data['Tweet']['img_url2']);
+                $extension = end($z);
+                $allowed_extensions = array("gif", "jpeg", "jpg", "png");debug($extension);
+
+
+                $arrContextOptions=array(
+                    "ssl"=>array(
+                        //"cafile"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.ca-bundle",
+                        //"local_cert"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.pem",
+                        "verify_peer"=>false,
+                        "verify_peer_name"=>false,
+                    ),
+                ); 
+            
+                if (in_array(strtolower($extension), $allowed_extensions)) {
+                    $newFileName = $this->Session->read('Auth.User.id') . "-" . $save['Tweet']['account_id'] . "-" . $save['Tweet']['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                    $save['Tweet']['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
+                    if (copy($data['Tweet']['img_url2'], $save['Tweet']['img_url'])) {
+                        $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
+                    } else {
+                        unset($save['Tweet']['img_url']);
+                        $this->Session->setFlash('Image failed to upload. Please try again');
+                    }
+                } else {
+                    $this->Session->setFlash('You can only use images');
+                }
+            }
+
+            if (empty($data['Tweet']['tweet_bank_id']) && $data['Tweet']['verified'] == 1) {
+                if (!empty($calendar['EditorialCalendar']['bank_category_id'])) {
+                    $save['TweetBank']['bank_category_id'] = $calendar['EditorialCalendar']['bank_category_id'];
+                    $save['TweetBank']['body'] = $save['Tweet']['body'];
+                    if (!empty($save['Tweet']['img_url'])) {
+                        $save['TweetBank']['img_url'] = $save['Tweet']['img_url'];
+                    }
+                }
+                unset($save['Tweet']['tweet_bank_id']);
+            } elseif (!empty($data['Tweet']['tweet_bank_id']) && $data['Tweet']['verified'] != 1) {
+                $save['Tweet']['tweet_bank_id'] = $data['Tweet']['tweet_bank_id'];
+            } else {
+                $save['Tweet']['tweet_bank_id'] = 0;
+            }
+
+            if ($save['Tweet']['body']) {
+                if ($save['Tweet']['verified'] == 1 && $save['Tweet']['timestamp'] > time()) {
+                    $CronTweet = $save['Tweet'];
+                }
+            }
+
+        } else {
+            $this->Tweet->delete($data['Tweet']['id']);
+            $this->CronTweet->delete($data['Tweet']['id']);
+            $edited = false;
         }
 
 
-        $this->redirect(Controller::referer());
-    }*/
+        if (!empty($save)) {
+            if ($this->Tweet->saveAll($save, array('deep' => true))) {
+
+                $this->response->statusCode(200);
+
+            } else {
+                $errors = $this->Tweet->invalidFields();
+                if (!empty($errors)) {
+                    $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
+                    $this->response->statusCode(500);
+                    $this->response->body(json_encode($errors, JSON_PRETTY_PRINT));
+                }
+            }
+        }
 
 
+        if (!empty($CronTweet)) {
+            if ($this->CronTweet->saveAll($CronTweet)) {
+            
+                $this->response->statusCode(200);
 
-    public function editcalendartweet1() {
+            } else {
+                //$this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again1');
+                $this->response->statusCode(500);
+            }
+        }
+
+        //$this->response->body(json_encode($save, JSON_PRETTY_PRINT));
+        return $this->response;
+    }
+
+
+    public function editMultipleCalendarTweet() {
+        $allIds = array();
+        $originalIDs = array();
+        $calendarIDs = array();
+        $saveAll = array();
+        $CronTweet = array();
+        foreach ($this->request->data['Tweet'] as $key => $value) {
+            $allIds[] = $key;
+            if (ctype_digit($key)) {
+                $originalIDs[] = $key;
+                $calendarIDs[] = $value['calendar_id'];
+            }
+        }
+        //$id = key($this->request->data['Tweet']);
+        //$data['Tweet'] = $this->request->data['Tweet'][$id];
+        $originals = $this->Tweet->find('all', array('conditions' => array('Tweet.id' => $originalIDs)));
+        $originals = Hash::combine($originals, '{n}.Tweet.id', '{n}');
+        $calendars = $this->EditorialCalendar->find('all', array('conditions' => array('EditorialCalendar.id' => $calendarIDs), 'contain' => 'BankCategory'));
+        $calendars = Hash::combine($calendars, '{n}.EditorialCalendar.id', '{n}');
+        foreach ($this->request->data['Tweet'] as $id => $value1) {
+            $data['Tweet'] = $value1;
+            if (ctype_digit($id)) {
+                $original = $originals[$id];
+                $calendar = $calendars[$data['Tweet']['calendar_id']];
+            }
+
+            if (empty($data['Tweet']['body']) && empty($data['Tweet']['id'])) { //Empty Tweets
+
+                unset($this->request->data);
+
+            } elseif (ctype_digit($data['Tweet']['id']) && !empty($data['Tweet']['body'])) { //Edited Tweets
+
+                $save['Tweet']['id'] = $id;
+                $save['Tweet']['body'] = trim($data['Tweet']['body']);
+                $save['Tweet']['account_id'] = $this->Session->read('access_token.account_id');
+                $save['Tweet']['time'] = $data['Tweet']['time'];
+                $save['Tweet']['timestamp'] = strtotime($data['Tweet']['time']);
+                if ($original['Tweet']['body'] != $data['Tweet']['body']) {//Has the body been changed? If body is changed, tweet becomes unverified
+                    if ($original['Tweet']['verified'] == 0 && $data['Tweet']['verified'] == 1) {//force verified
+                        $save['Tweet']['verified'] = 1;
+                    } elseif ($data['Tweet']['verified'] == 1 && $data['Tweet']['forceVerified'] == 'true') {//force verified
+                        $save['Tweet']['verified'] = 1;
+                    } else {
+                        $save['Tweet']['verified'] = 0;
+                    }
+                    $save['Tweet']['first_name'] = $this->Session->read('Auth.User.first_name');
+                    $edited = true;
+                } else {
+                    $edited = false;
+                    if ($original['Tweet']['verified'] == $data['Tweet']['verified'] && empty($data['Tweet']['img_url1']['name']) && empty($data['Tweet']['img_url2'])) {
+
+                        $edited = false;
+
+                    } elseif ($original['Tweet']['verified'] == $data['Tweet']['verified'] && (!empty($data['Tweet']['img_url1']['name']) || !empty($data['Tweet']['img_url2']))) {//only changed image
+
+                        $save['Tweet']['verified'] = 0;
+                        $edited = true;
+
+                    } elseif ($original['Tweet']['verified'] != $data['Tweet']['verified']) {
+                        $save['Tweet']['verified'] = $data['Tweet']['verified'];
+                        $edited = true;
+                    }
+                }
+
+                if ($data['Tweet']['verified'] == 2) {
+                    $improve = true;
+                } else {
+                    $improve = false;
+                }
+
+
+                if ($original['Tweet']['verified'] != $data['Tweet']['verified'] && $data['Tweet']['verified'] == 1) {
+                    $proofed = true;
+                } else {
+                    $proofed = false;
+                }
+
+
+                if (!isset($save['Tweet']['verified'])) {
+                    $save['Tweet']['verified'] = $original['Tweet']['verified'];
+                } else {
+                    if ($save['Tweet']['verified'] == 1 && !empty($data['Tweet']['tweet_bank_id']) && $edited == false) {//tweet bank id present, not edited
+                        $save['Tweet']['tweet_bank_id'] = $original['Tweet']['tweet_bank_id'];
+                    } elseif ($save['Tweet']['verified'] == 1 && !empty($data['Tweet']['tweet_bank_id']) && $edited == true) {//tweet bank id present, edited
+                        $save['Tweet']['tweet_bank_id'] = $data['Tweet']['tweet_bank_id'];
+                    } elseif ($save['Tweet']['verified'] == 1 && empty($data['Tweet']['tweet_bank_id'])) {//new tweet with no tweet bank id
+                        $newTweetBank = true;
+                    } elseif ($save['Tweet']['verified'] == 1 && $edited == true) {//edited tweet with no tweet bank id
+                        $newTweetBank = true;
+                    }
+                }
+
+                //Image Handling
+                if (!empty($data['Tweet']['img_url1']['name']) && empty($save['Tweet']['img_url'])) {
+                    if ($x = $this->imageHandling($data['Tweet'])) {
+                        $save['Tweet']['img_url'] = $x;
+                        $edited = true;
+                        $newTweetBank = true;
+                    } else {
+                        //$this->Session->setFlash('There was an error processing your image, please try again.');
+                    }
+                } elseif (!empty($data['Tweet']['img_url2'])) {
+                    $z = explode(".", $data['Tweet']['img_url2']);
+                    $extension = end($z);
+                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");
+
+
+                    $arrContextOptions=array(
+                        "ssl"=>array(
+                            //"cafile"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.ca-bundle",
+                            //"local_cert"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.pem",
+                            "verify_peer"=>false,
+                            "verify_peer_name"=>false,
+                        ),
+                    ); 
+                
+                    if (in_array(strtolower($extension), $allowed_extensions)) {
+                        $newFileName = $this->Session->read('Auth.User.id') . "-" . $data['Tweet']['account_id'] . "-" . $data['Tweet']['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                        $save['Tweet']['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
+                        if (copy($data['Tweet']['img_url2'], $save['Tweet']['img_url'], stream_context_create($arrContextOptions))) {
+                            $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
+                            $edited = true;
+                            $newTweetBank = true;
+                        } else {
+                            unset($save['Tweet']['img_url']);
+                            $this->Session->setFlash('Image failed to upload. Please try again');
+                        }
+                    } else {
+                        $this->Session->setFlash('You can only use images');
+                    }
+                } else {
+                    if (empty($data['img_url'])) {
+                        $data['img_url'] = $original['Tweet']['img_url'];
+                    }
+                }
+
+                //error if tweet is over 140 chars
+                if (!empty($save['Tweet']['img_url'])) {
+                    if (strlen($save['Tweet']['body']) > 117 && $save['Tweet']['verified'] == 1) {
+                        $save['Tweet']['verified'] = 0;
+                    }
+                } else {
+                    if (strlen($save['Tweet']['body']) > 140 && $save['Tweet']['verified'] == 1) {
+                        $save['Tweet']['verified'] = 0;
+                    }
+                }
+
+                if (isset($newTweetBank)) {
+                    if (!empty($calendar['EditorialCalendar']['bank_category_id'])) {
+                        $save['TweetBank']['bank_category_id'] = $calendar['EditorialCalendar']['bank_category_id'];
+                        $save['TweetBank']['body'] = $save['Tweet']['body'];
+                        if (!empty($save['Tweet']['img_url'])) {
+                            $save['TweetBank']['img_url'] = $save['Tweet']['img_url'];
+                        }
+                    }
+                }
+
+                foreach ($original['Editor'] as $editor) {
+                    if ($editor['type'] == 'written') {
+                        $written_by = $editor['user_id'];
+                    }
+                }
+                
+
+                if ($improve) {
+                    $save['Editor'][] = array('type' => 'improve', 'user_id' => $this->Session->read('Auth.User.id'));
+                } else {
+                    if ($edited) {
+                        if (!empty($written_by)) {
+                            if ($written_by != $this->Session->read('Auth.User.id')) {
+                                $save['Editor'][] = array('type' => 'edited', 'user_id' => $this->Session->read('Auth.User.id'));
+                            }
+                        } else {
+                            $save['Editor'][] = array('type' => 'edited', 'user_id' => $this->Session->read('Auth.User.id'));
+                        }
+                    } 
+                }
+
+                if ($proofed) {
+                    $save['Editor'][] = array('type' => 'proofed', 'user_id' => $this->Session->read('Auth.User.id'));
+                }
+
+
+                if (!empty($save['Tweet']['body'])) {
+                    //$this->Tweet->save($toSave);
+                    if ($save['Tweet']['verified'] == 1 && $save['Tweet']['timestamp'] > time()) {
+                        //$this->CronTweet->save($key);
+                        $CronTweet[] = $save['Tweet'];
+                    } elseif ($save['Tweet']['verified'] != 1 && $original['Tweet']['verified'] == 1) {
+                        $this->CronTweet->delete($data['Tweet']['id']);
+                    }
+                }
+
+                if (!$edited) {
+                    unset($save);
+                } else {
+                    $saveAll[] = $save;
+                }
+
+            } elseif (!ctype_digit($data['Tweet']['id']) && !empty($data['Tweet']['body'])) { //New Tweets
+                $save['Tweet']['body'] = trim($data['Tweet']['body']);
+                $save['Tweet']['first_name'] = $this->Session->read('Auth.User.first_name');
+
+                $save['Tweet']['calendar_id'] = $data['Tweet']['calendar_id'];
+                $save['Tweet']['time'] = $data['Tweet']['time'];
+                $save['Tweet']['timestamp'] = strtotime($data['Tweet']['time']);
+                $save['Tweet']['user_id'] = $this->Session->read('Auth.User.id');
+                $save['Tweet']['account_id'] = $this->Session->read('access_token.account_id');
+
+
+                $save['Editor'][] = array(
+                    "user_id" => $this->Session->read('Auth.User.id'),
+                    "type" => "written"
+                    );
+
+
+                if (empty($data['Tweet']['verified'])) {
+                    $save['Tweet']['verified'] = 0;
+                }
+
+
+                if (empty($data['Tweet']['img_url'])) {
+                    unset($save['Tweet']['img_url']);
+                }
+
+                //Image Handling
+
+                if (!empty($data['Tweet']['img_url1']['name']) && empty($data['Tweet']['img_url'])) {
+                    if ($x = $this->imageHandling($data['Tweet'])) {
+                        $save['Tweet']['img_url'] = $x;
+                    } else {
+                        //$this->Session->setFlash('There was an error processing your image, please try again.');
+                    }
+                } elseif (!empty($data['Tweet']['img_url2'])) {
+                    $z = explode(".", $data['Tweet']['img_url2']);
+                    $extension = end($z);
+                    $allowed_extensions = array("gif", "jpeg", "jpg", "png");debug($extension);
+
+
+                    $arrContextOptions=array(
+                        "ssl"=>array(
+                            //"cafile"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.ca-bundle",
+                            //"local_cert"=>"/var/www/clients/client1/web8/web/app/webroot/ssl/tweetproof.com.pem",
+                            "verify_peer"=>false,
+                            "verify_peer_name"=>false,
+                        ),
+                    ); 
+                
+                    if (in_array(strtolower($extension), $allowed_extensions)) {
+                        $newFileName = $this->Session->read('Auth.User.id') . "-" . $save['Tweet']['account_id'] . "-" . $save['Tweet']['calendar_id'] . "-" . md5(mt_rand(100000,999999)) . "." . $extension;
+                        $save['Tweet']['img_url'] = '/var/www/clients/client1/web8/web/app/webroot/img/uploads/'.$newFileName;
+                        if (copy($data['Tweet']['img_url2'], $save['Tweet']['img_url'])) {
+                            $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
+                        } else {
+                            unset($save['Tweet']['img_url']);
+                            $this->Session->setFlash('Image failed to upload. Please try again');
+                        }
+                    } else {
+                        $this->Session->setFlash('You can only use images');
+                    }
+                }
+
+                if (empty($data['Tweet']['tweet_bank_id']) && $data['Tweet']['verified'] == 1) {
+                    if (!empty($calendar['EditorialCalendar']['bank_category_id'])) {
+                        $save['TweetBank']['bank_category_id'] = $calendar['EditorialCalendar']['bank_category_id'];
+                        $save['TweetBank']['body'] = $save['Tweet']['body'];
+                        if (!empty($save['Tweet']['img_url'])) {
+                            $save['TweetBank']['img_url'] = $save['Tweet']['img_url'];
+                        }
+                    }
+                    unset($save['Tweet']['tweet_bank_id']);
+                } elseif (!empty($data['Tweet']['tweet_bank_id']) && $data['Tweet']['verified'] != 1) {
+                    $save['Tweet']['tweet_bank_id'] = $data['Tweet']['tweet_bank_id'];
+                } else {
+                    $save['Tweet']['tweet_bank_id'] = 0;
+                }
+
+                if ($save['Tweet']['body']) {
+                    if ($save['Tweet']['verified'] == 1 && $save['Tweet']['timestamp'] > time()) {
+                        $CronTweet[] = $save['Tweet'];
+                    }
+                }
+
+                $saveAll[] = $save;
+
+            } else {
+                $this->Tweet->delete($data['Tweet']['id']);
+                $this->CronTweet->delete($data['Tweet']['id']);
+                $edited = false;
+            }
+            unset($data);
+            unset($original);
+            unset($calendar);
+            unset($id);
+            unset($edited);
+            unset($newTweetBank);
+            unset($save);
+            unset($improve);
+            unset($proofed);
+            unset($editor);
+        }
+        
+
+        if (!empty($saveAll)) {
+            if ($this->Tweet->saveAll($saveAll, array('deep' => true))) {
+
+                $this->response->statusCode(200);
+
+            } else {
+                $errors = $this->Tweet->invalidFields();
+                debug($errors);
+                if (!empty($errors)) {
+                    $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
+                    $this->response->statusCode(500);
+                    $this->response->body(json_encode($errors, JSON_PRETTY_PRINT));
+                }
+            }
+        }
+
+
+        if (!empty($CronTweet)) {
+            if ($this->CronTweet->saveAll($CronTweet)) {
+            
+                $this->response->statusCode(200);
+
+            } else {
+                //$this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again1');
+                $this->response->statusCode(500);
+            }
+        }
+
+        //$this->response->body(json_encode($save, JSON_PRETTY_PRINT));
+        return $this->response;
+    }
+
+
+    /*public function editcalendartweet1() {
         $test = array();
         $verified = array();
         $originals = array();
@@ -516,7 +1047,7 @@ class EditorialCalendarsController extends AppController {
                 if (!empty($key['tweet_bank_id'])) {
 
                 } else {
-                    if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'])) {
+                    if (!empty($calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id']) && $key['verified'] == 1) {
                         $key['TweetBank']['bank_category_id'] = $calendars[$key['calendar_id']]['EditorialCalendar']['bank_category_id'];
                         $key['TweetBank']['body'] = $key['body'];
                         if (!empty($key['img_url'])) {
@@ -594,7 +1125,7 @@ class EditorialCalendarsController extends AppController {
         }
         $this->redirect(Controller::referer());
     }
-
+    */
 
     private function imageHandling($key) {
         debug($key['img_url1']['name']);
@@ -666,7 +1197,91 @@ class EditorialCalendarsController extends AppController {
     }
 
 
-    public function calendarRefresh ($months) {        
+    public function calendarRefresh ($months = 0) {
+        $this->set('months', $months);
+        //Check if user is admin of team
+        $team = $this->Cookie->read('currentTeam');
+        if ($this->TeamsUser->hasAny(array('team_id' => $team, 'user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1))) {
+            $this->set('isTeamAdmin', true);
+        } else {
+            $this->set('isTeamAdmin', false);
+        }
+
+        //Month selector at top of page
+        $base = strtotime(date('Y-m',time()) . '-01 00:00:01'); 
+        $this->set('base', $base);
+        $monthsarray = array(
+            -5 => date('F Y', strtotime('-5 month', $base)),
+            -4 => date('F Y', strtotime('-4 month', $base)),
+            -3 => date('F Y', strtotime('-3 month', $base)),
+            -2 => date('F Y', strtotime('-2 month', $base)),
+            -1 => date('F Y', strtotime('-1 month', $base)),
+            0 => date('F Y', strtotime('+0 month', $base)),
+            1 => date('F Y', strtotime('+1 month', $base)),
+            2 => date('F Y', strtotime('+2 month', $base)),
+            3 => date('F Y', strtotime('+3 month', $base)),
+            4 => date('F Y', strtotime('+4 month', $base)),
+            5 => date('F Y', strtotime('+5 month', $base))
+            );
+
+        $this->set('monthsarray', $monthsarray);
+
+        //Grab editorial calendars (check if user is in a month in the past or future)
+        $this->Session->write('Auth.User.monthSelector', $months);
+        if ($months >= 0) {
+            $tweetConditions = array(
+                                'timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 
+                                'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')
+                                );
+        } elseif ($months < 0) {
+            $tweetConditions = array(
+                                'timestamp >=' => strtotime(date('M Y') . ' - ' . (abs($months)) . 'months'), 
+                                'timestamp <=' => strtotime(date('M Y') . ' - ' . abs(($months + 1)) . 'months')
+                                );
+        }
+
+        $calendar = $this->EditorialCalendar->find(
+            'all', 
+            array('recursive' => 1, 
+                'conditions' => array(
+                    'twitter_account_id' => $this->Session->read('access_token.account_id')
+                    ), 
+                'order' => array('EditorialCalendar.time' => 'ASC'),
+                'contain' => array(
+                    'TwitterAccount',
+                    'BankCategory'
+                    )
+                )
+            );
+
+        $calendarx = array();
+        foreach ($calendar as $key) {
+            $calendarx[$key['EditorialCalendar']['time']][$key['EditorialCalendar']['day']] = $key;
+        }
+        $calendar = $calendarx;
+
+        $this->set('calendar', $calendar);
+
+        //Generate array of all days in month
+        $daysinmonth = (int)date('t', strtotime('+' . $months . ' month', $base));
+        $days = array();
+        $month = date('m', strtotime('+' . $months . ' month', $base));
+        if ($months == 0) {
+            $day = date('d');
+        } elseif ($months !== 0) {
+            $day = 1;
+        } 
+        $year = date('Y');
+
+
+        for ($i=$day; $i<=$daysinmonth; $i++) {
+            $days[date('d-m-Y',mktime(0,0,0,$month,$i,$year))] = date('l',mktime(0,0,0,$month,$i,$year));
+        }
+        $this->set('days', $days);
+        $this->layout = '';
+    }
+
+    public function oldCalendarRefresh($months) {        
         $this->Session->write('Auth.User.monthSelector', $months);
         if ($months >= 0) {
             $calendar = $this->EditorialCalendar->find('all', array('recursive' => 1, 'conditions' => array('twitter_account_id' => $this->Session->read('access_token.account_id')), 'order' => array('EditorialCalendar.time' => 'ASC'), 'contain' => array('TwitterAccount', 'BankCategory', 'Tweet' => array('conditions' => array('timestamp >=' => strtotime(date('M Y') . ' + ' . ($months) . 'months'), 'timestamp <=' => strtotime(date('M Y') . ' + ' . ($months + 1) . 'months')), 'order' => array('Tweet.timestamp' => 'ASC'), 'Comment', 'Editor' => array('User')))));
@@ -712,6 +1327,7 @@ class EditorialCalendarsController extends AppController {
             $this->set('isTeamAdmin', 0);
         }
         $this->layout = '';
+
     }
     
 
@@ -800,6 +1416,83 @@ class EditorialCalendarsController extends AppController {
 
 
         $this->set('tweetBanks', $tweetBanks);
+        $this->layout = '';
+    }
+
+    public function tweet($calendar_id, $timestamp) {
+        $calendar = $this->EditorialCalendar->find('first', 
+            array(
+                'conditions' => array(
+                    'twitter_account_id' => $this->Session->read('access_token.account_id'),
+                    'EditorialCalendar.id' => $calendar_id
+                    ),
+                'contain' => array(
+                    'TwitterAccount',
+                    'BankCategory',
+                    'Tweet' => array(
+                        'conditions' => array(
+                            'timestamp' => $timestamp
+                            ),
+                        'Comment',
+                        'Editor' => array(
+                            'User'
+                            )
+                        )
+                    )
+                )
+            );
+        if (!empty($calendar['Tweet'])) {
+            $tweet = $calendar['Tweet'][0];
+            $tweet['BankCategory'] = $calendar['BankCategory'];
+            $tweet['EditorialCalendar'] = $calendar['EditorialCalendar'];
+            unset($calendar);
+
+            $obj['idForPusher'] = $tweet['id'];
+            if (!empty($tweet['img_url'])) {
+                $obj['withImage'] = 'withImage';
+            } else {
+                $obj['withImage'] = 'withoutImage';
+            }
+            $obj['commentCount'] = count($tweet['Comment']);
+            $obj['calendarTime'] = date('d-m-Y H:i', $timestamp);
+            $obj['fullDate'] = date('jS F Y', strtotime($timestamp));
+            $obj['present'] = 'present';
+        } else {
+            $tweet['id'] = 'a' . substr(md5(rand()), 0, 7);
+            $tweet['body'] = "";
+            $tweet['account_id'] = $calendar['EditorialCalendar']['twitter_account_id'];
+            $tweet['calendar_id'] = $calendar_id;
+            $tweet['time'] = date('d-m-Y H:i', $timestamp);
+            $tweet['timestamp'] = $timestamp;
+            $tweet['verified'] = 0;
+            $tweet['published'] = 0;
+            $tweet['tweet_bank_id'] = "";
+            $tweet['BankCategory'] = $calendar['BankCategory'];
+            $tweet['EditorialCalendar'] = $calendar['EditorialCalendar'];
+            unset($calendar);
+
+            $obj['idForPusher'] = $tweet['id'];
+            $obj['withImage'] = 'withoutImage';
+            $obj['commentCount'] = 0;
+            $obj['calendarTime'] = $tweet['time'];
+            $obj['fullDate'] = date('jS F Y', strtotime($timestamp));
+            $obj['present'] = '';
+
+        }
+
+
+        $team = $this->Cookie->read('currentTeam');
+        if ($this->TeamsUser->hasAny(array('team_id' => $team, 'user_id' => $this->Session->read('Auth.User.id'), 'group_id' => 1))) {
+            $this->set('isTeamAdmin', true);
+            $obj['disabled'] = '';
+        } else {
+            $this->set('isTeamAdmin', false);
+            $obj['disabled'] = 'disabled';
+        }
+
+        $this->set('tweet', $tweet);
+        $this->set('obj', $obj);
+
         $this->layout = '';
     }
 }

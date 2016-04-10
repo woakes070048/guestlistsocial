@@ -894,7 +894,6 @@ span.counter1.exceeded {
 }
 
 
-
 .circular{
 
  animation: rotate 2s linear infinite;
@@ -908,7 +907,30 @@ span.counter1.exceeded {
 }
 
 
+.loader1 {
 
+  width: 10px;
+
+  height: 10px;
+  
+  display: inline;
+  
+  margin-right: 5px;
+
+}
+
+
+.circular1 {
+
+ animation: rotate 2s linear infinite;
+
+ height: 10px;
+
+ position: relative;
+
+ width: 10px;
+
+}
 
 
 .path {
@@ -1091,7 +1113,7 @@ span.counter1.exceeded {
 
 .fixedScroller table td {
 
-	background: #fff;
+	background: #dadada;
 
 	font-size: 8pt;
 
@@ -1099,7 +1121,15 @@ span.counter1.exceeded {
 
 }
 
+.fixedScroller table td.gototop {
 
+	background: #fff;
+
+	font-size: 8pt;
+
+	padding: 3px;
+
+}
 
 .fixedScroller table td.allApproved {
 
@@ -2202,7 +2232,8 @@ input#CalendarTime {
 
 .approveAll,
 .shortenAllUrls,
-.autoPopulate {
+.autoPopulate,
+.loadingTweets {
 	display: inline-block;
 	padding: 5px;
 	border: 1px solid #ccc;
@@ -2216,7 +2247,8 @@ input#CalendarTime {
 
 .approveAll i,
 .shortenAllUrls i,
-.autoPopulate i {
+.autoPopulate i,
+.loadingTweets i {
 	margin-right: 5px;
 }
 
@@ -2232,6 +2264,12 @@ input#CalendarTime {
 
 .autoPopulate {
 	margin-left: 243px;
+}
+
+.loadingTweets {
+	margin-top: 20px;
+	right: 0;
+	cursor: default;
 }
 
 /*In-page tweetBank*/
@@ -2443,3 +2481,20 @@ form .submit #commentSaveButton {
 }
 
 /* END OF COMMENTS */
+
+.tweetWrapper {
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+#TweetBody.verif0 {
+	border: 1px solid #f0ad4e;
+}
+
+#TweetBody.verif1 {
+	border: 1px solid #5cb85c;
+}
+
+#TweetBody.verif2 {
+	border: 1px solid #d9534f;
+}
