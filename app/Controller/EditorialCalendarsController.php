@@ -177,7 +177,9 @@ class EditorialCalendarsController extends AppController {
                 if ($x = $this->imageHandling($data['Tweet'])) {
                     $save['Tweet']['img_url'] = $x;
                     $edited = true;
-                    $newTweetBank = true;
+                    if ($save['Tweet']['verified'] == 1) {
+                        $newTweetBank = true;  
+                    }
                 } else {
                     //$this->Session->setFlash('There was an error processing your image, please try again.');
                 }
@@ -202,7 +204,9 @@ class EditorialCalendarsController extends AppController {
                     if (copy($data['Tweet']['img_url2'], $save['Tweet']['img_url'], stream_context_create($arrContextOptions))) {
                         $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
                         $edited = true;
-                        $newTweetBank = true;
+                        if ($save['Tweet']['verified'] == 1) {
+                            $newTweetBank = true;  
+                        }
                     } else {
                         unset($save['Tweet']['img_url']);
                         $this->Session->setFlash('Image failed to upload. Please try again');
@@ -213,6 +217,8 @@ class EditorialCalendarsController extends AppController {
             } else {
                 if (empty($data['img_url'])) {
                     $data['img_url'] = $original['Tweet']['img_url'];
+                } else {
+                    $save['img_url'] = $data['img_url'];
                 }
             }
 
@@ -533,6 +539,8 @@ class EditorialCalendarsController extends AppController {
                 } else {
                     if (empty($data['img_url'])) {
                         $data['img_url'] = $original['Tweet']['img_url'];
+                    } else {
+                        $save['img_url'] = $data['img_url'];
                     }
                 }
 

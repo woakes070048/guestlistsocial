@@ -6,7 +6,7 @@ App::uses('AuthComponent', 'Controller/Component');
 class TweetBank extends AppModel {
 	public $validate = array(
 	    'body' => array(
-	            'rule' => array('isUnique', array('body', 'bank_category_id'), false), 
+	            'rule' => array('isUnique', array('body', 'bank_category_id', 'img_url'), false), 
 	            'message' => 'Tweet already exists for this account and category'
 
 	    )
