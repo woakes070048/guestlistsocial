@@ -215,10 +215,10 @@ class EditorialCalendarsController extends AppController {
                     $this->Session->setFlash('You can only use images');
                 }
             } else {
-                if (empty($data['img_url'])) {
-                    $data['img_url'] = $original['Tweet']['img_url'];
+                if (empty($data['Tweet']['img_url'])) {
+                    $data['Tweet']['img_url'] = $original['Tweet']['img_url'];
                 } else {
-                    $save['img_url'] = $data['img_url'];
+                    $save['Tweet']['img_url'] = $data['Tweet']['img_url'];
                 }
             }
 
@@ -344,7 +344,10 @@ class EditorialCalendarsController extends AppController {
                 } else {
                     $this->Session->setFlash('You can only use images');
                 }
-            }
+            } else {
+                if (!empty($data['Tweet']['img_url'])) {
+                    $save['Tweet']['img_url'] = $data['Tweet']['img_url'];
+                }
 
             if (empty($data['Tweet']['tweet_bank_id']) && $data['Tweet']['verified'] == 1) {
                 if (!empty($calendar['EditorialCalendar']['bank_category_id'])) {
