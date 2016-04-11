@@ -348,6 +348,7 @@ class EditorialCalendarsController extends AppController {
                 if (!empty($data['Tweet']['img_url'])) {
                     $save['Tweet']['img_url'] = $data['Tweet']['img_url'];
                 }
+            }
 
             if (empty($data['Tweet']['tweet_bank_id']) && $data['Tweet']['verified'] == 1) {
                 if (!empty($calendar['EditorialCalendar']['bank_category_id'])) {
