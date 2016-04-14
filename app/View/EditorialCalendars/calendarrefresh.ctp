@@ -144,7 +144,7 @@ if (!empty($calendar)) {
             function initiateScroller(verified, calendarCount, jSdate, body) {
                 if (verified[jSdate][1] == calendarCount[jSdate] && calendarCount[jSdate] != 0) {
                     $(".scroll" + jSdate).addClass('allApproved');
-                } else if (verified[jSdate][2] >= 1 &&  calendarCount[jSdate] != 0) {
+                } else if (verified[jSdate][2] == calendarCount[jSdate]) {
                     $(".scroll" + jSdate).addClass('improveApproved');
                 } else if ((verified[jSdate][0] + verified[jSdate][1]) == calendarCount[jSdate]) {
                     $(".scroll" + jSdate).addClass('notAllApproved');
@@ -189,13 +189,17 @@ if (!empty($calendar)) {
                     context: this,
                     processData: false,
                     contentType: false,
-                    success: function(data) {
+                    success: function(data, status, xhr) {
                         calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
                         timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
                         $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
                             warnMessage = null;
                             $(this).closest('.tweet').css('opacity', 1);
-                            toastr.success('Saved successfully');
+                            if (xhr.status == 200) {
+                                toastr.success("Saved successfully");
+                            } else if (xhr.status == 206) {
+                                toastr.warning(data);
+                            }
                             //pusher.disconnect();
                             //$('#loading').hide();
                         });
@@ -424,13 +428,17 @@ if (!empty($calendar)) {
                     context: this,
                     processData: false,
                     contentType: false,
-                    success: function(data) {
+                    success: function(data, status, xhr) {
                         calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
                         timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
                         $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
                             warnMessage = null;
                             $(this).closest('.tweet').css('opacity', 1);
-                            toastr.success('Saved successfully');
+                            if (xhr.status == 200) {
+                                toastr.success("Saved successfully");
+                            } else if (xhr.status == 206) {
+                                toastr.warning(data);
+                            }
                             //pusher.disconnect();
                             //$('#loading').hide();
                         });
@@ -484,14 +492,17 @@ if (!empty($calendar)) {
                     context: this,
                     processData: false,
                     contentType: false,
-                    success: function(data) {
+                    success: function(data, status, xhr) {
                         calendar_id = $(this).closest(".tweet").find('#TweetCalendarId').val();
                         timestamp = $(this).closest(".tweetWrapper").attr('class').split(' ').pop().split('-')[1];
                         $(this).closest(".tweetWrapper").load('/editorial_calendars/tweet/' + calendar_id + '/' + timestamp, function () {
                             warnMessage = null;
                             $(this).closest('.tweet').css('opacity', 1);
-                            toastr.success('Saved successfully');
-                            console.log(data);
+                            if (xhr.status == 200) {
+                                toastr.success("Saved successfully");
+                            } else if (xhr.status == 206) {
+                                toastr.warning(data);
+                            }
                             //pusher.disconnect();
                             //$('#loading').hide();
                         });
@@ -665,11 +676,15 @@ if (!empty($calendar)) {
                 data: dat,
                 processData: false,
                 contentType: false,
-                success: function(data) {
+                success: function(data, status) {
                     $('#table').load('/editorial_calendars/calendarrefresh/<?echo $this->Session->read("Auth.User.monthSelector");?>', function () {
                         $('#table').css('opacity', '1');
                         $('#loading').hide();
-                        toastr.success("Saved successfully");
+                        if (status == 200) {
+                            toastr.success("Saved successfully");
+                        } else if (status == 206) {
+                            taostr.warning(data);
+                        }
                     });
                 },
                 error: function(data) {

@@ -99,6 +99,8 @@ class EditorialCalendarsController extends AppController {
 
 
     public function editcalendartweet() {
+        $this->response->statusCode(200);
+
         $id = key($this->request->data['Tweet']);
         $data['Tweet'] = $this->request->data['Tweet'][$id];
         if (ctype_digit($id)) {
@@ -182,6 +184,8 @@ class EditorialCalendarsController extends AppController {
                     }
                 } else {
                     //$this->Session->setFlash('There was an error processing your image, please try again.');
+                    $this->response->statusCode('206');
+                    $this->response->body('There was an error processing your image, please try again.');
                 }
             } elseif (!empty($data['Tweet']['img_url2'])) {
                 $z = explode(".", $data['Tweet']['img_url2']);
@@ -209,10 +213,12 @@ class EditorialCalendarsController extends AppController {
                         }
                     } else {
                         unset($save['Tweet']['img_url']);
-                        $this->Session->setFlash('Image failed to upload. Please try again');
+                        $this->response->statusCode('206');
+                        $this->response->body('Image failed to upload, please try again.');
                     }
                 } else {
-                    $this->Session->setFlash('You can only use images');
+                    $this->response->statusCode('206');
+                    $this->response->body('You can only upload images');
                 }
             } else {
                 if (empty($data['Tweet']['img_url'])) {
@@ -226,10 +232,14 @@ class EditorialCalendarsController extends AppController {
             if (!empty($save['Tweet']['img_url'])) {
                 if (strlen($save['Tweet']['body']) > 117 && $save['Tweet']['verified'] == 1) {
                     $save['Tweet']['verified'] = 0;
+                    $this->response->statusCode('206');
+                    $this->response->body('Tweet is over the maximum allowed characters.');
                 }
             } else {
                 if (strlen($save['Tweet']['body']) > 140 && $save['Tweet']['verified'] == 1) {
                     $save['Tweet']['verified'] = 0;
+                    $this->response->statusCode('206');
+                    $this->response->body('Tweet is over the maximum allowed characters.');
                 }
             }
 
@@ -316,6 +326,8 @@ class EditorialCalendarsController extends AppController {
                     $save['Tweet']['img_url'] = $x;
                 } else {
                     //$this->Session->setFlash('There was an error processing your image, please try again.');
+                    $this->response->statusCode('206');
+                    $this->response->body('There was an error processing your image, please try again.');
                 }
             } elseif (!empty($data['Tweet']['img_url2'])) {
                 $z = explode(".", $data['Tweet']['img_url2']);
@@ -339,10 +351,12 @@ class EditorialCalendarsController extends AppController {
                         $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
                     } else {
                         unset($save['Tweet']['img_url']);
-                        $this->Session->setFlash('Image failed to upload. Please try again');
+                        $this->response->statusCode('206');
+                        $this->response->body('Image failed to upload, please try again.');
                     }
                 } else {
-                    $this->Session->setFlash('You can only use images');
+                    $this->response->statusCode('206');
+                    $this->response->body('You can only upload images');
                 }
             } else {
                 if (!empty($data['Tweet']['img_url'])) {
@@ -381,14 +395,14 @@ class EditorialCalendarsController extends AppController {
         if (!empty($save)) {
             if ($this->Tweet->saveAll($save, array('deep' => true))) {
 
-                $this->response->statusCode(200);
+                //$this->response->statusCode(200);
 
             } else {
                 $errors = $this->Tweet->invalidFields();
                 if (!empty($errors)) {
-                    $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
                     $this->response->statusCode(500);
-                    $this->response->body(json_encode($errors, JSON_PRETTY_PRINT));
+                    $this->response->body('Something went wrong, your tweets were not saved. Please try again');
+                    //$this->response->body(json_encode($errors, JSON_PRETTY_PRINT));
                 }
             }
         }
@@ -397,11 +411,12 @@ class EditorialCalendarsController extends AppController {
         if (!empty($CronTweet)) {
             if ($this->CronTweet->saveAll($CronTweet)) {
             
-                $this->response->statusCode(200);
+                //$this->response->statusCode(200);
 
             } else {
                 //$this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again1');
                 $this->response->statusCode(500);
+                $this->response->body('Something went wrong, your tweets were not saved. Please try again');
             }
         }
 
@@ -411,6 +426,8 @@ class EditorialCalendarsController extends AppController {
 
 
     public function editMultipleCalendarTweet() {
+        $this->response->statusCode(200);
+
         $allIds = array();
         $originalIDs = array();
         $calendarIDs = array();
@@ -510,6 +527,8 @@ class EditorialCalendarsController extends AppController {
                         $newTweetBank = true;
                     } else {
                         //$this->Session->setFlash('There was an error processing your image, please try again.');
+                        $this->response->statusCode(206);
+                        $this->response->body('There was an error processing your image, please try again.');
                     }
                 } elseif (!empty($data['Tweet']['img_url2'])) {
                     $z = explode(".", $data['Tweet']['img_url2']);
@@ -535,10 +554,12 @@ class EditorialCalendarsController extends AppController {
                             $newTweetBank = true;
                         } else {
                             unset($save['Tweet']['img_url']);
-                            $this->Session->setFlash('Image failed to upload. Please try again');
+                        $this->response->statusCode(206);
+                        $this->response->body('Image failed to upload, please try again.');
                         }
                     } else {
-                        $this->Session->setFlash('You can only use images');
+                        $this->response->statusCode(206);
+                        $this->response->body('You can only use images');
                     }
                 } else {
                     if (empty($data['img_url'])) {
@@ -552,10 +573,14 @@ class EditorialCalendarsController extends AppController {
                 if (!empty($save['Tweet']['img_url'])) {
                     if (strlen($save['Tweet']['body']) > 117 && $save['Tweet']['verified'] == 1) {
                         $save['Tweet']['verified'] = 0;
+                        $this->response->statusCode(206);
+                        $this->response->body('Tweet is over the maximum allowed characters.');
                     }
                 } else {
                     if (strlen($save['Tweet']['body']) > 140 && $save['Tweet']['verified'] == 1) {
                         $save['Tweet']['verified'] = 0;
+                        $this->response->statusCode(206);
+                        $this->response->body('Tweet is over the maximum allowed characters.');
                     }
                 }
 
@@ -644,6 +669,8 @@ class EditorialCalendarsController extends AppController {
                         $save['Tweet']['img_url'] = $x;
                     } else {
                         //$this->Session->setFlash('There was an error processing your image, please try again.');
+                        $this->response->statusCode(206);
+                        $this->response->body('There was an error processing your image, please try again.');
                     }
                 } elseif (!empty($data['Tweet']['img_url2'])) {
                     $z = explode(".", $data['Tweet']['img_url2']);
@@ -667,10 +694,12 @@ class EditorialCalendarsController extends AppController {
                             $save['Tweet']['img_url'] = 'https://tweetproof.com/img/uploads/' .$newFileName;
                         } else {
                             unset($save['Tweet']['img_url']);
-                            $this->Session->setFlash('Image failed to upload. Please try again');
+                        $this->response->statusCode(206);
+                        $this->response->body('Image failed to upload, please try again.');
                         }
                     } else {
-                        $this->Session->setFlash('You can only use images');
+                        $this->response->statusCode(206);
+                        $this->response->body('You can only use images');
                     }
                 }
 
@@ -718,15 +747,14 @@ class EditorialCalendarsController extends AppController {
         if (!empty($saveAll)) {
             if ($this->Tweet->saveAll($saveAll, array('deep' => true))) {
 
-                $this->response->statusCode(200);
 
             } else {
                 $errors = $this->Tweet->invalidFields();
                 debug($errors);
                 if (!empty($errors)) {
-                    $this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again');
+                    $this->response->body('Something went wrong, your tweets were not saved. Please try again');
                     $this->response->statusCode(500);
-                    $this->response->body(json_encode($errors, JSON_PRETTY_PRINT));
+                    //$this->response->body(json_encode($errors, JSON_PRETTY_PRINT));
                 }
             }
         }
@@ -735,11 +763,11 @@ class EditorialCalendarsController extends AppController {
         if (!empty($CronTweet)) {
             if ($this->CronTweet->saveAll($CronTweet)) {
             
-                $this->response->statusCode(200);
 
             } else {
                 //$this->Session->setFlash('Something went wrong, your tweets were not saved. Please try again1');
                 $this->response->statusCode(500);
+                $this->response->body('Something went wrong, your tweets were not saved. Please try again');
             }
         }
 
