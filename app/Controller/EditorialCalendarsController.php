@@ -216,7 +216,7 @@ class EditorialCalendarsController extends AppController {
                 }
             } else {
                 if (empty($data['Tweet']['img_url'])) {
-                    $data['Tweet']['img_url'] = $original['Tweet']['img_url'];
+                    $save['Tweet']['img_url'] = $original['Tweet']['img_url'];
                 } else {
                     $save['Tweet']['img_url'] = $data['Tweet']['img_url'];
                 }
