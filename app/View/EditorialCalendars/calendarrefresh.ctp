@@ -144,7 +144,7 @@ if (!empty($calendar)) {
             function initiateScroller(verified, calendarCount, jSdate, body) {
                 if (verified[jSdate][1] == calendarCount[jSdate] && calendarCount[jSdate] != 0) {
                     $(".scroll" + jSdate).addClass('allApproved');
-                } else if (verified[jSdate][2] == calendarCount[jSdate]) {
+                } else if (verified[jSdate][2] >= 1 &&  calendarCount[jSdate] != 0) {
                     $(".scroll" + jSdate).addClass('improveApproved');
                 } else if ((verified[jSdate][0] + verified[jSdate][1]) == calendarCount[jSdate]) {
                     $(".scroll" + jSdate).addClass('notAllApproved');
