@@ -77,12 +77,12 @@ on (statistics.twitter_account_id = maxt.twitter_account_id and statistics.times
                 $key['Statistic']['favourites_count'] = $this->abreviateTotalCount($key['Statistic']['favourites_count']);
                 $stats[$value] = $key;
                 unset($stats[$value]['statistics']);
+                $this->set('stats', $stats);
             }
         }
         
         $allaccounts = $this->TwitterAccount->find('all', array('conditions' => array('TwitterAccount.account_id' => $permissions), 'recursive' => -1));
         $allaccounts = Hash::combine($allaccounts, '{n}.TwitterAccount.account_id', '{n}');
-        $this->set('stats', $stats);
         $this->set('allaccounts', $allaccounts);
 
         //Setting Dropdown Users
