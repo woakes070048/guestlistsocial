@@ -1535,4 +1535,27 @@ class EditorialCalendarsController extends AppController {
 
         $this->layout = '';
     }
+
+    public function categorySave() {
+        $data = $this->request->data['category'];
+
+        $bc = array();
+        $bc['BankCategory']['category'] = $data;
+        $bc['BankCategory']['account_id'] = $this->Session->read('access_token.account_id');
+        $colors = array('#337ab7', '#5bc0de', '#5cb85c', '#d9534f', '#f0ad4e', '#8465C1');
+        $bc['BankCategory']['color'] = $colors[array_rand($colors)];
+        $this->BankCategory->save($bc);
+        $id = $this->BankCategory->getLastInsertID();
+
+        $json = json_encode(array('category' => $data, 'id' => $id, 'color' => $bc['BankCategory']['color']));
+
+        if (!empty($id)) {
+            $this->response->statusCode(200);
+        } else {
+            $this->response->statusCode(500);
+        }
+        $this->response->body($json);
+
+        return $this->response;
+    }
 }

@@ -1333,7 +1333,7 @@ on (statistics.twitter_account_id = maxt.twitter_account_id and statistics.times
         }*/
     }
 
-    public function http(){
+    /*public function http(){
         //temp function to change all http to https for full secure page
         $data = array();
         $x = 0;
@@ -1347,5 +1347,5 @@ on (statistics.twitter_account_id = maxt.twitter_account_id and statistics.times
             }
         }
         $this->TwitterAccount->saveAll($data);
-    }
+    }*/
 }

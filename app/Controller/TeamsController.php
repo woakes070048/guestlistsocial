@@ -234,7 +234,7 @@ class TeamsController extends AppController {
 				);
 		$this->TeamsUser->save($save);
 		$this->Tickets->del($teamHash);
-		$this->Tickets->del($group);
+		$this->Tickets->del($groupHash);
 
 		$this->refreshGroup($this->Session->read('Auth.User.id'));
 

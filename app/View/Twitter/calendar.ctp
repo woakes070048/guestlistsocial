@@ -73,7 +73,10 @@ foreach ($calendar as $value => $key) {?>
         <div class='BankCategory'><span data-id="<?echo $key[$value1]['BankCategory']['id'];?>" style="background-color:<?echo $key[$value1]['BankCategory']['color'];?>"><?echo (!empty($key[$value1]['BankCategory']['category']))? $key[$value1]['BankCategory']['category'] : 'Select Category...';?></span></div>
         <? //echo  $this->Form->input('category', array('type' => 'select', 'options' => $bank_categories, 'selected' => $key[$value1]['EditorialCalendar']['bank_category_id'], 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_id]', 'class' => 'CalendarCategory', 'label' => false)); ?>
         <? echo  $this->Form->input('category', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_id]', 'class' => 'CalendarCategory')); ?>
-        <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
+        <div class='HiddenCategory' style="display: none; width: 159px">
+            <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'id' => 'HiddenCategory', 'disabled', 'style' => 'display: inline; width: 120px; float: left', 'div' => array('style' => 'display: inline'))); ?>
+            <button type="button" class="submitCategory">Save</button>
+        </div>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][time]', 'value' => $value, 'class' => 'CalendarTime'));?>
         <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => 'data[EditorialCalendar]['. $key[$value1]['EditorialCalendar']['id'] .'][changed]', 'value' => false, 'class' => 'changed'));?>
         <?}?></td>
@@ -89,7 +92,10 @@ foreach ($calendar as $value => $key) {?>
         <i class='fa fa-pencil editCategory'></i>
         <div class='BankCategory'><span data-id="new"><?echo 'Select Category...';?></span></div>
         <? echo  $this->Form->input('category', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][new][bank_category_id]', 'class' => 'CalendarCategory')); ?>
-        <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar][new][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
+        <div style="display: inline">
+            <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar][new][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
+            <button class="submitCategory">Save</button>
+        </div>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => '', 'value' => '00:00', 'class' => 'CalendarTime'));?>
         <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => '', 'value' => $value1));?>
         <? echo $this->Form->input('changed', array('type' => 'hidden', 'name' => '', 'value' => true, 'class' => 'changed'));?>
@@ -214,9 +220,31 @@ $(document).ready(function () {
         $(this).closest('tr').find('.changed').attr('value', true);
     });
 
+    /*bank_categories = <?echo json_encode($bank_categories);?>;
+    bank_categories1 = [];
+    for (i=0; i<bank_categories.length; i++) {
+        alert(bank_categories[i]);
+        bank_categories1[i] = []
+    }*/
+    bank_categories = [];
+    <? foreach ($bank_categories as $id => $category) {?>
+            bank_categories.push({'id' : "<?echo $id;?>", 'category' : "<?echo $category;?>"<?echo ($id != 0 || $id != 'New') ? ", 'color' : " . "\"" . $bank_category_colors[$id] . "\"" : "";?>});
+    <?}?>
+    //"<?foreach ($bank_categories as $value => $key) {?><span style='background-color:<?if($value != 0 || $value != 'New'){echo$bank_category_colors[$value];}?>' data-id=<?echo$value;?> class='categorySelection'><?echo $key;?></span><?}?>"
     $('.topic .editCategory').qtip({
         content: {
-            text: "<?foreach ($bank_categories as $value => $key) {?><span style='background-color:<?if($value != 0 || $value != 'New'){echo$bank_category_colors[$value];}?>' data-id=<?echo$value;?> class='categorySelection'><?echo $key;?></span><?}?>", 
+            text: function () {
+                returnval = "";
+                for (i = 0; i < bank_categories.length; i++) {
+                    if (bank_categories[i]["color"]) {
+                        returnval += "<span style='background-color:" + bank_categories[i]["color"] + "' data-id=" + bank_categories[i]["id"] + " class='categorySelection'>" + bank_categories[i]["category"] + "</span>";
+                    } else {
+                        returnval += "<span data-id=" + bank_categories[i]["id"] + " class='categorySelection'>" + bank_categories[i]["category"] + "</span>";
+                    }
+                }
+                return returnval;
+            }, 
+
             button: true
         },
         hide: {
@@ -243,10 +271,10 @@ $(document).ready(function () {
         $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('tr').find('.changed').attr('value', true);
 
         if (id == 'New') {
-            $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('td').find('#HiddenCategory').show();
+            $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('td').find('.HiddenCategory').show();
             $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('td').find('#HiddenCategory').prop('disabled', false);
         } else {
-            $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('td').find('#HiddenCategory').hide();
+            $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('td').find('.HiddenCategory').hide();
             $(".editCategory[data-hasqtip=" + qtip_id + "]").closest('td').find('#HiddenCategory').prop('disabled', true);
             $('#refresh').load('/tweetBank/calendarrefresh/' + id);
             $('td').css('background-color', '#fff');
@@ -267,6 +295,33 @@ $(document).ready(function () {
         $(this).find('.editCategory').css('opacity', 1);
     }, function () {
         $(this).find('.editCategory').css('opacity', 0);
+    });
+
+    $('.submitCategory').click(function () {
+        newcategory = $(this).closest('td').find('#HiddenCategory').val();
+        $.ajax({
+          type: "POST",
+          url: '/editorial_calendars/categorysave',
+          data: {'category' : newcategory},
+          context: this,
+          success: function(data) {
+            data1 = JSON.parse(data);
+            bank_categories.splice(1, 0, {'id' : data1['id'], 'category' : data1['category'], 'color' : data1['color']});
+
+
+            $(this).closest('td').find('.BankCategory span').text(data1['category']);
+            $(this).closest('td').find('.BankCategory span').css('background-color', data1['color']);
+            $(this).closest('td').find('.BankCategory span').attr('data-id', data1['id']);
+            $(this).closest('td').find('.CalendarCategory').val(data1['id']);
+            $(this).closest('tr').find('.changed').attr('value', true);
+            $(this).closest('td').find('.HiddenCategory').hide();
+            $(this).closest('td').find('#HiddenCategory').prop('disabled', true);
+            $('#refresh').load('/tweetBank/calendarrefresh/' + data1['id']);
+            $('td').css('background-color', '#fff');
+            $(this).closest('td').css('background-color', '#fffca1');
+          },
+          //dataType: JSON
+        });
     });
 });
 
@@ -353,5 +408,16 @@ textarea {
 
 #container {
     background: #fff;
+}
+
+.submitCategory {
+    background-color: #0788D3;
+    border: 1px solid #1C6B98;
+    color: #fff;
+    font-family: 'Open Sans';
+    border-radius: 5px;
+    width: 35px;
+    display: inline;
+    float: left;
 }
 </style>
