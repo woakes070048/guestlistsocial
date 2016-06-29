@@ -92,9 +92,9 @@ foreach ($calendar as $value => $key) {?>
         <i class='fa fa-pencil editCategory'></i>
         <div class='BankCategory'><span data-id="new"><?echo 'Select Category...';?></span></div>
         <? echo  $this->Form->input('category', array('type' => 'hidden', 'name' => 'data[EditorialCalendar][new][bank_category_id]', 'class' => 'CalendarCategory')); ?>
-        <div style="display: inline">
-            <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar][new][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled')); ?>
-            <button class="submitCategory">Save</button>
+        <div class='HiddenCategory' style="display: none; width: 159px">
+            <? echo  $this->Form->input('category', array('name' => 'data[EditorialCalendar][new][bank_category_manual]', 'label' => false, 'placeholder' => 'Enter New Category', 'style' => 'display: none;', 'id' => 'HiddenCategory', 'disabled', 'style' => 'display: inline; width: 120px; float: left', 'div' => array('style' => 'display: inline'))); ?>
+            <button type="button" class="submitCategory">Save</button>
         </div>
         <? echo $this->Form->input('time', array('type' => 'hidden', 'name' => '', 'value' => '00:00', 'class' => 'CalendarTime'));?>
         <? echo $this->Form->input('day', array('type' => 'hidden', 'name' => '', 'value' => $value1));?>
@@ -125,6 +125,10 @@ $(document).ready(function () {
         $('tr:last-child').after("<tr><td><? echo $this->Form->input('hello');?></td></tr>");
     });*/
 
+    bank_categories = [];
+    <? foreach ($bank_categories as $id => $category) {?>
+            bank_categories.push({'id' : "<?echo $id;?>", 'category' : "<?echo $category;?>"<?echo ($id != 0 || $id != 'New') ? ", 'color' : " . "\"" . $bank_category_colors[$id] . "\"" : "";?>});
+    <?}?>
     $('.addCalendar').click(function (e) {
         e.preventDefault();
         $('tr#copy').clone().removeAttr('id').appendTo('#table1 tbody');
@@ -157,7 +161,17 @@ $(document).ready(function () {
         });
         $('tr:last-child .editCategory').qtip({
             content: {
-                text: "<?foreach ($bank_categories as $value => $key) {?><span style='background-color:<?if($value != 0 || $value != 'New'){echo$bank_category_colors[$value];}?>' data-id=<?echo$value;?> class='categorySelection'><?echo $key;?></span><?}?>", 
+                text: function () {
+                    returnval = "";
+                    for (i = 0; i < bank_categories.length; i++) {
+                        if (bank_categories[i]["color"]) {
+                            returnval += "<span style='background-color:" + bank_categories[i]["color"] + "' data-id=" + bank_categories[i]["id"] + " class='categorySelection'>" + bank_categories[i]["category"] + "</span>";
+                        } else {
+                            returnval += "<span data-id=" + bank_categories[i]["id"] + " class='categorySelection'>" + bank_categories[i]["category"] + "</span>";
+                        }
+                    }
+                    return returnval;
+                },
                 button: true
             },
             hide: {
@@ -219,18 +233,6 @@ $(document).ready(function () {
     $('.CalendarTimeMain, .CalendarCategory').change(function () {
         $(this).closest('tr').find('.changed').attr('value', true);
     });
-
-    /*bank_categories = <?echo json_encode($bank_categories);?>;
-    bank_categories1 = [];
-    for (i=0; i<bank_categories.length; i++) {
-        alert(bank_categories[i]);
-        bank_categories1[i] = []
-    }*/
-    bank_categories = [];
-    <? foreach ($bank_categories as $id => $category) {?>
-            bank_categories.push({'id' : "<?echo $id;?>", 'category' : "<?echo $category;?>"<?echo ($id != 0 || $id != 'New') ? ", 'color' : " . "\"" . $bank_category_colors[$id] . "\"" : "";?>});
-    <?}?>
-    //"<?foreach ($bank_categories as $value => $key) {?><span style='background-color:<?if($value != 0 || $value != 'New'){echo$bank_category_colors[$value];}?>' data-id=<?echo$value;?> class='categorySelection'><?echo $key;?></span><?}?>"
     $('.topic .editCategory').qtip({
         content: {
             text: function () {
@@ -297,7 +299,7 @@ $(document).ready(function () {
         $(this).find('.editCategory').css('opacity', 0);
     });
 
-    $('.submitCategory').click(function () {
+    $('body').on("click", ".submitCategory", function () {
         newcategory = $(this).closest('td').find('#HiddenCategory').val();
         $.ajax({
           type: "POST",
